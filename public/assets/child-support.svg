@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 280" fill="none">
+  <defs>
+    <linearGradient id="bgOrphan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="500" height="280" fill="url(#bgOrphan)"/>
+
+  <!-- Protective White House Frame Outline with Heart -->
+  <g stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.95">
+    <!-- Roof with Heart apex -->
+    <path d="M140 135 L250 55 L360 135"/>
+    <!-- House walls -->
+    <path d="M165 135 L165 240"/>
+    <path d="M335 135 L335 240"/>
+  </g>
+
+  <!-- Floating Heart at apex of house -->
+  <path d="M250 35 C250 25, 238 20, 230 28 C222 36, 234 49, 250 60 C266 49, 278 36, 270 28 C262 20, 250 25, 250 35 Z" fill="#38bdf8"/>
+
+  <!-- Three Happy Orphan Children -->
+  <!-- Left Child (Girl with Coral Dress & Pigtails) -->
+  <g transform="translate(160, 115)">
+    <!-- Body / Dress -->
+    <path d="M25 80 C25 60, 5 60, 5 110 L50 110 C50 60, 30 60, 25 80 Z" fill="#f43f5e"/>
+    <!-- Head -->
+    <circle cx="28" cy="45" r="22" fill="#fed7aa"/>
+    <!-- Hair -->
+    <path d="M12 40 C10 20, 46 20, 44 40 C38 32, 18 32, 12 40 Z" fill="#1e293b"/>
+    <!-- Pigtails -->
+    <ellipse cx="6" cy="45" rx="8" ry="12" fill="#1e293b"/>
+    <ellipse cx="50" cy="45" rx="8" ry="12" fill="#1e293b"/>
+    <!-- Face: Happy Eyes & Smile -->
+    <path d="M20 45 Q24 49 28 45" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <path d="M32 45 Q36 49 40 45" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <path d="M25 54 Q30 60 35 54" stroke="#e11d48" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <circle cx="18" cy="51" r="3" fill="#fca5a5" opacity="0.6"/>
+    <circle cx="42" cy="51" r="3" fill="#fca5a5" opacity="0.6"/>
+  </g>
+
+  <!-- Center Child (Boy with Green/Teal Shirt) -->
+  <g transform="translate(215, 85)">
+    <!-- Body -->
+    <path d="M35 80 C25 70, 0 75, 5 140 L65 140 C70 75, 45 70, 35 80 Z" fill="#10b981"/>
+    <!-- Collar -->
+    <path d="M25 78 L35 92 L45 78 Z" fill="#ffffff"/>
+    <!-- Head -->
+    <circle cx="35" cy="45" r="26" fill="#fed7aa"/>
+    <!-- Hair -->
+    <path d="M12 40 C10 12, 60 12, 58 40 C45 28, 25 28, 12 40 Z" fill="#0f172a"/>
+    <!-- Face: Big Smile & Eyes -->
+    <circle cx="27" cy="42" r="3" fill="#0f172a"/>
+    <circle cx="43" cy="42" r="3" fill="#0f172a"/>
+    <!-- Cheerful big open smile -->
+    <path d="M26 53 Q35 66 44 53 Z" fill="#e11d48"/>
+    <path d="M28 53 Q35 57 42 53" stroke="#ffffff" stroke-width="2" fill="none"/>
+    <circle cx="21" cy="49" r="4" fill="#fda4af" opacity="0.7"/>
+    <circle cx="49" cy="49" r="4" fill="#fda4af" opacity="0.7"/>
+  </g>
+
+  <!-- Right Child (Young Boy with Orange Shirt) -->
+  <g transform="translate(285, 115)">
+    <!-- Body -->
+    <path d="M25 80 C25 60, 5 60, 5 110 L50 110 C50 60, 30 60, 25 80 Z" fill="#f97316"/>
+    <!-- Head -->
+    <circle cx="28" cy="45" r="22" fill="#fed7aa"/>
+    <!-- Hair -->
+    <path d="M12 40 C10 20, 46 20, 44 40 C38 30, 18 30, 12 40 Z" fill="#1e293b"/>
+    <!-- Face: Happy Wink/Smile -->
+    <path d="M19 44 Q23 48 27 44" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <path d="M31 44 Q35 48 39 44" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <path d="M24 53 Q29 59 34 53" stroke="#c2410c" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+    <circle cx="17" cy="50" r="3" fill="#fdba74" opacity="0.6"/>
+    <circle cx="41" cy="50" r="3" fill="#fdba74" opacity="0.6"/>
+  </g>
+</svg>

@@ -1,0 +1,1554 @@
+{
+  "users": [
+    {
+      "id": "user-admin",
+      "full_name": "NGO ADMINISTRATOR",
+      "email": "aadminngo@gmail.com",
+      "password_hash": "$2b$10$m7aj3UpMUOBHTnMnXDuGCe7FuIJxRIgKS3fwvj.6ZOdGYF9IwFhWe",
+      "role": "Administrator",
+      "phone": "+91 93915 14815",
+      "bio": "Authorized Non-Profit Fiduciary & Systems Director",
+      "avatar": "NA",
+      "kyc_verified": 1,
+      "status": "active",
+      "member_since": "2021",
+      "audits_approved": 42,
+      "created_at": "2026-10-01T08:00:58.238Z"
+    },
+    {
+      "id": "user-rgukt",
+      "full_name": "University Member",
+      "email": "o220786@rguktong.ac.in",
+      "password_hash": "$2b$10$6tejvTl5DWitjUKhmaErguE1nUHdcTwfo9Cn7ueceFF6HVR3TH9e.",
+      "role": "Donor Member",
+      "phone": "+91 91234 56789",
+      "bio": "Student & Philanthropy Supporter at RGUKT.",
+      "avatar": "UM",
+      "kyc_verified": 1,
+      "status": "active",
+      "member_since": "2026",
+      "audits_approved": 5,
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "user-donor-1",
+      "full_name": "K. Venkatesh",
+      "email": "venkatesh.k@gmail.com",
+      "password_hash": "$2b$10$Sr3xBr4Aam89sbqlbhB9xOUxCXgN7PmC.TVzjpUW7P3ndy0nL02kq",
+      "role": "Donor Member",
+      "phone": "+91 94441 23456",
+      "bio": "Angel philanthropist sponsoring pediatric clinics and education across rural South Indian districts.",
+      "avatar": "KV",
+      "kyc_verified": 1,
+      "status": "active",
+      "member_since": "2023",
+      "audits_approved": 18,
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "user-volunteer-1",
+      "full_name": "Kavitha Lakshmi",
+      "email": "kavitha.lakshmi@gmail.com",
+      "password_hash": "$2b$10$Sr3xBr4Aam89sbqlbhB9xOUxCXgN7PmC.TVzjpUW7P3ndy0nL02kq",
+      "role": "Volunteer Staff",
+      "phone": "+91 98401 56789",
+      "bio": "Emergency disaster response coordinator & field auditor.",
+      "avatar": "KL",
+      "kyc_verified": 1,
+      "status": "active",
+      "member_since": "2024",
+      "audits_approved": 28,
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "user-beneficiary-1",
+      "full_name": "Dr. P. Ramesh Babu Clinic",
+      "email": "rameshbabu.clinic@sanjivani.org",
+      "password_hash": "$2b$10$Sr3xBr4Aam89sbqlbhB9xOUxCXgN7PmC.TVzjpUW7P3ndy0nL02kq",
+      "role": "Beneficiary Partner",
+      "phone": "+91 94402 18920",
+      "bio": "Rural pediatric community healthcare dispensary in Andhra region.",
+      "avatar": "RB",
+      "kyc_verified": 1,
+      "status": "active",
+      "member_since": "2025",
+      "audits_approved": 4,
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "user-1790842059117",
+      "full_name": "vengammabareddy50",
+      "email": "vengammabareddy50@gmail.com",
+      "password_hash": "$2b$10$bGGPuSNhaX.k4mBfQEJmO.EpNjhtPhzM6FemuiQOD3m/wKeNdaYca",
+      "role": "Donor Member",
+      "kyc_verified": 1,
+      "status": "active",
+      "member_since": "2026",
+      "audits_approved": 0,
+      "created_at": "2026-10-01T08:07:39.117Z"
+    },
+    {
+      "id": "user-1790849764863",
+      "full_name": "vengammabareddy",
+      "email": "vengammabareddy@gmail.com",
+      "password_hash": "$2b$10$2Y82VQwNm2znQMgZEL/loe0LmmkW1aCGpoZ5i/P/7Ab5YXHRKJVyu",
+      "role": "Donor Member",
+      "kyc_verified": 1,
+      "status": "active",
+      "member_since": "2026",
+      "audits_approved": 0,
+      "created_at": "2026-10-01T10:16:04.863Z"
+    },
+    {
+      "id": "user-1790993369275",
+      "full_name": "chandini22385",
+      "email": "chandini22385@gmail.com",
+      "password_hash": "$2b$10$ZKiyPHpvPccv0/sAZEV0muqaYoKq7yim/XgdjkLmNz.ytsba.LKDq",
+      "role": "Donor Member",
+      "kyc_verified": 1,
+      "status": "active",
+      "member_since": "2026",
+      "audits_approved": 0,
+      "created_at": "2026-10-03T02:09:29.275Z"
+    },
+    {
+      "id": "user-1791134513833",
+      "full_name": "vengammabareddy61",
+      "email": "vengammabareddy61@gmail.com",
+      "password_hash": "$2b$10$lT7ZFWSQMQcPfoKh1NWxNOwnc19fyy3fY9oOwupZBtFOLdmOjbg/C",
+      "role": "Donor Member",
+      "kyc_verified": 1,
+      "status": "active",
+      "member_since": "2026",
+      "audits_approved": 0,
+      "created_at": "2026-10-04T17:21:53.833Z"
+    },
+    {
+      "id": "user-1791191111096",
+      "full_name": "kusumaneerugatti",
+      "email": "kusumaneerugatti@gmail.com",
+      "password_hash": "$2b$10$Jl7iejUyN.M5/bL7clCGOOWiQOUgkYgAiTLTGeAE44fDgwiekqDYy",
+      "role": "Donor Member",
+      "kyc_verified": 1,
+      "status": "active",
+      "member_since": "2026",
+      "audits_approved": 0,
+      "created_at": "2026-10-05T09:05:11.096Z"
+    }
+  ],
+  "donations": [
+    {
+      "id": "DON-198546",
+      "donor_id": "user-admin",
+      "donor_name": "DIVYA",
+      "donor_email": "divya123@gmail.com",
+      "amount": 9,
+      "category": "Healthcare Camps",
+      "payment_method": "UPI / QR Code",
+      "payment_reference": "80G-556247",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-10-06",
+      "notes": "",
+      "created_at": "2026-10-06T08:43:18.704Z"
+    },
+    {
+      "id": "DON-2026-632",
+      "donor_id": null,
+      "donor_name": "hi",
+      "donor_email": "hi@gmail.com",
+      "amount": 100,
+      "category": "Healthcare Camps",
+      "payment_method": "Bank Wire",
+      "payment_reference": "CARD-TXN-185903",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-10-01",
+      "notes": "",
+      "created_at": "2026-10-01T08:09:45.903Z"
+    },
+    {
+      "id": "DON-2026-001",
+      "donor_id": "user-donor-1",
+      "donor_name": "K. Venkatesh",
+      "donor_email": "venkatesh.k@gmail.com",
+      "amount": 1500,
+      "category": "Healthcare Camps",
+      "payment_method": "UPI / QR Code",
+      "payment_reference": "UPI-TXN-984210",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-09-12",
+      "notes": "Pediatric clinic supplies fund",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "DON-2026-002",
+      "donor_id": null,
+      "donor_name": "Ch. Sai Praneeth",
+      "donor_email": "saipraneeth.ch@gmail.com",
+      "amount": 3200,
+      "category": "Disaster Relief",
+      "payment_method": "UPI / QR Code",
+      "payment_reference": "UPI-B94102-AP",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-09-13",
+      "notes": "Flood relief shelters",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "DON-2026-003",
+      "donor_id": null,
+      "donor_name": "S. Meenakshi Sundaram",
+      "donor_email": "meenakshi.sundaram@gmail.com",
+      "amount": 850,
+      "category": "Child Education",
+      "payment_method": "Card / Stripe",
+      "payment_reference": "STRIPE-CH-38910",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-09-14",
+      "notes": "Textbook and digital learning sponsorship",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "DON-2026-004",
+      "donor_id": null,
+      "donor_name": "R. Balasubramanian",
+      "donor_email": "balasubramanian.r@gmail.com",
+      "amount": 450,
+      "category": "Food & Nutrition",
+      "payment_method": "UPI / QR Code",
+      "payment_reference": "UPI-TXN-881920",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-09-15",
+      "notes": "Community dry kitchen rations",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "DON-2026-005",
+      "donor_id": "user-donor-1",
+      "donor_name": "T. S. Venkataraman (CSR Trust)",
+      "donor_email": "venkataraman.ts@tcs-csr.org",
+      "amount": 10000,
+      "category": "General Fund",
+      "payment_method": "Bank Wire",
+      "payment_reference": "WIRE-TXN-772109",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-09-16",
+      "notes": "Monthly recurrent contribution",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "DON-2026-006",
+      "donor_id": null,
+      "donor_name": "P. Vani Kumari",
+      "donor_email": "vanikumari.p@gmail.com",
+      "amount": 1200,
+      "category": "Healthcare Camps",
+      "payment_method": "UPI / QR Code",
+      "payment_reference": "UPI-TXN-661208",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-09-17",
+      "notes": "Rural medicine distribution",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "DON-2026-007",
+      "donor_id": null,
+      "donor_name": "M. Anantha Padmanabhan",
+      "donor_email": "ananthapadmanabhan.m@gmail.com",
+      "amount": 650,
+      "category": "Child Education",
+      "payment_method": "Card / Stripe",
+      "payment_reference": "STRIPE-CH-55198",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-09-18",
+      "notes": "Scholarship student support",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "DON-2026-008",
+      "donor_id": null,
+      "donor_name": "G. Vijay Raghavan",
+      "donor_email": "vijayraghavan.g@gmail.com",
+      "amount": 2000,
+      "category": "Clean Water",
+      "payment_method": "Bank Wire",
+      "payment_reference": "WIRE-TXN-441092",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-09-19",
+      "notes": "Village drinking water plant",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "DON-2026-009",
+      "donor_id": null,
+      "donor_name": "V. Lakshmi Narayana",
+      "donor_email": "lakshminarayana.v@gmail.com",
+      "amount": 1800,
+      "category": "Disaster Relief",
+      "payment_method": "UPI / QR Code",
+      "payment_reference": "UPI-TXN-331872",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-09-20",
+      "notes": "Emergency relief ration kits",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "DON-2026-010",
+      "donor_id": null,
+      "donor_name": "B. Suresh Kumar",
+      "donor_email": "sureshkumar.b@gmail.com",
+      "amount": 950,
+      "category": "Food & Nutrition",
+      "payment_method": "UPI / QR Code",
+      "payment_reference": "UPI-TXN-221980",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-09-21",
+      "notes": "Annapurna community meals",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "DON-2026-011",
+      "donor_id": null,
+      "donor_name": "P. Sravani Reddy",
+      "donor_email": "sravani.reddy@gmail.com",
+      "amount": 1100,
+      "category": "Healthcare Camps",
+      "payment_method": "UPI / QR Code",
+      "payment_reference": "UPI-TXN-119283",
+      "tax_exemption_80g": 1,
+      "is_anonymous": 0,
+      "status": "Completed",
+      "donation_date": "2026-09-22",
+      "notes": "Primary clinic diagnostics",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    }
+  ],
+  "expenses": [
+    {
+      "id": "EXP-2026-001",
+      "title": "Emergency Insulin & Vaccine Cold Storage Units",
+      "category": "Healthcare Camps",
+      "amount": 1450,
+      "vendor": "Sri Venkateswara Medical Supplies Ltd",
+      "expense_date": "2026-09-10",
+      "submitted_by": "user-volunteer-1",
+      "audited_by": "Dr. K. Radhakrishnan",
+      "status": "Verified & Paid",
+      "notes": "Dispatched to Sanjivani Mobile Clinic",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "EXP-2026-002",
+      "title": "500 Sets High-School STEM Workbooks & Geometry Kits",
+      "category": "Child Education",
+      "amount": 880,
+      "vendor": "Saraswathi Vidya Mandir Press",
+      "expense_date": "2026-09-11",
+      "submitted_by": "user-admin",
+      "audited_by": "Internal Audit Desk",
+      "status": "Verified & Paid",
+      "notes": "Delivered to rural district school zones",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "EXP-2026-003",
+      "title": "100 Waterproof All-Weather Relief Family Tents",
+      "category": "Disaster Relief",
+      "amount": 3200,
+      "vendor": "Annapurna Food & Shelter Co.",
+      "expense_date": "2026-09-13",
+      "submitted_by": "user-volunteer-1",
+      "audited_by": "Dr. K. Radhakrishnan",
+      "status": "Verified & Paid",
+      "notes": "Coastal cyclone aftermath emergency shelter",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "EXP-2026-004",
+      "title": "Clean Drinking Water RO Filtration Modules (5 units)",
+      "category": "Clean Water",
+      "amount": 1750,
+      "vendor": "Jaladhara RO Engineering",
+      "expense_date": "2026-09-15",
+      "submitted_by": "user-volunteer-1",
+      "audited_by": "Dr. K. Radhakrishnan",
+      "status": "Verified & Paid",
+      "notes": "Village community bore-wells",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    }
+  ],
+  "requests": [
+    {
+      "id": "REQ-2026-8941",
+      "requester_id": "user-beneficiary-1",
+      "tracking_code": "REQ-2026-8941",
+      "applicant_name": "Dr. P. Ramesh Babu",
+      "organization": "Sanjivani Rural Dispensary",
+      "category": "Healthcare",
+      "urgency": "Emergency",
+      "amount": 2400,
+      "purpose": "Immediate replenishment of asthma respirators and anti-venom vials for monsoon season in remote rural hamlets.",
+      "status": "Approved & Disbursed",
+      "reviewed_by": "Dr. K. Radhakrishnan",
+      "audit_remarks": "Field verified by volunteer Kavitha Lakshmi. Invoice paid via Bank Wire on Sept 14.",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "REQ-2026-9022",
+      "requester_id": null,
+      "tracking_code": "REQ-2026-9022",
+      "applicant_name": "Principal K. Ramamurthy",
+      "organization": "Sri Vivekananda Vidyalaya",
+      "category": "Education",
+      "urgency": "Normal",
+      "amount": 1200,
+      "purpose": "Setup of solar-powered digital tablets for 60 primary students lacking electricity.",
+      "status": "Field Verified",
+      "reviewed_by": "Kavitha Lakshmi",
+      "audit_remarks": "Audit in progress; supplier quotation received and validated.",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "REQ-2026-9104",
+      "requester_id": null,
+      "tracking_code": "REQ-2026-9104",
+      "applicant_name": "S. Bhuvaneshwari",
+      "organization": "Annapurna Community Food Bank",
+      "category": "Food & Nutrition",
+      "urgency": "Urgent",
+      "amount": 1850,
+      "purpose": "Procurement of staple rice, lentils, and clean cooking oil for 300 displaced migrant laborer households.",
+      "status": "Pending Review",
+      "audit_remarks": "Awaiting document upload.",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "REQ-2026-9230",
+      "requester_id": null,
+      "tracking_code": "REQ-2026-9230",
+      "applicant_name": "Prof. K. Sundaram (Student Aid Desk)",
+      "organization": "RGUKT Rural Scholars Outreach",
+      "category": "Education & Health",
+      "urgency": "Urgent",
+      "amount": 3200,
+      "purpose": "Emergency healthcare stipend and digital study kits for 45 underserved university scholars.",
+      "status": "Pending Review",
+      "reviewed_by": "Kavitha Lakshmi",
+      "audit_remarks": "Identity credentials validated by university welfare desk.",
+      "created_at": "2026-10-01T08:00:58.239Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notif-1",
+      "user_id": null,
+      "title": "Mobile Clinic Deployed",
+      "message": "Free pediatric health camp active in Greenfield sector.",
+      "type": "success",
+      "is_read": 0,
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "notif-2",
+      "user_id": null,
+      "title": "Aid Disbursed: $2,400",
+      "message": "Emergency medication fund for St. Jude Dispensary delivered.",
+      "type": "info",
+      "is_read": 0,
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "notif-3",
+      "user_id": "user-admin",
+      "title": "Audit Report Verified",
+      "message": "Q2 2026 100% transparent financial audit published.",
+      "type": "warning",
+      "is_read": 0,
+      "created_at": "2026-10-01T08:00:58.239Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-1",
+      "sender_name": "Arthur Pendelton",
+      "sender_email": "arthur.p@crestview.org",
+      "subject": "Corporate CSR Matching Inquiry",
+      "message": "Our corporate foundation matches employee gifts up to $50,000 per year. We would like to initiate an institutional partnership for child digital literacy programs in 2026-2027.",
+      "is_read": 0,
+      "created_at": "2026-10-01T08:00:58.239Z"
+    },
+    {
+      "id": "msg-2",
+      "sender_name": "Siddharth Rao",
+      "sender_email": "siddharth@greencities.in",
+      "subject": "Volunteer Doctor Network",
+      "message": "I am an emergency room surgeon willing to offer pro bono consultation hours at your upcoming mobile camps. Please send the volunteer roster.",
+      "is_read": 0,
+      "created_at": "2026-10-01T08:00:58.239Z"
+    }
+  ],
+  "otps": [
+    {
+      "id": 2,
+      "email": "vengammabareddy50@gmail.com",
+      "otp_hash": "$2b$08$QiOHYb.3zEdqFSuUcd6lrOu1AfxVLv4rSfX.BIV.fb0vKyMr.Z/2K",
+      "expires_at": "2026-10-01T10:37:34.084Z",
+      "attempts": 0,
+      "used": 1,
+      "created_at": "2026-10-01T09:37:34.084Z"
+    },
+    {
+      "id": 3,
+      "email": "vengammabareddy@gmail.com",
+      "otp_hash": "$2b$08$QqTCpDRd41wCRc5T2rp42OcGHaTYKi8E9f.iUkngZ6QKJSFOoNNgq",
+      "expires_at": "2026-10-01T11:16:04.894Z",
+      "attempts": 0,
+      "used": 1,
+      "created_at": "2026-10-01T10:16:04.894Z"
+    },
+    {
+      "id": 4,
+      "email": "vengammabareddy50@gmail.com",
+      "otp_hash": "$2b$08$trWxr5koaeJvSkBEXK629.LNThznZHUf3Fj7ArRJg5TuxbnSgQVfu",
+      "expires_at": "2026-10-01T11:33:44.654Z",
+      "attempts": 0,
+      "used": 1,
+      "created_at": "2026-10-01T10:33:44.654Z"
+    },
+    {
+      "id": 5,
+      "email": "vengammabareddy@gmail.com",
+      "otp_hash": "$2b$08$trWxr5koaeJvSkBEXK629.LNThznZHUf3Fj7ArRJg5TuxbnSgQVfu",
+      "expires_at": "2026-10-01T11:33:44.654Z",
+      "attempts": 0,
+      "used": 1,
+      "created_at": "2026-10-01T10:33:44.655Z"
+    },
+    {
+      "id": 6,
+      "email": "vengammabareddy50@gmail.com",
+      "otp_hash": "$2b$08$D1vaWFuHFY6oNlMMxx69zeYW3F7m7UbmcK.pmLNDswBlxvBPXVDQu",
+      "expires_at": "2026-10-03T03:05:24.416Z",
+      "attempts": 0,
+      "used": 1,
+      "created_at": "2026-10-03T02:05:24.416Z"
+    },
+    {
+      "id": 7,
+      "email": "vengammabareddy@gmail.com",
+      "otp_hash": "$2b$08$D1vaWFuHFY6oNlMMxx69zeYW3F7m7UbmcK.pmLNDswBlxvBPXVDQu",
+      "expires_at": "2026-10-03T03:05:24.416Z",
+      "attempts": 0,
+      "used": 1,
+      "created_at": "2026-10-03T02:05:24.416Z"
+    },
+    {
+      "id": 8,
+      "email": "vengammabareddy50@gmail.com",
+      "otp_hash": "$2b$08$BxI3SYTrRn28aYVqjcobKuPnG9WP0OgqL5nY4gMnBE.eGXuU1gvkW",
+      "expires_at": "2026-10-03T03:07:55.197Z",
+      "attempts": 0,
+      "used": 1,
+      "created_at": "2026-10-03T02:07:55.197Z"
+    },
+    {
+      "id": 9,
+      "email": "vengammabareddy@gmail.com",
+      "otp_hash": "$2b$08$BxI3SYTrRn28aYVqjcobKuPnG9WP0OgqL5nY4gMnBE.eGXuU1gvkW",
+      "expires_at": "2026-10-03T03:07:55.197Z",
+      "attempts": 0,
+      "used": 0,
+      "created_at": "2026-10-03T02:07:55.197Z"
+    },
+    {
+      "id": 10,
+      "email": "chandini22385@gmail.com",
+      "otp_hash": "$2b$08$jAfSqS6xLqZG/.wfGRRn4.8SYNphPdjYxojcSVObgKrN.gn8QIU62",
+      "expires_at": "2026-10-03T03:09:29.301Z",
+      "attempts": 0,
+      "used": 0,
+      "created_at": "2026-10-03T02:09:29.301Z"
+    },
+    {
+      "id": 11,
+      "email": "vengammabareddy50@gmail.com",
+      "otp_hash": "$2b$08$dFdrRKruGtMPz.MjO1O9DuW1OMWhlJC7Ai.3ZwRkREvPfcrH36HEi",
+      "expires_at": "2026-10-03T03:12:36.446Z",
+      "attempts": 0,
+      "used": 0,
+      "created_at": "2026-10-03T02:12:36.446Z"
+    },
+    {
+      "id": 12,
+      "email": "o220786@rguktong.ac.in",
+      "otp_hash": "$2b$08$SV8TQdgZ8XRx3rPmGjBNX.q3R/56ZEJmrtuXQgeLJfEZY9VMC4FUa",
+      "expires_at": "2026-10-03T03:12:44.290Z",
+      "attempts": 0,
+      "used": 1,
+      "created_at": "2026-10-03T02:12:44.290Z"
+    },
+    {
+      "id": 13,
+      "email": "o220786@rguktong.ac.in",
+      "otp_hash": "$2b$08$W3AsFKg0xzIm97pifz7NtOoiLI4C2lxR4XHbnINCnRd8jEBMooWsq",
+      "expires_at": "2026-10-04T06:26:21.804Z",
+      "attempts": 0,
+      "used": 0,
+      "created_at": "2026-10-04T05:26:21.804Z"
+    },
+    {
+      "id": 14,
+      "email": "vengammabareddy61@gmail.com",
+      "otp_hash": "$2b$08$4iR6/srjqU1DOGWRTmFZU.4sg.w5JxZ4EszyXAxpHYo39IbZDA./u",
+      "expires_at": "2026-10-04T18:21:53.858Z",
+      "attempts": 0,
+      "used": 1,
+      "created_at": "2026-10-04T17:21:53.858Z"
+    },
+    {
+      "id": 15,
+      "email": "vengammabareddy61@gmail.com",
+      "otp_hash": "$2b$08$YjblsmPWv5hcnlUqbNkZQOFwYzzTBEw9BFk8PdhWhDHwmgoH8d41q",
+      "expires_at": "2026-10-04T18:30:06.634Z",
+      "attempts": 0,
+      "used": 1,
+      "created_at": "2026-10-04T17:30:06.634Z"
+    },
+    {
+      "id": 16,
+      "email": "kusumaneerugatti@gmail.com",
+      "otp_hash": "$2b$08$BrvSdRysqBvj7sK5plFXEu3rkVX1H0B2Gm2q4iznLQoGZ1ODzD2n.",
+      "expires_at": "2026-10-05T10:05:11.124Z",
+      "attempts": 0,
+      "used": 1,
+      "created_at": "2026-10-05T09:05:11.124Z"
+    }
+  ],
+  "resetTokens": [
+    {
+      "id": 3,
+      "email": "vengammabareddy50@gmail.com",
+      "token_hash": "$2b$08$QiOHYb.3zEdqFSuUcd6lrOu1AfxVLv4rSfX.BIV.fb0vKyMr.Z/2K",
+      "expires_at": "2026-10-01T10:37:34.084Z",
+      "used": 0,
+      "created_at": "2026-10-01T09:37:34.084Z"
+    },
+    {
+      "id": 4,
+      "email": "vengammabareddy@gmail.com",
+      "token_hash": "$2b$08$QqTCpDRd41wCRc5T2rp42OcGHaTYKi8E9f.iUkngZ6QKJSFOoNNgq",
+      "expires_at": "2026-10-01T11:16:04.894Z",
+      "used": 0,
+      "created_at": "2026-10-01T10:16:04.894Z"
+    },
+    {
+      "id": 5,
+      "email": "vengammabareddy50@gmail.com",
+      "token_hash": "$2b$08$trWxr5koaeJvSkBEXK629.LNThznZHUf3Fj7ArRJg5TuxbnSgQVfu",
+      "expires_at": "2026-10-01T11:33:44.654Z",
+      "used": 0,
+      "created_at": "2026-10-01T10:33:44.654Z"
+    },
+    {
+      "id": 6,
+      "email": "vengammabareddy@gmail.com",
+      "token_hash": "$2b$08$trWxr5koaeJvSkBEXK629.LNThznZHUf3Fj7ArRJg5TuxbnSgQVfu",
+      "expires_at": "2026-10-01T11:33:44.654Z",
+      "used": 0,
+      "created_at": "2026-10-01T10:33:44.655Z"
+    },
+    {
+      "id": 7,
+      "email": "vengammabareddy50@gmail.com",
+      "token_hash": "$2b$08$D1vaWFuHFY6oNlMMxx69zeYW3F7m7UbmcK.pmLNDswBlxvBPXVDQu",
+      "expires_at": "2026-10-03T03:05:24.416Z",
+      "used": 0,
+      "created_at": "2026-10-03T02:05:24.416Z"
+    },
+    {
+      "id": 8,
+      "email": "vengammabareddy@gmail.com",
+      "token_hash": "$2b$08$D1vaWFuHFY6oNlMMxx69zeYW3F7m7UbmcK.pmLNDswBlxvBPXVDQu",
+      "expires_at": "2026-10-03T03:05:24.416Z",
+      "used": 0,
+      "created_at": "2026-10-03T02:05:24.416Z"
+    },
+    {
+      "id": 9,
+      "email": "vengammabareddy50@gmail.com",
+      "token_hash": "$2b$08$BxI3SYTrRn28aYVqjcobKuPnG9WP0OgqL5nY4gMnBE.eGXuU1gvkW",
+      "expires_at": "2026-10-03T03:07:55.197Z",
+      "used": 0,
+      "created_at": "2026-10-03T02:07:55.197Z"
+    },
+    {
+      "id": 10,
+      "email": "vengammabareddy@gmail.com",
+      "token_hash": "$2b$08$BxI3SYTrRn28aYVqjcobKuPnG9WP0OgqL5nY4gMnBE.eGXuU1gvkW",
+      "expires_at": "2026-10-03T03:07:55.197Z",
+      "used": 0,
+      "created_at": "2026-10-03T02:07:55.197Z"
+    },
+    {
+      "id": 11,
+      "email": "vengammabareddy50@gmail.com",
+      "token_hash": "$2b$10$sNE3CQTrvRHKDok2WpVrf.0JurHDfwUbLwl0IcMwLHfc2kI7gjb3C",
+      "expires_at": "2026-10-03T02:23:03.360Z",
+      "used": 0,
+      "created_at": "2026-10-03T02:08:03.360Z"
+    },
+    {
+      "id": 12,
+      "email": "chandini22385@gmail.com",
+      "token_hash": "$2b$08$jAfSqS6xLqZG/.wfGRRn4.8SYNphPdjYxojcSVObgKrN.gn8QIU62",
+      "expires_at": "2026-10-03T03:09:29.301Z",
+      "used": 0,
+      "created_at": "2026-10-03T02:09:29.301Z"
+    },
+    {
+      "id": 13,
+      "email": "vengammabareddy50@gmail.com",
+      "token_hash": "$2b$08$dFdrRKruGtMPz.MjO1O9DuW1OMWhlJC7Ai.3ZwRkREvPfcrH36HEi",
+      "expires_at": "2026-10-03T03:12:36.446Z",
+      "used": 0,
+      "created_at": "2026-10-03T02:12:36.446Z"
+    },
+    {
+      "id": 14,
+      "email": "o220786@rguktong.ac.in",
+      "token_hash": "$2b$08$SV8TQdgZ8XRx3rPmGjBNX.q3R/56ZEJmrtuXQgeLJfEZY9VMC4FUa",
+      "expires_at": "2026-10-03T03:12:44.290Z",
+      "used": 0,
+      "created_at": "2026-10-03T02:12:44.290Z"
+    },
+    {
+      "id": 15,
+      "email": "o220786@rguktong.ac.in",
+      "token_hash": "$2b$08$W3AsFKg0xzIm97pifz7NtOoiLI4C2lxR4XHbnINCnRd8jEBMooWsq",
+      "expires_at": "2026-10-04T06:26:21.804Z",
+      "used": 0,
+      "created_at": "2026-10-04T05:26:21.804Z"
+    },
+    {
+      "id": 16,
+      "email": "vengammabareddy61@gmail.com",
+      "token_hash": "$2b$08$4iR6/srjqU1DOGWRTmFZU.4sg.w5JxZ4EszyXAxpHYo39IbZDA./u",
+      "expires_at": "2026-10-04T18:21:53.858Z",
+      "used": 0,
+      "created_at": "2026-10-04T17:21:53.858Z"
+    },
+    {
+      "id": 17,
+      "email": "vengammabareddy61@gmail.com",
+      "token_hash": "$2b$10$iC/f.6SvkVihjxJLxrer5.ZLzQ99goBJorwYR2S67a1imMIi87DHy",
+      "expires_at": "2026-10-04T17:37:18.306Z",
+      "used": 1,
+      "created_at": "2026-10-04T17:22:18.306Z"
+    },
+    {
+      "id": 18,
+      "email": "vengammabareddy61@gmail.com",
+      "token_hash": "$2b$08$YjblsmPWv5hcnlUqbNkZQOFwYzzTBEw9BFk8PdhWhDHwmgoH8d41q",
+      "expires_at": "2026-10-04T18:30:06.634Z",
+      "used": 0,
+      "created_at": "2026-10-04T17:30:06.634Z"
+    },
+    {
+      "id": 19,
+      "email": "vengammabareddy61@gmail.com",
+      "token_hash": "$2b$10$2s4SQLgcSqSWmjhgy6SSX.lsPNfVGqQUh98EkkcwL.8YBWlql144G",
+      "expires_at": "2026-10-04T17:45:55.442Z",
+      "used": 0,
+      "created_at": "2026-10-04T17:30:55.442Z"
+    },
+    {
+      "id": 20,
+      "email": "kusumaneerugatti@gmail.com",
+      "token_hash": "$2b$08$BrvSdRysqBvj7sK5plFXEu3rkVX1H0B2Gm2q4iznLQoGZ1ODzD2n.",
+      "expires_at": "2026-10-05T10:05:11.124Z",
+      "used": 0,
+      "created_at": "2026-10-05T09:05:11.124Z"
+    },
+    {
+      "id": 21,
+      "email": "kusumaneerugatti@gmail.com",
+      "token_hash": "$2b$10$v0UvFBQqcOdYAFnpzzfZS.Gp8OLqlNiAAGwmwCNUf9ND1XtiNxUmm",
+      "expires_at": "2026-10-05T09:20:36.446Z",
+      "used": 1,
+      "created_at": "2026-10-05T09:05:36.446Z"
+    }
+  ],
+  "auditLogs": [
+    {
+      "id": 93,
+      "user_id": "user-admin",
+      "action": "DONATION_RECORDED",
+      "description": "Donation DON-198546 of $9 recorded by DIVYA",
+      "ip_address": "2401:4900:6582:a152:50b2:f7fa:e4d0:6efe, 169.254.169.126",
+      "created_at": "2026-10-06T08:43:18.705Z"
+    },
+    {
+      "id": 92,
+      "user_id": "user-admin",
+      "action": "PROFILE_UPDATED",
+      "description": "User profile updated by aadminngo@gmail.com",
+      "ip_address": "2401:4900:6582:a152:50b2:f7fa:e4d0:6efe, 169.254.169.126",
+      "created_at": "2026-10-06T08:42:20.479Z"
+    },
+    {
+      "id": 91,
+      "user_id": "user-admin",
+      "action": "PROFILE_UPDATED",
+      "description": "User profile updated by aadminngo@gmail.com",
+      "ip_address": "2401:4900:6582:a152:50b2:f7fa:e4d0:6efe, 169.254.169.126",
+      "created_at": "2026-10-06T08:42:20.303Z"
+    },
+    {
+      "id": 90,
+      "user_id": "user-admin",
+      "action": "PROFILE_UPDATED",
+      "description": "User profile updated by aadminngo@gmail.com",
+      "ip_address": "2401:4900:6582:a152:50b2:f7fa:e4d0:6efe, 169.254.169.126",
+      "created_at": "2026-10-06T08:42:18.513Z"
+    },
+    {
+      "id": 89,
+      "user_id": "user-admin",
+      "action": "PROFILE_UPDATED",
+      "description": "User profile updated by aadminngo@gmail.com",
+      "ip_address": "2401:4900:6582:a152:50b2:f7fa:e4d0:6efe, 169.254.169.126",
+      "created_at": "2026-10-06T08:42:12.055Z"
+    },
+    {
+      "id": 88,
+      "user_id": "user-admin",
+      "action": "PROFILE_UPDATED",
+      "description": "User profile updated by aadminngo@gmail.com",
+      "ip_address": "2401:4900:6582:a152:50b2:f7fa:e4d0:6efe, 169.254.169.126",
+      "created_at": "2026-10-06T08:42:11.871Z"
+    },
+    {
+      "id": 87,
+      "user_id": "user-admin",
+      "action": "PROFILE_UPDATED",
+      "description": "User profile updated by aadminngo@gmail.com",
+      "ip_address": "2401:4900:6582:a152:50b2:f7fa:e4d0:6efe, 169.254.169.126",
+      "created_at": "2026-10-06T08:42:11.184Z"
+    },
+    {
+      "id": 86,
+      "user_id": "user-admin",
+      "action": "PROFILE_UPDATED",
+      "description": "User profile updated by aadminngo@gmail.com",
+      "ip_address": "2401:4900:6582:a152:50b2:f7fa:e4d0:6efe, 169.254.169.126",
+      "created_at": "2026-10-06T08:42:08.933Z"
+    },
+    {
+      "id": 85,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "106.221.189.28, 169.254.169.126",
+      "created_at": "2026-10-06T08:30:30.605Z"
+    },
+    {
+      "id": 84,
+      "user_id": "user-admin",
+      "action": "PROFILE_UPDATED",
+      "description": "User profile updated by aadminngo@gmail.com",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-05T09:47:27.086Z"
+    },
+    {
+      "id": 83,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-05T09:47:27.061Z"
+    },
+    {
+      "id": 82,
+      "user_id": "user-admin",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:45:35.211Z"
+    },
+    {
+      "id": 81,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:41:35.382Z"
+    },
+    {
+      "id": 80,
+      "user_id": "user-admin",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:41:25.059Z"
+    },
+    {
+      "id": 79,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:40:11.439Z"
+    },
+    {
+      "id": 78,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:40:10.199Z"
+    },
+    {
+      "id": 77,
+      "user_id": "user-1791191111096",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:39:59.901Z"
+    },
+    {
+      "id": 76,
+      "user_id": "user-1791191111096",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:39:59.322Z"
+    },
+    {
+      "id": 75,
+      "user_id": "user-1791191111096",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:39:16.727Z"
+    },
+    {
+      "id": 74,
+      "user_id": "user-1791193050071",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-05T09:37:33.998Z"
+    },
+    {
+      "id": 73,
+      "user_id": "user-1791193050071",
+      "action": "REGISTER",
+      "description": "New user registered with role: Donor Member",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-05T09:37:30.074Z"
+    },
+    {
+      "id": 72,
+      "user_id": "user-1791191111096",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:29:10.433Z"
+    },
+    {
+      "id": 71,
+      "user_id": "user-1791191111096",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:14:00.262Z"
+    },
+    {
+      "id": 70,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-05T09:13:21.494Z"
+    },
+    {
+      "id": 69,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-05T09:13:16.680Z"
+    },
+    {
+      "id": 68,
+      "user_id": "user-rgukt",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-05T09:13:05.994Z"
+    },
+    {
+      "id": 67,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-05T09:11:49.614Z"
+    },
+    {
+      "id": 66,
+      "user_id": "user-rgukt",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-05T09:11:37.539Z"
+    },
+    {
+      "id": 65,
+      "user_id": "user-rgukt",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-05T09:11:29.106Z"
+    },
+    {
+      "id": 64,
+      "user_id": "user-rgukt",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-05T09:10:34.558Z"
+    },
+    {
+      "id": 63,
+      "user_id": "user-1791191111096",
+      "action": "PASSWORD_RESET",
+      "description": "Password reset completed for kusumaneerugatti@gmail.com",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:05:57.422Z"
+    },
+    {
+      "id": 62,
+      "user_id": null,
+      "action": "OTP_VERIFIED",
+      "description": "OTP verified successfully for kusumaneerugatti@gmail.com",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:05:36.446Z"
+    },
+    {
+      "id": 61,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP dispatched to kusumaneerugatti@gmail.com via smtp",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T09:05:13.902Z"
+    },
+    {
+      "id": 60,
+      "user_id": "user-admin",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T08:58:02.373Z"
+    },
+    {
+      "id": 59,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-05T08:54:08.865Z"
+    },
+    {
+      "id": 58,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-04T17:50:28.286Z"
+    },
+    {
+      "id": 57,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-04T17:46:54.037Z"
+    },
+    {
+      "id": 56,
+      "user_id": "user-1791134513833",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:42:31.612Z"
+    },
+    {
+      "id": 55,
+      "user_id": "user-admin",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:41:03.995Z"
+    },
+    {
+      "id": 54,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:48.900Z"
+    },
+    {
+      "id": 53,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:48.676Z"
+    },
+    {
+      "id": 52,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:48.275Z"
+    },
+    {
+      "id": 51,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:48.274Z"
+    },
+    {
+      "id": 50,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:47.974Z"
+    },
+    {
+      "id": 49,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:47.579Z"
+    },
+    {
+      "id": 48,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:46.862Z"
+    },
+    {
+      "id": 47,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:46.458Z"
+    },
+    {
+      "id": 46,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:46.456Z"
+    },
+    {
+      "id": 45,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:46.455Z"
+    },
+    {
+      "id": 44,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:46.353Z"
+    },
+    {
+      "id": 43,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:42.084Z"
+    },
+    {
+      "id": 42,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:40:31.553Z"
+    },
+    {
+      "id": 41,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-04T17:39:22.605Z"
+    },
+    {
+      "id": 40,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-04T17:39:17.168Z"
+    },
+    {
+      "id": 39,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-04T17:31:06.946Z"
+    },
+    {
+      "id": 38,
+      "user_id": null,
+      "action": "OTP_VERIFIED",
+      "description": "OTP verified successfully for vengammabareddy61@gmail.com",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:30:55.442Z"
+    },
+    {
+      "id": 37,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP dispatched to vengammabareddy61@gmail.com via smtp",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:30:09.417Z"
+    },
+    {
+      "id": 36,
+      "user_id": "user-admin",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:28:12.861Z"
+    },
+    {
+      "id": 35,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:28:06.057Z"
+    },
+    {
+      "id": 34,
+      "user_id": "user-admin",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:26:42.814Z"
+    },
+    {
+      "id": 33,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:25:57.230Z"
+    },
+    {
+      "id": 32,
+      "user_id": "user-1791134513833",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:25:43.838Z"
+    },
+    {
+      "id": 31,
+      "user_id": "user-1791134513833",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:25:43.666Z"
+    },
+    {
+      "id": 30,
+      "user_id": "user-1791134513833",
+      "action": "PASSWORD_RESET",
+      "description": "Password reset completed for vengammabareddy61@gmail.com",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:23:20.186Z"
+    },
+    {
+      "id": 29,
+      "user_id": null,
+      "action": "OTP_VERIFIED",
+      "description": "OTP verified successfully for vengammabareddy61@gmail.com",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:22:18.306Z"
+    },
+    {
+      "id": 28,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP dispatched to vengammabareddy61@gmail.com via smtp",
+      "ip_address": "2401:4900:97b5:af81:f4ba:472a:d098:4c94, 169.254.169.126",
+      "created_at": "2026-10-04T17:21:56.709Z"
+    },
+    {
+      "id": 27,
+      "user_id": "user-rgukt",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-04T17:19:40.259Z"
+    },
+    {
+      "id": 26,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-04T17:19:33.732Z"
+    },
+    {
+      "id": 25,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP dispatched to o220786@rguktong.ac.in via smtp",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-04T05:26:24.839Z"
+    },
+    {
+      "id": 24,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-04T05:26:13.673Z"
+    },
+    {
+      "id": 23,
+      "user_id": "user-rgukt",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-04T05:26:08.841Z"
+    },
+    {
+      "id": 22,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP dispatched to o220786@rguktong.ac.in via smtp",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-03T02:12:46.391Z"
+    },
+    {
+      "id": 21,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP dispatched to vengammabareddy50@gmail.com via smtp",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-03T02:12:39.066Z"
+    },
+    {
+      "id": 20,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP (195367) dispatched to chandini22385@gmail.com via smtp",
+      "ip_address": "2401:4900:97dd:72ff:bcbe:6186:5053:394d, 169.254.169.126",
+      "created_at": "2026-10-03T02:09:31.988Z"
+    },
+    {
+      "id": 19,
+      "user_id": null,
+      "action": "OTP_VERIFIED",
+      "description": "OTP verified successfully for vengammabareddy50@gmail.com",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-03T02:08:03.361Z"
+    },
+    {
+      "id": 18,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP (152330) dispatched to vengammabareddy50@gmail.com, vengammabareddy@gmail.com via smtp",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-03T02:07:58.463Z"
+    },
+    {
+      "id": 17,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP (331307) dispatched to vengammabareddy50@gmail.com, vengammabareddy@gmail.com, o220786@rguktong.ac.in via smtp",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-03T02:05:27.441Z"
+    },
+    {
+      "id": 16,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP (978136) dispatched to vengammabareddy50@gmail.com, vengammabareddy@gmail.com, o220786@rguktong.ac.in via smtp",
+      "ip_address": "127.0.0.1",
+      "created_at": "2026-10-01T10:33:47.446Z"
+    },
+    {
+      "id": 15,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP dispatched to vengammabareddy@gmail.com via smtp",
+      "ip_address": "2401:4900:978b:cc75:6907:9d60:a5c6:a5c0, 169.254.169.126",
+      "created_at": "2026-10-01T10:16:08.143Z"
+    },
+    {
+      "id": 14,
+      "user_id": "user-admin",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "2401:4900:978b:cc75:6907:9d60:a5c6:a5c0, 169.254.169.126",
+      "created_at": "2026-10-01T09:51:46.907Z"
+    },
+    {
+      "id": 13,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:978b:cc75:6907:9d60:a5c6:a5c0, 169.254.169.126",
+      "created_at": "2026-10-01T09:50:35.366Z"
+    },
+    {
+      "id": 12,
+      "user_id": "user-admin",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "2401:4900:978b:cc75:6907:9d60:a5c6:a5c0, 169.254.169.126",
+      "created_at": "2026-10-01T09:48:26.249Z"
+    },
+    {
+      "id": 11,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:978b:cc75:6907:9d60:a5c6:a5c0, 169.254.169.126",
+      "created_at": "2026-10-01T09:42:09.994Z"
+    },
+    {
+      "id": 10,
+      "user_id": "user-admin",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "2401:4900:978b:cc75:6907:9d60:a5c6:a5c0, 169.254.169.126",
+      "created_at": "2026-10-01T09:40:45.996Z"
+    },
+    {
+      "id": 9,
+      "user_id": "user-admin",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "2401:4900:978b:cc75:6907:9d60:a5c6:a5c0, 169.254.169.126",
+      "created_at": "2026-10-01T09:39:02.011Z"
+    },
+    {
+      "id": 8,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP dispatched to vengammabareddy50@gmail.com via smtp",
+      "ip_address": "2401:4900:978b:cc75:6907:9d60:a5c6:a5c0, 169.254.169.126",
+      "created_at": "2026-10-01T09:37:36.719Z"
+    },
+    {
+      "id": 7,
+      "user_id": "user-1790842059117",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "2401:4900:978b:cc75:6907:9d60:a5c6:a5c0, 169.254.169.126",
+      "created_at": "2026-10-01T09:20:34.719Z"
+    },
+    {
+      "id": 6,
+      "user_id": null,
+      "action": "DONATION_RECORDED",
+      "description": "Donation DON-2026-632 of $100 recorded by hi",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-01T08:09:45.903Z"
+    },
+    {
+      "id": 5,
+      "user_id": "user-1790842059117",
+      "action": "LOGIN",
+      "description": "User signed in successfully from 127.0.0.1",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-01T08:09:07.649Z"
+    },
+    {
+      "id": 4,
+      "user_id": "user-1790842059117",
+      "action": "LOGOUT",
+      "description": "User signed out",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-01T08:08:52.531Z"
+    },
+    {
+      "id": 3,
+      "user_id": "user-1790842059117",
+      "action": "PASSWORD_RESET",
+      "description": "Password reset completed for vengammabareddy50@gmail.com",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-01T08:08:40.492Z"
+    },
+    {
+      "id": 2,
+      "user_id": null,
+      "action": "OTP_VERIFIED",
+      "description": "OTP verified successfully for vengammabareddy50@gmail.com",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-01T08:08:24.157Z"
+    },
+    {
+      "id": 1,
+      "user_id": null,
+      "action": "OTP_REQUEST",
+      "description": "6-digit OTP dispatched to vengammabareddy50@gmail.com via smtp",
+      "ip_address": "210.212.204.227, 169.254.169.126",
+      "created_at": "2026-10-01T08:07:42.691Z"
+    }
+  ],
+  "otpIdCounter": 17,
+  "tokenIdCounter": 22,
+  "auditIdCounter": 94,
+  "updatedAt": "2026-10-06T08:43:19.104Z"
+}

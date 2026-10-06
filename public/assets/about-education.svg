@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" fill="none">
+  <defs>
+    <linearGradient id="eduGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" rx="16" fill="url(#eduGrad)"/>
+  <!-- Graduation Cap & Book -->
+  <polygon points="200,60 130,95 200,125 270,95" fill="#38bdf8"/>
+  <polygon points="150,110 150,140 200,165 250,140 250,110 200,135" fill="#0284c7"/>
+  <path d="M265 100 L285 130 L285 160" stroke="#facc15" stroke-width="3" stroke-linecap="round"/>
+  <!-- Open Book -->
+  <path d="M140 180 C170 170, 195 180, 200 185 C205 180, 230 170, 260 180 L260 205 C230 195, 205 205, 200 210 C195 205, 170 195, 140 205 Z" fill="#ffffff" opacity="0.9"/>
+  <text x="200" y="235" text-anchor="middle" fill="#93c5fd" font-family="sans-serif" font-size="14" font-weight="700">Education &amp; Child Scholarships</text>
+</svg>

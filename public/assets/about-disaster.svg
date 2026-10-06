@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 250" fill="none">
+  <defs>
+    <linearGradient id="disGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#831843"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="250" rx="16" fill="url(#disGrad)"/>
+  <!-- Tent shelter & lifebuoy -->
+  <polygon points="200,65 130,170 270,170" fill="#f43f5e" opacity="0.9"/>
+  <polygon points="200,65 175,170 225,170" fill="#be123c"/>
+  <circle cx="200" cy="185" r="22" stroke="#ffffff" stroke-width="8" fill="none"/>
+  <circle cx="200" cy="185" r="22" stroke="#f43f5e" stroke-width="8" stroke-dasharray="8 8" fill="none"/>
+  <text x="200" y="235" text-anchor="middle" fill="#fbcfe8" font-family="sans-serif" font-size="14" font-weight="700">Disaster Relief &amp; Emergency Shelter</text>
+</svg>

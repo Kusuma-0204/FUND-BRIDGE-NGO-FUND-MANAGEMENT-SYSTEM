@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 400" fill="none">
+  <defs>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14b8a6"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Aura -->
+  <circle cx="250" cy="180" r="130" fill="#0d9488" opacity="0.12"/>
+  <circle cx="250" cy="180" r="170" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="4 6"/>
+
+  <!-- Shield Base -->
+  <path d="M250 80 C290 100, 330 105, 340 160 C340 230, 280 270, 250 290 C220 270, 160 230, 160 160 C170 105, 210 100, 250 80 Z" fill="url(#shieldGrad)" stroke="#5eead4" stroke-width="3"/>
+
+  <!-- Keyhole in Shield -->
+  <circle cx="250" cy="165" r="16" fill="#042f2e"/>
+  <path d="M244 172 L240 200 L260 200 L256 172 Z" fill="#042f2e"/>
+
+  <!-- Floating Verification Badges -->
+  <!-- Left Badge: 2FA / Password -->
+  <g transform="translate(60, 130)">
+    <rect width="130" height="50" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+    <circle cx="25" cy="25" r="12" fill="rgba(16,185,129,0.2)"/>
+    <path d="M20 25 L23 28 L30 22" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="45" y="23" fill="#ffffff" font-family="sans-serif" font-size="10" font-weight="700">Encrypted</text>
+    <text x="45" y="36" fill="#94a3b8" font-family="sans-serif" font-size="9">SHA-256 Auth</text>
+  </g>
+
+  <!-- Right Badge: Role Access -->
+  <g transform="translate(310, 190)">
+    <rect width="130" height="50" rx="12" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+    <circle cx="25" cy="25" r="12" fill="rgba(245,158,11,0.2)"/>
+    <path d="M20 22 L25 18 L30 22 L25 28 Z" stroke="#f59e0b" stroke-width="2" fill="none"/>
+    <text x="45" y="23" fill="#ffffff" font-family="sans-serif" font-size="10" font-weight="700">Multi-Role</text>
+    <text x="45" y="36" fill="#94a3b8" font-family="sans-serif" font-size="9">Admin &amp; Donor</text>
+  </g>
+
+  <!-- Lower Check Banner -->
+  <g transform="translate(130, 310)">
+    <rect width="240" height="42" rx="21" fill="#1e293b" stroke="#334155"/>
+    <circle cx="22" cy="21" r="10" fill="#14b8a6"/>
+    <path d="M18 21 L21 24 L27 18" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+    <text x="40" y="25" fill="#f8fafc" font-family="sans-serif" font-size="11" font-weight="600">Password Recovery &amp; Magic Links</text>
+  </g>
+</svg>

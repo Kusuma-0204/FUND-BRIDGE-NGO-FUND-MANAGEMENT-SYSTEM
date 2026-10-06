@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 280" fill="none">
+  <defs>
+    <linearGradient id="bgFood" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="breadGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="500" height="280" fill="url(#bgFood)"/>
+
+  <!-- Subtle background foliage / leaves -->
+  <g opacity="0.25">
+    <path d="M60 220 C40 180, 80 150, 110 180 C140 210, 100 240, 60 220 Z" fill="#ffffff"/>
+    <path d="M420 220 C440 180, 400 150, 370 180 C340 210, 380 240, 420 220 Z" fill="#ffffff"/>
+    <circle cx="80" cy="90" r="45" fill="#34d399"/>
+    <circle cx="430" cy="80" r="50" fill="#34d399"/>
+  </g>
+
+  <!-- Ground shadow -->
+  <ellipse cx="250" cy="245" rx="150" ry="18" fill="#064e3b" opacity="0.4"/>
+
+  <!-- Items inside box (behind front box flap) -->
+  <!-- Baguette bread -->
+  <g transform="rotate(-25 190 140)">
+    <rect x="180" y="70" width="36" height="110" rx="18" fill="url(#breadGrad)"/>
+    <line x1="188" y1="95" x2="208" y2="85" stroke="#78350f" stroke-width="3" stroke-linecap="round"/>
+    <line x1="188" y1="120" x2="208" y2="110" stroke="#78350f" stroke-width="3" stroke-linecap="round"/>
+    <line x1="188" y1="145" x2="208" y2="135" stroke="#78350f" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Milk carton / bottle -->
+  <rect x="235" y="80" width="42" height="75" rx="6" fill="#f8fafc"/>
+  <path d="M235 80 L256 65 L277 80 Z" fill="#38bdf8"/>
+  <rect x="248" y="55" width="16" height="10" rx="2" fill="#0284c7"/>
+  <ellipse cx="256" cy="115" rx="14" ry="14" fill="#38bdf8"/>
+  <path d="M251 115 L261 115" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Can / Jar -->
+  <rect x="278" y="105" width="36" height="50" rx="4" fill="#64748b"/>
+  <rect x="282" y="112" width="28" height="35" rx="2" fill="#e2e8f0"/>
+  <circle cx="296" cy="129" r="8" fill="#ef4444"/>
+
+  <!-- Carrots -->
+  <g transform="rotate(28 320 120)">
+    <path d="M305 100 L325 100 L315 170 Z" fill="#ea580c"/>
+    <path d="M312 85 C310 95, 315 98, 315 100" stroke="#22c55e" stroke-width="4" stroke-linecap="round"/>
+    <path d="M318 82 C320 92, 316 98, 316 100" stroke="#16a34a" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- Apple -->
+  <circle cx="210" cy="145" r="22" fill="#dc2626"/>
+  <path d="M210 125 C210 118, 216 115, 218 112" stroke="#78350f" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="222" cy="116" rx="6" ry="3" fill="#22c55e" transform="rotate(-30 222 116)"/>
+
+  <!-- Green vegetables/leaves -->
+  <ellipse cx="165" cy="155" rx="20" ry="12" fill="#22c55e" transform="rotate(-40 165 155)"/>
+  <ellipse cx="150" cy="170" rx="22" ry="14" fill="#16a34a" transform="rotate(-20 150 170)"/>
+
+  <!-- Cardboard Food Box -->
+  <!-- Box Body -->
+  <path d="M150 150 L350 150 L335 235 L165 235 Z" fill="url(#boxGrad)"/>
+  
+  <!-- Left flap open -->
+  <polygon points="150,150 115,130 145,175 160,165" fill="#fde68a" opacity="0.9"/>
+  <!-- Right flap open -->
+  <polygon points="350,150 385,130 355,175 340,165" fill="#fde68a" opacity="0.9"/>
+  <!-- Front flap down -->
+  <polygon points="150,150 170,175 330,175 350,150" fill="#fbbf24"/>
+
+  <!-- Red Heart on Box -->
+  <path d="M250 185 C250 175, 235 168, 226 178 C216 189, 230 205, 250 218 C270 205, 284 189, 274 178 C265 168, 250 175, 250 185 Z" fill="#ef4444"/>
+
+  <!-- Shading on box edges -->
+  <path d="M165 235 L150 150 L155 150 L168 235 Z" fill="#b45309" opacity="0.3"/>
+  <path d="M335 235 L350 150 L345 150 L332 235 Z" fill="#b45309" opacity="0.3"/>
+</svg>
