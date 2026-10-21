@@ -6,11 +6,11 @@ import { INITIAL_REQUESTS } from '../data/initialData';
 import { 
   TrendingUp, HandCoins, Receipt, Inbox, 
   Sliders, LogOut, Plus, Search, ChevronLeft, ChevronRight, 
-  FileText, ShieldCheck, DollarSign, Wallet, Clock, Users,
+  FileText, ShieldCheck, Wallet, Clock, Users,
   CheckCircle2, XCircle, AlertCircle, Sparkles, UserCheck,
   Send, ExternalLink, Printer, Check, Building, AlertTriangle,
   Eye, Filter, CheckSquare, Download, Trash2, Mail, Phone,
-  Database, RefreshCw, Archive
+  Database, RefreshCw, Archive, Menu, X
 } from 'lucide-react';
 import { 
   exportDonationsToCSV, 
@@ -464,51 +464,61 @@ export const Dashboard: React.FC<DashboardProps> = ({
     { id: 'financial-check', label: 'Financial Check', icon: FileText },
     { id: 'donations', label: 'Donations', icon: HandCoins },
     { id: 'expenses', label: 'Expenses', icon: Receipt },
-    { id: 'requests', label: 'Aid Requests', icon: Clock, badge: pendingRequestsCount },
+    { id: 'requests', label: 'Aid Requests', icon: Clock },
     { id: 'profile', label: 'Profile', icon: UserCheck },
-    { id: 'messages', label: 'Messages', icon: Inbox, badge: unreadMessagesCount },
+    { id: 'messages', label: 'Messages', icon: Inbox, badge: unreadMessagesCount > 0 ? unreadMessagesCount : undefined },
     { id: 'settings', label: 'Settings', icon: Sliders }
   ];
 
   return (
-    <div className="flex h-screen bg-slate-950 text-slate-100 overflow-hidden font-sans">
+    <div className="flex h-screen bg-slate-100 text-slate-800 overflow-hidden font-sans">
       
       {/* PERSISTENT COLLAPSIBLE SIDEBAR (ChatGPT style 260px expanded / 68px collapsed) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col justify-between ${
+        className={`fixed inset-y-0 left-0 z-40 bg-white border-r border-slate-200 transition-all duration-300 flex flex-col justify-between shadow-xs ${
           sidebarCollapsed ? 'w-17' : 'w-64'
         } ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
         {/* Sidebar Header with NGO Logo Toggle */}
-        <div className="p-3.5 border-b border-slate-800 bg-slate-950/60 flex items-center justify-between">
+        <div className="p-3.5 border-b border-slate-200 bg-slate-50/70 flex items-center justify-between">
           <button
             onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-            className="w-full flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-800/80 transition-colors text-left group"
+            className="flex-1 flex items-center gap-3 p-1.5 rounded-xl hover:bg-slate-100 transition-colors text-left group"
             title={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
-            <div className="w-9 h-9 rounded-xl bg-black border border-slate-800 p-0.5 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
+            <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 p-0.5 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform overflow-hidden shadow-2xs">
               <img src="/assets/ngo-logo.svg" alt="NGO Logo" className="w-full h-full object-contain" />
             </div>
             {!sidebarCollapsed && (
               <div className="flex-1 min-w-0">
-                <div className="font-extrabold text-sm text-white tracking-wide truncate">
+                <div className="font-extrabold text-sm text-slate-900 tracking-wide truncate">
                   FUND BRIDGE
                 </div>
-                <div className="text-[10px] text-teal-400 font-semibold tracking-wider uppercase">
+                <div className="text-[10px] text-teal-700 font-semibold tracking-wider uppercase">
                   Management Portal
                 </div>
               </div>
             )}
             {!sidebarCollapsed && (
-              <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-white" />
+              <ChevronLeft className="w-4 h-4 text-slate-400 group-hover:text-slate-700 hidden md:block" />
             )}
+          </button>
+
+          {/* Mobile Close Button */}
+          <button
+            onClick={() => setMobileSidebarOpen(false)}
+            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/80 transition-colors ml-1 cursor-pointer"
+            aria-label="Close sidebar"
+            title="Close Menu"
+          >
+            <X className="w-5 h-5 text-slate-600" />
           </button>
         </div>
 
         {/* Sidebar Menu Items */}
         <div className="p-2 space-y-1 overflow-y-auto flex-1">
           {!sidebarCollapsed && (
-            <div className="px-3 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            <div className="px-3 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Core Management
             </div>
           )}
@@ -525,30 +535,33 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 }}
                 className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all relative ${
                   isActive
-                    ? 'bg-teal-600 text-white shadow-md shadow-teal-600/30'
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
+                    ? 'bg-teal-600 text-white shadow-sm shadow-teal-600/20'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                 } ${sidebarCollapsed ? 'justify-center' : 'justify-start'}`}
                 title={sidebarCollapsed ? item.label : undefined}
               >
-                <Icon className="w-4 h-4 flex-shrink-0" />
-                {!sidebarCollapsed && <span>{item.label}</span>}
-                {item.badge && item.badge > 0 && (
-                  <span className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold ${
-                    sidebarCollapsed ? 'absolute top-1 right-1 bg-rose-500 text-white' : 'ml-auto bg-rose-500 text-white'
-                  }`}>
+                <div className="relative flex items-center justify-center">
+                  <Icon className="w-4 h-4 flex-shrink-0" />
+                  {sidebarCollapsed && (item.badge ?? 0) > 0 ? (
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-rose-600 ring-2 ring-white animate-pulse"></span>
+                  ) : null}
+                </div>
+                {!sidebarCollapsed && <span className="flex-1 text-left truncate">{item.label}</span>}
+                {!sidebarCollapsed && (item.badge ?? 0) > 0 ? (
+                  <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-600 text-white shadow-xs animate-pulse">
                     {item.badge}
                   </span>
-                )}
+                ) : null}
               </button>
             );
           })}
         </div>
 
         {/* Sidebar Footer: User Pill & Logout */}
-        <div className="p-3 border-t border-slate-800 bg-slate-950/60 space-y-2">
+        <div className="p-3 border-t border-slate-200 bg-slate-50/70 space-y-2">
           <button
             onClick={() => setActiveSubView('profile')}
-            className={`w-full flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-800/80 transition-colors text-left ${
+            className={`w-full flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-slate-100 transition-colors text-left ${
               sidebarCollapsed ? 'justify-center' : ''
             }`}
             title="View Profile"
@@ -558,15 +571,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
             {!sidebarCollapsed && (
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-bold text-white truncate">{currentUser.name}</div>
-                <div className="text-[10px] text-teal-400 truncate">{currentUser.role}</div>
+                <div className="text-xs font-bold text-slate-900 truncate">{currentUser.name}</div>
+                <div className="text-[10px] text-teal-700 truncate">{currentUser.role}</div>
               </div>
             )}
           </button>
 
           <button
             onClick={() => setShowLogoutModal(true)}
-            className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 transition-colors ${
+            className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200 transition-colors ${
               sidebarCollapsed ? 'justify-center' : ''
             }`}
             title="Logout"
@@ -581,7 +594,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
       {mobileSidebarOpen && (
         <div
           onClick={() => setMobileSidebarOpen(false)}
-          className="fixed inset-0 z-30 bg-slate-950/80 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-30 bg-slate-950/40 backdrop-blur-xs md:hidden"
         ></div>
       )}
 
@@ -591,15 +604,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
       }`}>
         
         {/* Topbar Header */}
-        <header className="h-16 bg-slate-900/90 border-b border-slate-800 px-4 sm:px-6 flex items-center justify-between flex-shrink-0">
+        <header className="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between flex-shrink-0 shadow-xs">
           <div className="flex items-center gap-3">
             <button
-              onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-              className="md:hidden p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white"
+              onClick={() => setMobileSidebarOpen(true)}
+              className="md:hidden p-2 rounded-xl bg-teal-50 border border-teal-200 text-teal-700 hover:bg-teal-100 flex items-center gap-1.5 transition-colors cursor-pointer relative"
+              aria-label="Open navigation menu"
+              title="Open Menu"
             >
-              <img src="/assets/ngo-logo.svg" alt="Logo" className="w-5 h-5 object-contain" />
+              <Menu className="w-5 h-5 text-teal-700" />
+              <span className="text-xs font-bold text-teal-800">Menu</span>
+              {unreadMessagesCount > 0 && (
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-600 ring-2 ring-white animate-pulse"></span>
+              )}
             </button>
-            <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+            <h2 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
               {activeSubView === 'overview' && '📊 Financial Overview & Analytics'}
               {activeSubView === 'financial-check' && '📑 Historical Financial Audit & Treasury Check'}
               {activeSubView === 'profile' && '👤 User Profile & KYC Verification'}
@@ -612,14 +631,26 @@ export const Dashboard: React.FC<DashboardProps> = ({
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3">
+            {/* Donor Messages Quick Notification Button */}
+            {unreadMessagesCount > 0 && (
+              <button
+                onClick={() => setActiveSubView('messages')}
+                className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-lg text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs animate-pulse"
+                title={`${unreadMessagesCount} unread donor message${unreadMessagesCount === 1 ? '' : 's'}`}
+              >
+                <Inbox className="w-3.5 h-3.5 text-rose-600" />
+                <span>{unreadMessagesCount} New Message{unreadMessagesCount === 1 ? '' : 's'}</span>
+              </button>
+            )}
+
             {/* View Donor Site Button */}
             {onNavigatePublic && (
               <button
                 onClick={() => onNavigatePublic('home')}
-                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-teal-300 hover:text-white border border-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+                className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 hover:text-teal-700 border border-slate-200 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs"
                 title="View Donor & Public Pages"
               >
-                <Eye className="w-3.5 h-3.5 text-teal-400" />
+                <Eye className="w-3.5 h-3.5 text-teal-600" />
                 <span className="hidden sm:inline">View Donor Site</span>
               </button>
             )}
@@ -627,7 +658,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             {/* Quick Action Buttons */}
             <button
               onClick={() => setShowDonationModal(true)}
-              className="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-lg text-xs shadow-md shadow-teal-600/20 flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-lg text-xs shadow-sm shadow-teal-600/20 flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Record Donation</span>
@@ -635,7 +666,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
             <button
               onClick={() => setShowExpenseModal(true)}
-              className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs shadow-sm shadow-amber-500/20 flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Submit Expense</span>
@@ -644,7 +675,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
         </header>
 
         {/* Portal Body (Scrollable) */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 bg-slate-100/70">
           
           {/* SUB-VIEW 1: OVERVIEW */}
           {activeSubView === 'overview' && (
@@ -656,19 +687,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActiveSubView('donations')}
-                  className="bg-slate-850 p-4 sm:p-5 rounded-2xl border border-slate-800 hover:border-teal-500/50 hover:bg-slate-800/80 transition-all cursor-pointer space-y-2 group shadow-sm hover:scale-[1.01]"
+                  className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 hover:border-teal-500/50 hover:bg-slate-50/70 transition-all cursor-pointer space-y-2 group shadow-xs hover:scale-[1.01]"
                   title="Click to view all donations"
                 >
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-medium text-slate-400 group-hover:text-teal-300 transition-colors">Total Funds Raised</span>
-                    <div className="p-2 rounded-xl bg-teal-500/20 text-teal-400 group-hover:bg-teal-500/30 group-hover:scale-105 transition-all">
+                    <span className="text-xs font-semibold text-slate-500 group-hover:text-teal-700 transition-colors">Total Funds Raised</span>
+                    <div className="p-2 rounded-xl bg-teal-50 text-teal-600 group-hover:bg-teal-100 group-hover:scale-105 transition-all border border-teal-200/60">
                       <HandCoins className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-xl sm:text-2xl font-black text-teal-400 font-mono">
+                  <div className="text-xl sm:text-2xl font-black text-teal-700 font-mono">
                     ₹{totalRaised.toLocaleString('en-IN')}
                   </div>
-                  <div className="text-[11px] text-emerald-400 flex items-center justify-between">
+                  <div className="text-[11px] text-emerald-600 flex items-center justify-between font-medium">
                     <span className="flex items-center gap-1"><TrendingUp className="w-3 h-3" /> +18.4%</span>
                     <span className="text-slate-400 text-[10px] group-hover:underline">View ledger →</span>
                   </div>
@@ -679,35 +710,35 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActiveSubView('expenses')}
-                  className="bg-slate-850 p-4 sm:p-5 rounded-2xl border border-slate-800 hover:border-amber-500/50 hover:bg-slate-800/80 transition-all cursor-pointer space-y-2 group shadow-sm hover:scale-[1.01]"
+                  className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 hover:border-amber-500/50 hover:bg-slate-50/70 transition-all cursor-pointer space-y-2 group shadow-xs hover:scale-[1.01]"
                   title="Click to view program disbursements"
                 >
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-medium text-slate-400 group-hover:text-amber-300 transition-colors">Total Disbursed</span>
-                    <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 group-hover:bg-amber-500/30 group-hover:scale-105 transition-all">
+                    <span className="text-xs font-semibold text-slate-500 group-hover:text-amber-700 transition-colors">Total Disbursed</span>
+                    <div className="p-2 rounded-xl bg-amber-50 text-amber-600 group-hover:bg-amber-100 group-hover:scale-105 transition-all border border-amber-200/60">
                       <Receipt className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-xl sm:text-2xl font-black text-amber-400 font-mono">
+                  <div className="text-xl sm:text-2xl font-black text-amber-600 font-mono">
                     ₹{totalDisbursed.toLocaleString('en-IN')}
                   </div>
-                  <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between">
                     <span>92% Program direct</span>
                     <span className="text-slate-400 text-[10px] group-hover:underline">View claims →</span>
                   </div>
                 </div>
 
-                <div className="bg-slate-850 p-4 sm:p-5 rounded-2xl border border-slate-800 space-y-2">
+                <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-medium text-slate-400">Treasury Balance</span>
-                    <div className="p-2 rounded-xl bg-sky-500/20 text-sky-400">
+                    <span className="text-xs font-semibold text-slate-500">Treasury Balance</span>
+                    <div className="p-2 rounded-xl bg-sky-50 text-sky-600 border border-sky-200/60">
                       <Wallet className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-xl sm:text-2xl font-black text-sky-400 font-mono">
+                  <div className="text-xl sm:text-2xl font-black text-sky-700 font-mono">
                     ₹{treasuryBalance.toLocaleString('en-IN')}
                   </div>
-                  <div className="text-[11px] text-emerald-400">Liquid &amp; Audited</div>
+                  <div className="text-[11px] text-emerald-600 font-medium">Liquid &amp; Audited</div>
                 </div>
 
                 {/* Pending Requests KPI Card - Clickable to show who is requesting */}
@@ -725,33 +756,33 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       setShowRequestsModal(true);
                     }
                   }}
-                  className="bg-slate-850 p-4 sm:p-5 rounded-2xl border border-purple-500/40 hover:border-purple-400 hover:bg-slate-800/90 transition-all duration-200 cursor-pointer space-y-2 group shadow-lg shadow-purple-500/5 hover:shadow-purple-500/20 hover:scale-[1.02] active:scale-[0.99] relative overflow-hidden"
+                  className="bg-white p-4 sm:p-5 rounded-2xl border border-purple-200 hover:border-purple-400 hover:bg-purple-50/30 transition-all duration-200 cursor-pointer space-y-2 group shadow-xs hover:scale-[1.02] active:scale-[0.99] relative overflow-hidden"
                   title="Click to see who is requesting aid"
                   aria-label="Pending Aid Requests - Click to see applicants"
                 >
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-semibold text-purple-300 group-hover:text-purple-200 transition-colors flex items-center gap-1.5">
+                    <span className="text-xs font-semibold text-purple-700 group-hover:text-purple-800 transition-colors flex items-center gap-1.5">
                       <span className="relative flex h-2 w-2">
                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                         <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
                       </span>
                       Pending Requests
                     </span>
-                    <div className="p-2 rounded-xl bg-purple-500/20 text-purple-300 group-hover:bg-purple-500/30 group-hover:scale-110 transition-all border border-purple-500/30">
+                    <div className="p-2 rounded-xl bg-purple-50 text-purple-600 group-hover:bg-purple-100 group-hover:scale-110 transition-all border border-purple-200">
                       <Clock className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-xl sm:text-2xl font-black text-purple-300 font-mono flex items-baseline gap-2">
+                  <div className="text-xl sm:text-2xl font-black text-purple-700 font-mono flex items-baseline gap-2">
                     <span>{pendingRequestsCount}</span>
-                    <span className="text-xs font-normal text-slate-400 font-sans">
+                    <span className="text-xs font-normal text-slate-500 font-sans">
                       applicant{pendingRequestsCount === 1 ? '' : 's'}
                     </span>
                   </div>
-                  <div className="text-[11px] text-purple-300/90 font-medium flex items-center justify-between pt-0.5 border-t border-purple-500/20">
-                    <span className="flex items-center gap-1 group-hover:underline text-purple-300 font-bold">
+                  <div className="text-[11px] text-purple-700 font-medium flex items-center justify-between pt-0.5 border-t border-purple-100">
+                    <span className="flex items-center gap-1 group-hover:underline font-bold">
                       Who requested? <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                     </span>
-                    <span className="text-[10px] text-slate-400 font-mono">
+                    <span className="text-[10px] text-slate-500 font-mono">
                       ₹{pendingTotalAmount.toLocaleString('en-IN')}
                     </span>
                   </div>
@@ -762,19 +793,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setActiveSubView('donations')}
-                  className="bg-slate-850 p-4 sm:p-5 rounded-2xl border border-slate-800 hover:border-emerald-500/50 hover:bg-slate-800/80 transition-all cursor-pointer space-y-2 group shadow-sm hover:scale-[1.01]"
+                  className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 hover:border-emerald-500/50 hover:bg-slate-50/70 transition-all cursor-pointer space-y-2 group shadow-xs hover:scale-[1.01]"
                   title="Click to view donors"
                 >
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-medium text-slate-400 group-hover:text-emerald-300 transition-colors">Verified Donors</span>
-                    <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 group-hover:bg-emerald-500/30 group-hover:scale-105 transition-all">
+                    <span className="text-xs font-semibold text-slate-500 group-hover:text-emerald-700 transition-colors">Verified Donors</span>
+                    <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100 group-hover:scale-105 transition-all border border-emerald-200/60">
                       <Users className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-xl sm:text-2xl font-black text-emerald-400 font-mono">
+                  <div className="text-xl sm:text-2xl font-black text-emerald-700 font-mono">
                     {verifiedDonorsCount} Donors
                   </div>
-                  <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between">
                     <span>Global network</span>
                     <span className="text-slate-400 text-[10px] group-hover:underline">View list →</span>
                   </div>
@@ -783,20 +814,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
               {/* Financial Inflow vs Outflow Visualizer Row */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                <div className="lg:col-span-8 bg-slate-850 p-6 rounded-2xl border border-slate-800 space-y-4">
+                <div className="lg:col-span-8 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
                   <div className="flex justify-between items-center">
-                    <h3 className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-teal-400" />
+                    <h3 className="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-teal-600" />
                       6-Month Inflow vs Outflow Trends
                     </h3>
-                    <span className="px-2.5 py-1 bg-teal-500/20 text-teal-300 text-[10px] font-bold rounded-full">
+                    <span className="px-2.5 py-1 bg-teal-50 text-teal-700 border border-teal-200 text-[10px] font-bold rounded-full">
                       MONTHLY ANALYTICS
                     </span>
                   </div>
 
                   {/* SVG Bar Chart Visualization */}
                   <div className="h-60 w-full pt-4 flex flex-col justify-end">
-                    <div className="flex items-end justify-between h-48 gap-3 sm:gap-6 px-2 border-b border-slate-700">
+                    <div className="flex items-end justify-between h-48 gap-3 sm:gap-6 px-2 border-b border-slate-200">
                       {dashboardMonthlyTrends.data.map((item, i) => {
                         const inHeight = Math.max(8, Math.round((item.in / dashboardMonthlyTrends.maxVal) * 100));
                         const outHeight = Math.max(8, Math.round((item.out / dashboardMonthlyTrends.maxVal) * 100));
@@ -822,17 +853,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                 </span>
                               </div>
                             </div>
-                            <span className="text-[11px] text-slate-400 font-semibold">{item.month}</span>
+                            <span className="text-[11px] text-slate-500 font-semibold">{item.month}</span>
                           </div>
                         );
                       })}
                     </div>
 
                     <div className="flex justify-center gap-6 pt-3 text-xs">
-                      <span className="flex items-center gap-2 text-slate-300">
+                      <span className="flex items-center gap-2 text-slate-600 font-medium">
                         <span className="w-3 h-3 bg-teal-500 rounded"></span> Inflow Donations
                       </span>
-                      <span className="flex items-center gap-2 text-slate-300">
+                      <span className="flex items-center gap-2 text-slate-600 font-medium">
                         <span className="w-3 h-3 bg-amber-500 rounded"></span> Outflow Disbursements
                       </span>
                     </div>
@@ -840,23 +871,23 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
 
                 {/* Expense Breakdown Card */}
-                <div className="lg:col-span-4 bg-slate-850 p-6 rounded-2xl border border-slate-800 space-y-4">
-                  <h3 className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
-                    <Receipt className="w-4 h-4 text-amber-400" />
+                <div className="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+                  <h3 className="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                    <Receipt className="w-4 h-4 text-amber-500" />
                     Expense Distribution
                   </h3>
 
                   <div className="space-y-3 pt-2">
                     {expenseDistribution.length === 0 ? (
-                      <p className="text-xs text-slate-400 text-center py-4">No expense claims recorded yet.</p>
+                      <p className="text-xs text-slate-500 text-center py-4">No expense claims recorded yet.</p>
                     ) : (
                       expenseDistribution.map((item, idx) => (
                         <div key={idx}>
                           <div className="flex justify-between text-xs font-semibold mb-1">
-                            <span className="text-slate-300">{item.category} ({item.percent}%)</span>
+                            <span className="text-slate-700">{item.category} ({item.percent}%)</span>
                             <span className={item.color.text}>₹{item.amount.toLocaleString('en-IN')}</span>
                           </div>
-                          <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden">
+                          <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                             <div className={`h-full ${item.color.bar} rounded-full transition-all duration-500`} style={{ width: `${Math.max(5, item.percent)}%` }}></div>
                           </div>
                         </div>
@@ -864,8 +895,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     )}
                   </div>
 
-                  <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 text-xs text-slate-400 space-y-1">
-                    <span className="font-semibold text-teal-400 flex items-center gap-1">
+                  <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600 space-y-1">
+                    <span className="font-semibold text-teal-700 flex items-center gap-1">
                       <ShieldCheck className="w-3.5 h-3.5" /> 100% Verified Ledger
                     </span>
                     <p>All disbursements mapped to digital GST / Tax invoices and verified by Dr. K. Radhakrishnan.</p>
@@ -876,38 +907,38 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {/* Mini Tables Row */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Donations Inflow */}
-                <div className="bg-slate-850 p-6 rounded-2xl border border-slate-800 space-y-4">
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
                   <div className="flex justify-between items-center">
-                    <h4 className="font-bold text-white text-sm">Recent Donations Inflow</h4>
+                    <h4 className="font-bold text-slate-900 text-sm">Recent Donations Inflow</h4>
                     <button
                       onClick={() => setActiveSubView('donations')}
-                      className="text-xs text-teal-400 hover:underline font-semibold"
+                      className="text-xs text-teal-700 hover:underline font-semibold cursor-pointer"
                     >
                       View All
                     </button>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs text-left">
-                      <thead className="text-slate-400 border-b border-slate-800">
+                      <thead className="text-slate-500 border-b border-slate-200 bg-slate-50/50">
                         <tr>
-                          <th className="pb-2">Donor</th>
-                          <th className="pb-2">Cause</th>
-                          <th className="pb-2">Amount</th>
-                          <th className="pb-2 text-right">Receipt</th>
+                          <th className="py-2 px-1">Donor</th>
+                          <th className="py-2 px-1">Cause</th>
+                          <th className="py-2 px-1">Amount</th>
+                          <th className="py-2 px-1 text-right">Receipt</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800/60">
+                      <tbody className="divide-y divide-slate-100">
                         {donations.slice(0, 4).map((d) => (
-                          <tr key={d.id} className="hover:bg-slate-800/40">
-                            <td className="py-2.5 font-medium text-white">
+                          <tr key={d.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="py-2.5 px-1 font-medium text-slate-900">
                               {d.isAnonymous ? 'Anonymous' : d.donorName}
                             </td>
-                            <td className="py-2.5 text-slate-300">{d.cause}</td>
-                            <td className="py-2.5 font-mono text-teal-400 font-bold">₹{d.amount.toLocaleString('en-IN')}</td>
-                            <td className="py-2.5 text-right">
+                            <td className="py-2.5 px-1 text-slate-600">{d.cause}</td>
+                            <td className="py-2.5 px-1 font-mono text-teal-700 font-bold">₹{d.amount.toLocaleString('en-IN')}</td>
+                            <td className="py-2.5 px-1 text-right">
                               <button
                                 onClick={() => onViewReceipt(d)}
-                                className="text-[11px] text-teal-400 hover:text-teal-300 font-semibold underline"
+                                className="text-[11px] text-teal-700 hover:text-teal-800 font-semibold underline cursor-pointer"
                               >
                                 View 80G
                               </button>
@@ -920,34 +951,34 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
 
                 {/* Recent Expenses */}
-                <div className="bg-slate-850 p-6 rounded-2xl border border-slate-800 space-y-4">
+                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
                   <div className="flex justify-between items-center">
-                    <h4 className="font-bold text-white text-sm">Recent Expense Claims</h4>
+                    <h4 className="font-bold text-slate-900 text-sm">Recent Expense Claims</h4>
                     <button
                       onClick={() => setActiveSubView('expenses')}
-                      className="text-xs text-teal-400 hover:underline font-semibold"
+                      className="text-xs text-teal-700 hover:underline font-semibold cursor-pointer"
                     >
                       View All
                     </button>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs text-left">
-                      <thead className="text-slate-400 border-b border-slate-800">
+                      <thead className="text-slate-500 border-b border-slate-200 bg-slate-50/50">
                         <tr>
-                          <th className="pb-2">Title</th>
-                          <th className="pb-2">Vendor</th>
-                          <th className="pb-2">Amount</th>
-                          <th className="pb-2 text-right">Status</th>
+                          <th className="py-2 px-1">Title</th>
+                          <th className="py-2 px-1">Vendor</th>
+                          <th className="py-2 px-1">Amount</th>
+                          <th className="py-2 px-1 text-right">Status</th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-slate-800/60">
+                      <tbody className="divide-y divide-slate-100">
                         {expenses.slice(0, 4).map((e) => (
-                          <tr key={e.id} className="hover:bg-slate-800/40">
-                            <td className="py-2.5 font-medium text-white truncate max-w-[140px]">{e.title}</td>
-                            <td className="py-2.5 text-slate-300">{e.vendor}</td>
-                            <td className="py-2.5 font-mono text-amber-400 font-bold">₹{e.amount.toLocaleString('en-IN')}</td>
-                            <td className="py-2.5 text-right">
-                              <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded text-[10px] font-bold">
+                          <tr key={e.id} className="hover:bg-slate-50 transition-colors">
+                            <td className="py-2.5 px-1 font-medium text-slate-900 truncate max-w-[140px]">{e.title}</td>
+                            <td className="py-2.5 px-1 text-slate-600">{e.vendor}</td>
+                            <td className="py-2.5 px-1 font-mono text-amber-600 font-bold">₹{e.amount.toLocaleString('en-IN')}</td>
+                            <td className="py-2.5 px-1 text-right">
+                              <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded text-[10px] font-bold">
                                 {e.status}
                               </span>
                             </td>
@@ -960,14 +991,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
 
               {/* Aid Requests Pipeline Section (Who Requested Aid) */}
-              <div className="bg-slate-850 p-6 rounded-2xl border border-slate-800 space-y-4">
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <h4 className="font-bold text-white text-sm sm:text-base flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-purple-400" />
+                    <h4 className="font-bold text-slate-900 text-sm sm:text-base flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-purple-600" />
                       Pending Assistance &amp; Aid Pipeline (Who Requested Aid)
                     </h4>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500">
                       Community organizations, healthcare clinics, and scholars awaiting grant verification
                     </p>
                   </div>
@@ -977,14 +1008,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         setRequestsFilter('pending');
                         setShowRequestsModal(true);
                       }}
-                      className="px-3.5 py-1.5 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                      className="px-3.5 py-1.5 bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
                       <Eye className="w-3.5 h-3.5" />
                       <span>Review Who Requested ({pendingRequestsCount})</span>
                     </button>
                     <button
                       onClick={() => setActiveSubView('requests')}
-                      className="text-xs text-teal-400 hover:underline font-semibold"
+                      className="text-xs text-teal-700 hover:underline font-semibold cursor-pointer"
                     >
                       View All Ledger →
                     </button>
@@ -999,32 +1030,32 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         setSelectedRequestDetails(r);
                         setShowRequestsModal(true);
                       }}
-                      className="bg-slate-900/90 hover:bg-slate-900 border border-slate-800 hover:border-purple-500/50 rounded-xl p-4 transition-all cursor-pointer space-y-2.5 group shadow-sm hover:scale-[1.01]"
+                      className="bg-slate-50 hover:bg-white border border-slate-200 hover:border-purple-300 rounded-xl p-4 transition-all cursor-pointer space-y-2.5 group shadow-xs hover:scale-[1.01]"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
-                          <span className="font-bold text-white text-sm group-hover:text-purple-300 transition-colors block truncate">
+                          <span className="font-bold text-slate-900 text-sm group-hover:text-purple-700 transition-colors block truncate">
                             {r.applicantName}
                           </span>
-                          <span className="text-[11px] text-slate-400 flex items-center gap-1 truncate">
-                            <Building className="w-3 h-3 text-slate-500 flex-shrink-0" /> {r.org}
+                          <span className="text-[11px] text-slate-500 flex items-center gap-1 truncate">
+                            <Building className="w-3 h-3 text-slate-400 flex-shrink-0" /> {r.org}
                           </span>
                         </div>
-                        <span className="font-mono font-black text-purple-400 text-sm flex-shrink-0">
+                        <span className="font-mono font-black text-purple-700 text-sm flex-shrink-0">
                           ₹{r.amount.toLocaleString('en-IN')}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/60">
+                      <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed bg-white p-2.5 rounded-lg border border-slate-200">
                         {r.purpose}
                       </p>
                       <div className="flex items-center justify-between text-[11px] pt-1">
-                        <span className="text-slate-400 font-medium">{r.category}</span>
+                        <span className="text-slate-500 font-medium">{r.category}</span>
                         <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
                           r.status === 'Disbursed'
-                            ? 'bg-emerald-500/20 text-emerald-300'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : r.status === 'Field Audited'
-                            ? 'bg-sky-500/20 text-sky-300'
-                            : 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                            ? 'bg-sky-50 text-sky-700 border border-sky-200'
+                            : 'bg-purple-50 text-purple-700 border border-purple-200'
                         }`}>
                           {r.status}
                         </span>
@@ -1041,15 +1072,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="space-y-6 animate-fadeIn">
               
               {/* 1. Header with Export & Backup Actions */}
-              <div className="bg-slate-850 p-6 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2">
-                    <div className="p-2 rounded-xl bg-teal-500/20 text-teal-400 border border-teal-500/30">
+                    <div className="p-2 rounded-xl bg-teal-50 text-teal-700 border border-teal-200">
                       <FileText className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="font-extrabold text-white text-lg">Historical Financial Audit &amp; Treasury Check</h3>
-                      <p className="text-xs text-slate-400 mt-0.5">
+                      <h3 className="font-extrabold text-slate-900 text-lg">Historical Financial Audit &amp; Treasury Check</h3>
+                      <p className="text-xs text-slate-500 mt-0.5">
                         Permanent chronological ledger saving all donations, program expenses, and aid disbursements for future financial checks
                       </p>
                     </div>
@@ -1076,19 +1107,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       if (success) notify('Complete NGO database backup saved to JSON!', 'success');
                       else notify('Backup export failed.', 'error');
                     }}
-                    className="px-3.5 py-2 bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white font-semibold rounded-xl text-xs border border-slate-700 flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer"
+                    className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-semibold rounded-xl text-xs border border-slate-200 flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
                     title="Export full database backup with all donations, expenses, and aid requests"
                   >
-                    <Database className="w-3.5 h-3.5 text-sky-400" />
+                    <Database className="w-3.5 h-3.5 text-sky-600" />
                     <span>Backup Database (JSON)</span>
                   </button>
 
                   <button
                     onClick={() => window.print()}
-                    className="px-3 py-2 bg-slate-800 hover:bg-slate-750 text-slate-300 hover:text-white font-semibold rounded-xl text-xs border border-slate-700 flex items-center gap-1.5 transition-colors cursor-pointer"
+                    className="px-3 py-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-semibold rounded-xl text-xs border border-slate-200 flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
                     title="Print financial audit statement"
                   >
-                    <Printer className="w-3.5 h-3.5 text-slate-400" />
+                    <Printer className="w-3.5 h-3.5 text-slate-500" />
                     <span>Print Audit</span>
                   </button>
                 </div>
@@ -1097,83 +1128,83 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {/* 2. Key Financial Reconciliation Metrics */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Total Donations (Inflow) */}
-                <div className="bg-slate-850 p-5 rounded-2xl border border-emerald-500/30 space-y-2">
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-semibold text-emerald-400">Total Donations Inflow</span>
-                    <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400">
+                    <span className="text-xs font-semibold text-emerald-700">Total Donations Inflow</span>
+                    <div className="p-2 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200/60">
                       <HandCoins className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-2xl font-black text-emerald-300 font-mono">
+                  <div className="text-2xl font-black text-emerald-700 font-mono">
                     ₹{totalRaised.toLocaleString('en-IN')}
                   </div>
-                  <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between">
                     <span>{donations.length} total contributions</span>
-                    <span className="text-emerald-400 font-bold">100% Retained</span>
+                    <span className="text-emerald-700 font-bold">100% Retained</span>
                   </div>
                 </div>
 
                 {/* Total Program Expenses */}
-                <div className="bg-slate-850 p-5 rounded-2xl border border-amber-500/30 space-y-2">
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-semibold text-amber-400">Program Expenses Outflow</span>
-                    <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400">
+                    <span className="text-xs font-semibold text-amber-700">Program Expenses Outflow</span>
+                    <div className="p-2 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/60">
                       <Receipt className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-2xl font-black text-amber-300 font-mono">
+                  <div className="text-2xl font-black text-amber-600 font-mono">
                     ₹{expenses.reduce((s, e) => s + e.amount, 0).toLocaleString('en-IN')}
                   </div>
-                  <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between">
                     <span>{expenses.length} verified claims</span>
-                    <span className="text-amber-400 font-bold">Audited</span>
+                    <span className="text-amber-700 font-bold">Audited</span>
                   </div>
                 </div>
 
                 {/* Aid Grants Disbursed */}
-                <div className="bg-slate-850 p-5 rounded-2xl border border-purple-500/30 space-y-2">
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-semibold text-purple-400">Aid Grants Disbursed</span>
-                    <div className="p-2 rounded-xl bg-purple-500/20 text-purple-400">
+                    <span className="text-xs font-semibold text-purple-700">Aid Grants Disbursed</span>
+                    <div className="p-2 rounded-xl bg-purple-50 text-purple-600 border border-purple-200/60">
                       <Clock className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-2xl font-black text-purple-300 font-mono">
+                  <div className="text-2xl font-black text-purple-700 font-mono">
                     ₹{requests.filter(r => r.status === 'Disbursed').reduce((s, r) => s + r.amount, 0).toLocaleString('en-IN')}
                   </div>
-                  <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between">
                     <span>{requests.filter(r => r.status === 'Disbursed').length} grants paid</span>
-                    <span className="text-purple-400 font-bold">Field Verified</span>
+                    <span className="text-purple-700 font-bold">Field Verified</span>
                   </div>
                 </div>
 
                 {/* Net Treasury Balance */}
-                <div className="bg-slate-850 p-5 rounded-2xl border border-sky-500/30 space-y-2">
+                <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-2">
                   <div className="flex justify-between items-start">
-                    <span className="text-xs font-semibold text-sky-400">Net Treasury Liquidity</span>
-                    <div className="p-2 rounded-xl bg-sky-500/20 text-sky-400">
+                    <span className="text-xs font-semibold text-sky-700">Net Treasury Liquidity</span>
+                    <div className="p-2 rounded-xl bg-sky-50 text-sky-600 border border-sky-200/60">
                       <Wallet className="w-4 h-4" />
                     </div>
                   </div>
-                  <div className="text-2xl font-black text-sky-300 font-mono">
+                  <div className="text-2xl font-black text-sky-700 font-mono">
                     ₹{treasuryBalance.toLocaleString('en-IN')}
                   </div>
-                  <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                  <div className="text-[11px] text-slate-500 flex items-center justify-between">
                     <span>Reconciled Balance</span>
-                    <span className="text-sky-400 font-bold">Available Now</span>
+                    <span className="text-sky-700 font-bold">Available Now</span>
                   </div>
                 </div>
               </div>
 
               {/* 3. Search and Type Filters */}
-              <div className="bg-slate-850 p-4 rounded-2xl border border-slate-800 flex flex-wrap items-center justify-between gap-3">
+              <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
                 <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                   <button
                     onClick={() => setFinancialCheckTypeFilter('all')}
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       financialCheckTypeFilter === 'all'
                         ? 'bg-teal-600 text-white shadow-sm'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
+                        : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                     }`}
                   >
                     All Transactions ({allFinancialTransactions.length})
@@ -1183,7 +1214,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       financialCheckTypeFilter === 'inflow'
                         ? 'bg-emerald-600 text-white shadow-sm'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
+                        : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                     }`}
                   >
                     🟢 Donations Inflows ({donations.length})
@@ -1193,7 +1224,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       financialCheckTypeFilter === 'expense'
                         ? 'bg-amber-600 text-white shadow-sm'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
+                        : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                     }`}
                   >
                     🔴 Program Expenses ({expenses.length})
@@ -1203,7 +1234,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       financialCheckTypeFilter === 'disbursed'
                         ? 'bg-purple-600 text-white shadow-sm'
-                        : 'bg-slate-800 text-slate-400 hover:text-white'
+                        : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                     }`}
                   >
                     🔵 Disbursed Aid ({requests.filter(r => r.status === 'Disbursed').length})
@@ -1217,21 +1248,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     value={financialCheckSearch}
                     onChange={(e) => setFinancialCheckSearch(e.target.value)}
                     placeholder="Search donor, vendor, ID..."
-                    className="w-full pl-9 pr-3 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-teal-500"
+                    className="w-full pl-9 pr-3 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 shadow-2xs"
                   />
                 </div>
               </div>
 
               {/* 4. Unified Master Financial Ledger Table */}
-              <div className="bg-slate-850 rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
-                <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+              <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
+                <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/60">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-white text-sm">Chronological Financial Audit Trail</span>
-                    <span className="px-2 py-0.5 rounded-md bg-teal-500/10 text-teal-400 text-[11px] font-semibold">
+                    <span className="font-bold text-slate-900 text-sm">Chronological Financial Audit Trail</span>
+                    <span className="px-2 py-0.5 rounded-md bg-teal-50 text-teal-700 border border-teal-200 text-[11px] font-semibold">
                       {filteredFinancialTransactions.length} records found
                     </span>
                   </div>
-                  <div className="text-[11px] text-emerald-400 flex items-center gap-1.5 font-medium">
+                  <div className="text-[11px] text-emerald-700 flex items-center gap-1.5 font-semibold">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     <span>Permanent Double-Entry Verified</span>
                   </div>
@@ -1239,7 +1270,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs sm:text-sm">
-                    <thead className="bg-slate-900/90 text-slate-400 border-b border-slate-800 text-[11px] uppercase tracking-wider font-semibold">
+                    <thead className="bg-slate-50 text-slate-500 border-b border-slate-200 text-[11px] uppercase tracking-wider font-semibold">
                       <tr>
                         <th className="p-3">Date</th>
                         <th className="p-3">Type</th>
@@ -1251,7 +1282,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         <th className="p-3 text-center">Audit Certificate</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800">
+                    <tbody className="divide-y divide-slate-100">
                       {filteredFinancialTransactions.length === 0 ? (
                         <tr>
                           <td colSpan={8} className="p-8 text-center text-slate-500 text-xs">
@@ -1260,58 +1291,58 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </tr>
                       ) : (
                         filteredFinancialTransactions.map((item) => (
-                          <tr key={`${item.type}-${item.id}`} className="hover:bg-slate-800/40 transition-colors">
+                          <tr key={`${item.type}-${item.id}`} className="hover:bg-slate-50 transition-colors">
                             {/* Date */}
-                            <td className="p-3 text-slate-300 font-mono text-xs whitespace-nowrap">
+                            <td className="p-3 text-slate-600 font-mono text-xs whitespace-nowrap">
                               {item.date}
                             </td>
 
                             {/* Type */}
                             <td className="p-3 whitespace-nowrap">
                               {item.type === 'Donation Inflow' && (
-                                <span className="px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold inline-flex items-center gap-1">
-                                  <HandCoins className="w-3 h-3 text-emerald-400" />
+                                <span className="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold inline-flex items-center gap-1">
+                                  <HandCoins className="w-3 h-3 text-emerald-600" />
                                   Donation Inflow
                                 </span>
                               )}
                               {item.type === 'Program Expense' && (
-                                <span className="px-2 py-0.5 rounded-lg bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[11px] font-bold inline-flex items-center gap-1">
-                                  <Receipt className="w-3 h-3 text-amber-400" />
+                                <span className="px-2 py-0.5 rounded-lg bg-amber-50 text-amber-700 border border-amber-200 text-[11px] font-bold inline-flex items-center gap-1">
+                                  <Receipt className="w-3 h-3 text-amber-600" />
                                   Program Expense
                                 </span>
                               )}
                               {item.type === 'Aid Grant Disbursed' && (
-                                <span className="px-2 py-0.5 rounded-lg bg-purple-500/15 text-purple-300 border border-purple-500/30 text-[11px] font-bold inline-flex items-center gap-1">
-                                  <Clock className="w-3 h-3 text-purple-400" />
+                                <span className="px-2 py-0.5 rounded-lg bg-purple-50 text-purple-700 border border-purple-200 text-[11px] font-bold inline-flex items-center gap-1">
+                                  <Clock className="w-3 h-3 text-purple-600" />
                                   Aid Disbursed
                                 </span>
                               )}
                             </td>
 
                             {/* Party */}
-                            <td className="p-3 font-semibold text-white">
+                            <td className="p-3 font-semibold text-slate-900">
                               {item.party}
                             </td>
 
                             {/* Category */}
-                            <td className="p-3 text-slate-300 text-xs">
+                            <td className="p-3 text-slate-600 text-xs">
                               {item.category}
                             </td>
 
                             {/* Reference / ID */}
-                            <td className="p-3 font-mono text-slate-400 text-xs whitespace-nowrap">
+                            <td className="p-3 font-mono text-slate-500 text-xs whitespace-nowrap">
                               {item.ref}
                             </td>
 
                             {/* Amount */}
                             <td className={`p-3 text-right font-mono font-bold text-sm whitespace-nowrap ${
-                              item.isInflow ? 'text-emerald-400' : 'text-amber-400'
+                              item.isInflow ? 'text-emerald-700' : 'text-amber-600'
                             }`}>
                               {item.isInflow ? `+₹${item.amount.toLocaleString('en-IN')}` : `-₹${item.amount.toLocaleString('en-IN')}`}
                             </td>
 
                             {/* Running Balance */}
-                            <td className="p-3 text-right font-mono font-bold text-slate-200 text-xs whitespace-nowrap">
+                            <td className="p-3 text-right font-mono font-bold text-slate-900 text-xs whitespace-nowrap">
                               ₹{item.runningBalance.toLocaleString('en-IN')}
                             </td>
 
@@ -1320,14 +1351,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
                               {item.rawDonation ? (
                                 <button
                                   onClick={() => onViewReceipt(item.rawDonation!)}
-                                  className="px-2.5 py-1 bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
+                                  className="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
                                   title="View official Section 80G Tax-Exempt Receipt"
                                 >
                                   80G Receipt
                                 </button>
                               ) : (
-                                <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 font-medium">
-                                  <Check className="w-3 h-3 text-emerald-400" />
+                                <span className="inline-flex items-center gap-1 text-[11px] text-slate-500 font-medium">
+                                  <Check className="w-3 h-3 text-emerald-600" />
                                   Audited
                                 </span>
                               )}
@@ -1340,9 +1371,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
 
                 {/* Footer notes */}
-                <div className="p-4 bg-slate-900/60 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-400">
+                <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-[11px] text-slate-500">
                   <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-teal-400" />
+                    <ShieldCheck className="w-4 h-4 text-teal-600" />
                     <span>Permanent Storage: Records safely stored in Local Storage &amp; Database Archive</span>
                   </div>
                   <div className="text-slate-500">
@@ -1357,91 +1388,91 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {/* SUB-VIEW 2: PROFILE */}
           {activeSubView === 'profile' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fadeIn">
-              <div className="lg:col-span-4 bg-slate-850 p-6 rounded-2xl border border-slate-800 text-center space-y-4">
-                <div className="w-20 h-20 rounded-full bg-teal-600 text-white font-bold text-2xl flex items-center justify-center mx-auto shadow-xl border-4 border-slate-800">
+              <div className="lg:col-span-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs text-center space-y-4">
+                <div className="w-20 h-20 rounded-full bg-teal-600 text-white font-bold text-2xl flex items-center justify-center mx-auto shadow-md border-4 border-slate-100">
                   {currentUser.avatar}
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">{currentUser.name}</h3>
-                  <p className="text-xs text-teal-400 font-semibold">{currentUser.role}</p>
+                  <h3 className="text-lg font-bold text-slate-900">{currentUser.name}</h3>
+                  <p className="text-xs text-teal-700 font-semibold">{currentUser.role}</p>
                 </div>
                 <div>
-                  <span className="px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1">
+                  <span className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-bold uppercase tracking-wider inline-flex items-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5" /> KYC VERIFIED
                   </span>
                 </div>
-                <div className="pt-4 border-t border-slate-800 grid grid-cols-2 gap-2 text-center text-xs">
+                <div className="pt-4 border-t border-slate-200 grid grid-cols-2 gap-2 text-center text-xs">
                   <div>
-                    <div className="text-lg font-bold text-white">{currentUser.memberSince || '2021'}</div>
-                    <div className="text-slate-400 text-[11px]">Member Since</div>
+                    <div className="text-lg font-bold text-slate-900">{currentUser.memberSince || '2021'}</div>
+                    <div className="text-slate-500 text-[11px]">Member Since</div>
                   </div>
                   <div>
-                    <div className="text-lg font-bold text-teal-400">{currentUser.auditsApproved || 42}</div>
-                    <div className="text-slate-400 text-[11px]">Audits Approved</div>
+                    <div className="text-lg font-bold text-teal-700">{currentUser.auditsApproved || 42}</div>
+                    <div className="text-slate-500 text-[11px]">Audits Approved</div>
                   </div>
                 </div>
               </div>
 
-              <div className="lg:col-span-8 bg-slate-850 p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-6">
-                <h3 className="text-base font-bold text-white">Edit Profile Details</h3>
+              <div className="lg:col-span-8 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+                <h3 className="text-base font-bold text-slate-900">Edit Profile Details</h3>
                 <form onSubmit={handleProfileSave} className="space-y-4 text-xs sm:text-sm">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-slate-300 font-semibold mb-1">Full Name *</label>
+                      <label className="block text-slate-700 font-semibold mb-1">Full Name *</label>
                       <input
                         type="text"
                         required
                         value={profName}
                         onChange={(e) => setProfName(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 shadow-2xs"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-semibold mb-1">Email Address *</label>
+                      <label className="block text-slate-700 font-semibold mb-1">Email Address *</label>
                       <input
                         type="email"
                         required
                         value={profEmail}
                         onChange={(e) => setProfEmail(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 shadow-2xs"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-slate-300 font-semibold mb-1">Phone Number</label>
+                      <label className="block text-slate-700 font-semibold mb-1">Phone Number</label>
                       <input
                         type="tel"
                         value={profPhone}
                         onChange={(e) => setProfPhone(e.target.value)}
-                        className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 shadow-2xs"
                       />
                     </div>
                     <div>
-                      <label className="block text-slate-300 font-semibold mb-1">Role Designation</label>
+                      <label className="block text-slate-700 font-semibold mb-1">Role Designation</label>
                       <input
                         type="text"
                         readOnly
                         value={currentUser.role}
-                        className="w-full px-3.5 py-2.5 bg-slate-900/60 border border-slate-750 rounded-xl text-slate-400 cursor-not-allowed"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">Professional Bio</label>
+                    <label className="block text-slate-700 font-semibold mb-1">Professional Bio</label>
                     <textarea
                       rows={3}
                       value={profBio}
                       onChange={(e) => setProfBio(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full px-3.5 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 shadow-2xs"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="px-6 py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition-colors"
+                    className="px-6 py-2.5 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition-colors cursor-pointer"
                   >
                     Save Profile Changes
                   </button>
@@ -1452,16 +1483,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           {/* SUB-VIEW 3: DONATIONS LEDGER */}
           {activeSubView === 'donations' && (
-            <div className="bg-slate-850 p-6 rounded-2xl border border-slate-800 space-y-4 animate-fadeIn">
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4 animate-fadeIn">
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200">
                 <div>
-                  <h3 className="font-bold text-white text-base">All Recorded Donations</h3>
-                  <p className="text-xs text-slate-400">Complete ledger of incoming funds with downloadable 80G receipts</p>
+                  <h3 className="font-bold text-slate-900 text-base">All Recorded Donations</h3>
+                  <p className="text-xs text-slate-500">Complete ledger of incoming funds with downloadable 80G receipts</p>
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setShowDonationModal(true)}
-                    className="px-3.5 py-2 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs flex items-center gap-1.5"
+                    className="px-3.5 py-2 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Record New Donation</span>
@@ -1476,10 +1507,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         notify('Failed to generate CSV export.', 'error');
                       }
                     }}
-                    className="px-3.5 py-2 bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white font-semibold rounded-xl text-xs border border-slate-700 flex items-center gap-1.5 transition-colors shadow-sm"
+                    className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-semibold rounded-xl text-xs border border-slate-200 flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
                     title="Export recorded donations to CSV"
                   >
-                    <Download className="w-3.5 h-3.5 text-teal-400" />
+                    <Download className="w-3.5 h-3.5 text-teal-600" />
                     <span>Export CSV</span>
                   </button>
                 </div>
@@ -1487,7 +1518,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs sm:text-sm">
-                  <thead className="bg-slate-900 text-slate-400 border-b border-slate-800">
+                  <thead className="bg-slate-50 text-slate-500 border-b border-slate-200 text-[11px] uppercase tracking-wider font-semibold">
                     <tr>
                       <th className="p-3">Donation ID</th>
                       <th className="p-3">Donor Name &amp; Email</th>
@@ -1499,27 +1530,27 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <th className="p-3 text-right">Receipt</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800">
+                  <tbody className="divide-y divide-slate-100">
                     {donations.map((d) => (
-                      <tr key={d.id} className="hover:bg-slate-800/40">
-                        <td className="p-3 font-mono text-teal-400 font-bold">{d.id}</td>
+                      <tr key={d.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="p-3 font-mono text-teal-700 font-bold">{d.id}</td>
                         <td className="p-3">
-                          <div className="font-semibold text-white">{d.isAnonymous ? 'Anonymous' : d.donorName}</div>
-                          <div className="text-[11px] text-slate-400">{d.donorEmail}</div>
+                          <div className="font-semibold text-slate-900">{d.isAnonymous ? 'Anonymous' : d.donorName}</div>
+                          <div className="text-[11px] text-slate-500">{d.donorEmail}</div>
                         </td>
-                        <td className="p-3 text-slate-300">{d.cause}</td>
-                        <td className="p-3 font-mono text-teal-300 font-bold text-sm">₹{d.amount.toLocaleString('en-IN')}</td>
-                        <td className="p-3 text-slate-400">{d.method}</td>
-                        <td className="p-3 text-slate-400">{d.date}</td>
+                        <td className="p-3 text-slate-600">{d.cause}</td>
+                        <td className="p-3 font-mono text-teal-700 font-bold text-sm">₹{d.amount.toLocaleString('en-IN')}</td>
+                        <td className="p-3 text-slate-500">{d.method}</td>
+                        <td className="p-3 text-slate-500">{d.date}</td>
                         <td className="p-3">
-                          <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded text-[11px] font-bold">
+                          <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded text-[11px] font-bold">
                             {d.status}
                           </span>
                         </td>
                         <td className="p-3 text-right">
                           <button
                             onClick={() => onViewReceipt(d)}
-                            className="px-2.5 py-1 bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 rounded-lg text-xs font-semibold transition-colors"
+                            className="px-2.5 py-1 bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 rounded-lg text-xs font-semibold transition-colors cursor-pointer"
                           >
                             80G Receipt
                           </button>
@@ -1534,16 +1565,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
           {/* SUB-VIEW 4: EXPENSES LEDGER */}
           {activeSubView === 'expenses' && (
-            <div className="bg-slate-850 p-6 rounded-2xl border border-slate-800 space-y-4 animate-fadeIn">
-              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-800">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4 animate-fadeIn">
+              <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200">
                 <div>
-                  <h3 className="font-bold text-white text-base">Expenses &amp; Field Disbursements</h3>
-                  <p className="text-xs text-slate-400">Verified vendor invoices and program aid allocations</p>
+                  <h3 className="font-bold text-slate-900 text-base">Expenses &amp; Field Disbursements</h3>
+                  <p className="text-xs text-slate-500">Verified vendor invoices and program aid allocations</p>
                 </div>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setShowExpenseModal(true)}
-                    className="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-1.5"
+                    className="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Submit Expense Claim</span>
@@ -1558,10 +1589,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         notify('Failed to generate CSV export.', 'error');
                       }
                     }}
-                    className="px-3.5 py-2 bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white font-semibold rounded-xl text-xs border border-slate-700 flex items-center gap-1.5 transition-colors shadow-sm"
+                    className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-semibold rounded-xl text-xs border border-slate-200 flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
                     title="Export expenses to CSV"
                   >
-                    <Download className="w-3.5 h-3.5 text-amber-400" />
+                    <Download className="w-3.5 h-3.5 text-amber-600" />
                     <span>Export CSV</span>
                   </button>
                 </div>
@@ -1569,7 +1600,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs sm:text-sm">
-                  <thead className="bg-slate-900 text-slate-400 border-b border-slate-800">
+                  <thead className="bg-slate-50 text-slate-500 border-b border-slate-200 text-[11px] uppercase tracking-wider font-semibold">
                     <tr>
                       <th className="p-3">Claim ID</th>
                       <th className="p-3">Title &amp; Vendor</th>
@@ -1580,20 +1611,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <th className="p-3 text-right">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800">
+                  <tbody className="divide-y divide-slate-100">
                     {expenses.map((e) => (
-                      <tr key={e.id} className="hover:bg-slate-800/40">
-                        <td className="p-3 font-mono text-amber-400 font-bold">{e.id}</td>
+                      <tr key={e.id} className="hover:bg-slate-50 transition-colors">
+                        <td className="p-3 font-mono text-amber-600 font-bold">{e.id}</td>
                         <td className="p-3">
-                          <div className="font-semibold text-white">{e.title}</div>
-                          <div className="text-[11px] text-slate-400">Vendor: {e.vendor}</div>
+                          <div className="font-semibold text-slate-900">{e.title}</div>
+                          <div className="text-[11px] text-slate-500">Vendor: {e.vendor}</div>
                         </td>
-                        <td className="p-3 text-slate-300">{e.category}</td>
-                        <td className="p-3 font-mono text-amber-300 font-bold text-sm">₹{e.amount.toLocaleString('en-IN')}</td>
-                        <td className="p-3 text-slate-400">{e.date}</td>
-                        <td className="p-3 text-slate-300">{e.auditedBy}</td>
+                        <td className="p-3 text-slate-600">{e.category}</td>
+                        <td className="p-3 font-mono text-amber-600 font-bold text-sm">₹{e.amount.toLocaleString('en-IN')}</td>
+                        <td className="p-3 text-slate-500">{e.date}</td>
+                        <td className="p-3 text-slate-600">{e.auditedBy}</td>
                         <td className="p-3 text-right">
-                          <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 rounded text-[11px] font-bold">
+                          <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded text-[11px] font-bold">
                             {e.status}
                           </span>
                         </td>
@@ -1604,31 +1635,30 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
             </div>
           )}
-
           {/* SUB-VIEW: AID REQUESTS & APPLICANTS LEDGER */}
           {activeSubView === 'requests' && (
-            <div className="bg-slate-850 p-6 rounded-2xl border border-slate-800 space-y-5 animate-fadeIn">
-              <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-800">
+            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5 animate-fadeIn">
+              <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-slate-200">
                 <div>
-                  <h3 className="font-bold text-white text-base flex items-center gap-2">
-                    <Clock className="w-5 h-5 text-purple-400" />
+                  <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-purple-600" />
                     Aid &amp; Grant Applications Ledger (Who Requested Funds)
                   </h3>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-xs text-slate-500 mt-0.5">
                     Official registry of community partners and vulnerable individuals requesting urgent assistance
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <div className="px-3 py-1.5 bg-purple-500/15 border border-purple-500/30 rounded-xl text-xs font-mono font-bold text-purple-300 flex items-center gap-1.5">
+                  <div className="px-3 py-1.5 bg-purple-50 border border-purple-200 rounded-xl text-xs font-mono font-bold text-purple-700 flex items-center gap-1.5">
                     <span>Pending Total:</span>
-                    <span className="text-white">${pendingTotalAmount.toLocaleString()}</span>
+                    <span className="text-purple-900">₹{pendingTotalAmount.toLocaleString('en-IN')}</span>
                   </div>
                   <button
                     onClick={() => setShowVerificationGuideModal(true)}
-                    className="px-3 py-2 bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-sm"
+                    className="px-3 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                     title="Comprehensive guide on recognizing real vs fake aid requests"
                   >
-                    <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                    <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
                     <span>Real vs Fake Check Guide</span>
                   </button>
                   <button
@@ -1641,10 +1671,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         notify('Failed to generate CSV export.', 'error');
                       }
                     }}
-                    className="px-3.5 py-2 bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white font-semibold rounded-xl text-xs border border-slate-700 flex items-center gap-1.5 transition-colors shadow-sm"
+                    className="px-3.5 py-2 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 font-semibold rounded-xl text-xs border border-slate-200 flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
                     title="Export all aid requests to CSV"
                   >
-                    <Download className="w-3.5 h-3.5 text-purple-400" />
+                    <Download className="w-3.5 h-3.5 text-purple-600" />
                     <span>Export CSV</span>
                   </button>
                 </div>
@@ -1655,50 +1685,50 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="flex flex-wrap items-center gap-1.5 text-xs">
                   <button
                     onClick={() => setRequestsFilter('pending')}
-                    className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+                    className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
                       requestsFilter === 'pending'
-                        ? 'bg-purple-600 text-white shadow-md'
-                        : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                        ? 'bg-purple-600 text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                     }`}
                   >
                     Pending Review ({pendingRequestsCount})
                   </button>
                   <button
                     onClick={() => setRequestsFilter('all')}
-                    className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+                    className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
                       requestsFilter === 'all'
-                        ? 'bg-purple-600 text-white shadow-md'
-                        : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                        ? 'bg-purple-600 text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                     }`}
                   >
                     All Applicants ({requests.length})
                   </button>
                   <button
                     onClick={() => setRequestsFilter('Under Review')}
-                    className={`px-3 py-1.5 rounded-xl font-semibold transition-all ${
+                    className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer ${
                       requestsFilter === 'Under Review'
-                        ? 'bg-amber-600 text-white shadow-md'
-                        : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                        ? 'bg-amber-600 text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                     }`}
                   >
                     Under Review ({underReviewCount})
                   </button>
                   <button
                     onClick={() => setRequestsFilter('Field Audited')}
-                    className={`px-3 py-1.5 rounded-xl font-semibold transition-all ${
+                    className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer ${
                       requestsFilter === 'Field Audited'
-                        ? 'bg-sky-600 text-white shadow-md'
-                        : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                        ? 'bg-sky-600 text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                     }`}
                   >
                     Field Audited ({fieldAuditedCount})
                   </button>
                   <button
                     onClick={() => setRequestsFilter('Disbursed')}
-                    className={`px-3 py-1.5 rounded-xl font-semibold transition-all ${
+                    className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer ${
                       requestsFilter === 'Disbursed'
-                        ? 'bg-emerald-600 text-white shadow-md'
-                        : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
                     }`}
                   >
                     Disbursed ({disbursedCount})
@@ -1712,7 +1742,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     value={requestsSearch}
                     onChange={(e) => setRequestsSearch(e.target.value)}
                     placeholder="Search applicant or cause..."
-                    className="w-full pl-9 pr-3.5 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"
+                    className="w-full pl-9 pr-3.5 py-1.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs"
                   />
                 </div>
               </div>
@@ -1720,7 +1750,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {/* Requests Table */}
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs sm:text-sm">
-                  <thead className="bg-slate-900 text-slate-400 border-b border-slate-800">
+                  <thead className="bg-slate-50 text-slate-500 border-b border-slate-200 text-[11px] uppercase tracking-wider font-semibold">
                     <tr>
                       <th className="p-3">Application ID</th>
                       <th className="p-3">Applicant &amp; Organization</th>
@@ -1731,7 +1761,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <th className="p-3 text-right">Actions</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800">
+                  <tbody className="divide-y divide-slate-100">
                     {requests
                       .filter(r => {
                         if (requestsFilter === 'pending') {
@@ -1754,35 +1784,35 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         );
                       })
                       .map((r) => (
-                        <tr key={r.id} className="hover:bg-slate-800/50 transition-colors">
-                          <td className="p-3 font-mono text-purple-400 font-bold text-xs">
+                        <tr key={r.id} className="hover:bg-slate-50 transition-colors">
+                          <td className="p-3 font-mono text-purple-700 font-bold text-xs">
                             <div>{r.id}</div>
-                            <div className="text-[10px] text-slate-500 font-sans">{r.date}</div>
+                            <div className="text-[10px] text-slate-400 font-sans">{r.date}</div>
                           </td>
                           <td className="p-3">
-                            <div className="font-bold text-white flex items-center gap-1.5">
+                            <div className="font-bold text-slate-900 flex items-center gap-1.5">
                               {r.applicantName}
                             </div>
-                            <div className="text-[11px] text-slate-400 flex items-center gap-1">
-                              <Building className="w-3 h-3 text-slate-500" /> {r.org}
+                            <div className="text-[11px] text-slate-500 flex items-center gap-1">
+                              <Building className="w-3 h-3 text-slate-400" /> {r.org}
                             </div>
                           </td>
                           <td className="p-3 max-w-xs">
-                            <p className="text-xs text-slate-200 line-clamp-2 leading-relaxed">
+                            <p className="text-xs text-slate-700 line-clamp-2 leading-relaxed">
                               {r.purpose}
                             </p>
-                            <span className="text-[10px] text-slate-400 font-semibold">{r.category}</span>
+                            <span className="text-[10px] text-slate-500 font-semibold">{r.category}</span>
                           </td>
-                          <td className="p-3 font-mono text-purple-300 font-black text-sm">
+                          <td className="p-3 font-mono text-purple-700 font-black text-sm">
                             ₹{r.amount.toLocaleString('en-IN')}
                           </td>
                           <td className="p-3">
                             <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold inline-flex items-center gap-1 ${
                               r.urgency === 'Emergency'
-                                ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                                ? 'bg-rose-50 text-rose-700 border border-rose-200'
                                 : r.urgency === 'Urgent'
-                                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                                : 'bg-slate-800 text-slate-300 border border-slate-700'
+                                ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                                : 'bg-slate-100 text-slate-700 border border-slate-200'
                             }`}>
                               {r.urgency === 'Emergency' && <AlertTriangle className="w-3 h-3" />}
                               {r.urgency}
@@ -1791,10 +1821,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           <td className="p-3">
                             <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold inline-flex items-center gap-1 ${
                               r.status === 'Disbursed'
-                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                                 : r.status === 'Field Audited'
-                                ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
-                                : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                                ? 'bg-sky-50 text-sky-700 border border-sky-200'
+                                : 'bg-amber-50 text-amber-700 border border-amber-200'
                             }`}>
                               {r.status === 'Disbursed' && <CheckCircle2 className="w-3.5 h-3.5" />}
                               {r.status === 'Field Audited' && <ShieldCheck className="w-3.5 h-3.5" />}
@@ -1809,7 +1839,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                                   setSelectedRequestDetails(r);
                                   setShowRequestsModal(true);
                                 }}
-                                className="px-2.5 py-1 bg-slate-800 hover:bg-slate-750 text-slate-200 border border-slate-700 rounded-lg text-xs font-semibold"
+                                className="px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-lg text-xs font-semibold cursor-pointer shadow-2xs"
                                 title="View who requested and full dossier"
                               >
                                 View Dossier
@@ -1817,7 +1847,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                               {r.status === 'Under Review' && (
                                 <button
                                   onClick={() => handleUpdateApplicantStatus(r, 'Field Audited')}
-                                  className="px-2.5 py-1 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 rounded-lg text-xs font-semibold"
+                                  className="px-2.5 py-1 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-lg text-xs font-semibold cursor-pointer"
                                   title="Mark as field audited"
                                 >
                                   Audit OK
@@ -1826,7 +1856,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                               {r.status !== 'Disbursed' && (
                                 <button
                                   onClick={() => handleApproveAndDisburse(r)}
-                                  className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow-sm"
+                                  className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow-xs cursor-pointer"
                                   title="Approve and record disbursement"
                                 >
                                   Disburse
@@ -1846,18 +1876,18 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {activeSubView === 'messages' && (
             <div className="space-y-4 animate-fadeIn">
               {/* Header with Search and Filter Tabs */}
-              <div className="bg-slate-850 p-4 sm:p-5 rounded-2xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <h3 className="font-bold text-white text-base flex items-center gap-2">
-                    <Inbox className="w-5 h-5 text-teal-400" />
+                  <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
+                    <Inbox className="w-5 h-5 text-teal-600" />
                     <span>Donor &amp; Public Inquiries</span>
                     {unreadMessagesCount > 0 && (
-                      <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                      <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
                         {unreadMessagesCount} unread
                       </span>
                     )}
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-500">
                     Direct communications sent from the public Contact Us portal by donors, partners, and community members.
                   </p>
                 </div>
@@ -1871,17 +1901,17 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       placeholder="Search sender, subject..."
                       value={messagesSearch}
                       onChange={(e) => setMessagesSearch(e.target.value)}
-                      className="w-full pl-9 pr-3 py-1.5 bg-slate-900 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                      className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-teal-500 focus:bg-white"
                     />
                   </div>
 
                   {/* Filter tabs */}
-                  <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs">
+                  <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs">
                     <button
                       type="button"
                       onClick={() => setMessagesFilter('all')}
-                      className={`px-3 py-1 rounded-lg font-semibold transition-all ${
-                        messagesFilter === 'all' ? 'bg-teal-500 text-white' : 'text-slate-400 hover:text-white'
+                      className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
+                        messagesFilter === 'all' ? 'bg-teal-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
                       All ({messages.length})
@@ -1889,8 +1919,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <button
                       type="button"
                       onClick={() => setMessagesFilter('unread')}
-                      className={`px-3 py-1 rounded-lg font-semibold transition-all ${
-                        messagesFilter === 'unread' ? 'bg-amber-500 text-slate-950 font-bold' : 'text-slate-400 hover:text-white'
+                      className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
+                        messagesFilter === 'unread' ? 'bg-amber-500 text-slate-950 font-bold shadow-xs' : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
                       Unread ({unreadMessagesCount})
@@ -1898,8 +1928,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <button
                       type="button"
                       onClick={() => setMessagesFilter('read')}
-                      className={`px-3 py-1 rounded-lg font-semibold transition-all ${
-                        messagesFilter === 'read' ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-white'
+                      className={`px-3 py-1 rounded-lg font-semibold transition-all cursor-pointer ${
+                        messagesFilter === 'read' ? 'bg-white text-slate-900 shadow-xs font-bold' : 'text-slate-600 hover:text-slate-900'
                       }`}
                     >
                       Read ({messages.length - unreadMessagesCount})
@@ -1911,18 +1941,18 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {/* Inbox Layout */}
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 {/* Left: Message List */}
-                <div className="lg:col-span-5 bg-slate-850 p-4 rounded-2xl border border-slate-800 space-y-3">
-                  <div className="font-bold text-white text-xs px-1 flex items-center justify-between text-slate-400">
+                <div className="lg:col-span-5 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+                  <div className="font-bold text-slate-500 text-xs px-1 flex items-center justify-between">
                     <span>INCOMING INQUIRIES ({filteredMessages.length})</span>
-                    <span>Recent first</span>
+                    <span className="text-slate-400 font-normal">Recent first</span>
                   </div>
 
                   <div className="space-y-2 max-h-[620px] overflow-y-auto pr-1">
                     {filteredMessages.length === 0 ? (
                       <div className="p-8 text-center text-slate-400 text-xs space-y-2">
-                        <Inbox className="w-8 h-8 text-slate-600 mx-auto" />
-                        <p className="font-semibold text-slate-300">No messages found</p>
-                        <p className="text-[11px] text-slate-500">
+                        <Inbox className="w-8 h-8 text-slate-300 mx-auto" />
+                        <p className="font-semibold text-slate-600">No messages found</p>
+                        <p className="text-[11px] text-slate-400">
                           {messagesSearch ? 'No inquiries matching your search query.' : 'When donors contact the NGO via the public portal, their messages will appear here.'}
                         </p>
                       </div>
@@ -1938,35 +1968,54 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           }}
                           className={`p-3.5 rounded-xl cursor-pointer transition-all border ${
                             selectedMessage?.id === m.id
-                              ? 'bg-slate-800 border-teal-500/60 shadow-md ring-1 ring-teal-500/20'
+                              ? 'bg-teal-50/50 border-teal-500 shadow-xs ring-1 ring-teal-500/30'
                               : m.read
-                              ? 'bg-slate-900/60 border-slate-800/80 hover:border-slate-700'
-                              : 'bg-slate-900 border-amber-500/30 hover:border-amber-500/50'
+                              ? 'bg-slate-50/70 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                              : 'bg-white border-amber-300 shadow-xs hover:border-amber-400'
                           }`}
                         >
                           <div className="flex justify-between items-start text-xs mb-1">
                             <div className="flex items-center gap-1.5 truncate max-w-[200px]">
                               {!m.read && (
-                                <span className="w-2 h-2 rounded-full bg-amber-400 flex-shrink-0" title="Unread Message"></span>
+                                <span className="w-2 h-2 rounded-full bg-amber-500 flex-shrink-0" title="Unread Message"></span>
                               )}
-                              <span className={`truncate ${!m.read ? 'font-bold text-white' : 'font-medium text-slate-300'}`}>
+                              <span className={`truncate ${!m.read ? 'font-bold text-slate-900' : 'font-medium text-slate-700'}`}>
                                 {m.senderName}
                               </span>
                             </div>
-                            <span className="text-[10px] text-slate-400 shrink-0">{m.date}</span>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[10px] text-slate-400 shrink-0">{m.date}</span>
+                              {onDeleteMessage && (
+                                <button
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (selectedMessage?.id === m.id) {
+                                      setSelectedMessage(null);
+                                    }
+                                    onDeleteMessage(m.id);
+                                  }}
+                                  className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer"
+                                  title="Delete inquiry"
+                                  aria-label="Delete message"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              )}
+                            </div>
                           </div>
 
-                          <div className="text-xs font-semibold text-teal-300 truncate mb-1">
+                          <div className="text-xs font-semibold text-teal-700 truncate mb-1">
                             {m.subject || 'General Inquiry'}
                           </div>
 
-                          <div className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
+                          <div className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
                             {m.message}
                           </div>
 
-                          <div className="mt-2 pt-2 border-t border-slate-800/60 flex items-center justify-between text-[10px] text-slate-500">
-                            <span className="truncate max-w-[150px]">{m.email}</span>
-                            {m.phone && <span className="text-teal-400/90 font-mono">{m.phone}</span>}
+                          <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
+                            <span className="truncate max-w-[150px] text-slate-500">{m.email}</span>
+                            {m.phone && <span className="text-teal-600 font-mono font-medium">{m.phone}</span>}
                           </div>
                         </div>
                       ))
@@ -1975,22 +2024,22 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
 
                 {/* Right: Message Reader & Actions */}
-                <div className="lg:col-span-7 bg-slate-850 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                <div className="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
                   {selectedMessage ? (
                     <div className="space-y-5 text-xs sm:text-sm">
                       {/* Message Header */}
-                      <div className="border-b border-slate-800 pb-4 space-y-3">
+                      <div className="border-b border-slate-100 pb-4 space-y-3">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                           <div className="flex items-center gap-2.5">
-                            <div className="w-9 h-9 rounded-xl bg-teal-500/20 text-teal-400 font-bold flex items-center justify-center text-sm">
+                            <div className="w-9 h-9 rounded-xl bg-teal-50 border border-teal-200 text-teal-700 font-bold flex items-center justify-center text-sm">
                               {selectedMessage.senderName.substring(0, 2).toUpperCase()}
                             </div>
                             <div>
-                              <h3 className="font-bold text-white text-base leading-tight">
+                              <h3 className="font-bold text-slate-900 text-base leading-tight">
                                 {selectedMessage.subject || 'Inquiry'}
                               </h3>
-                              <p className="text-slate-400 text-xs">
-                                From: <strong className="text-white">{selectedMessage.senderName}</strong>
+                              <p className="text-slate-500 text-xs">
+                                From: <strong className="text-slate-800">{selectedMessage.senderName}</strong>
                               </p>
                             </div>
                           </div>
@@ -2000,10 +2049,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
                               <button
                                 type="button"
                                 onClick={() => onMarkMessageRead(selectedMessage.id)}
-                                className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-colors ${
+                                className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
                                   selectedMessage.read
-                                    ? 'bg-slate-800 text-slate-400 border-slate-700 hover:text-white'
-                                    : 'bg-teal-500/20 text-teal-300 border-teal-500/40 hover:bg-teal-500/30'
+                                    ? 'bg-slate-100 text-slate-600 border-slate-200 hover:text-slate-900'
+                                    : 'bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100'
                                 }`}
                               >
                                 {selectedMessage.read ? 'Mark Unread' : 'Mark as Read'}
@@ -2014,12 +2063,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                               <button
                                 type="button"
                                 onClick={() => {
-                                  if (confirm('Are you sure you want to delete this message?')) {
-                                    onDeleteMessage(selectedMessage.id);
-                                    setSelectedMessage(null);
-                                  }
+                                  const idToDelete = selectedMessage.id;
+                                  setSelectedMessage(null);
+                                  onDeleteMessage(idToDelete);
                                 }}
-                                className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-colors"
+                                className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition-colors cursor-pointer"
                                 title="Delete message"
                               >
                                 <Trash2 className="w-4 h-4" />
@@ -2029,21 +2077,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </div>
 
                         {/* Donor Contact Details Bar */}
-                        <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
-                          <div className="flex items-center gap-2 text-slate-300">
-                            <Mail className="w-3.5 h-3.5 text-teal-400" />
-                            <span>Email: <strong className="text-white select-all">{selectedMessage.email}</strong></span>
+                        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+                          <div className="flex items-center gap-2 text-slate-600">
+                            <Mail className="w-3.5 h-3.5 text-teal-600" />
+                            <span>Email: <strong className="text-slate-900 select-all">{selectedMessage.email}</strong></span>
                           </div>
 
                           {selectedMessage.phone && (
-                            <div className="flex items-center gap-2 text-slate-300">
-                              <Phone className="w-3.5 h-3.5 text-amber-400" />
-                              <span>Phone: <strong className="text-white font-mono select-all">{selectedMessage.phone}</strong></span>
+                            <div className="flex items-center gap-2 text-slate-600">
+                              <Phone className="w-3.5 h-3.5 text-amber-600" />
+                              <span>Phone: <strong className="text-slate-900 font-mono select-all">{selectedMessage.phone}</strong></span>
                             </div>
                           )}
 
                           <div className="text-[11px] text-slate-400">
-                            Received: <span className="text-slate-300">{selectedMessage.date}</span>
+                            Received: <span className="text-slate-600 font-medium">{selectedMessage.date}</span>
                           </div>
                         </div>
                       </div>
@@ -2051,7 +2099,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       {/* Message Body */}
                       <div className="space-y-2">
                         <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Message Content</span>
-                        <div className="p-4 sm:p-5 bg-slate-900/90 rounded-xl border border-slate-800 text-slate-200 leading-relaxed text-sm whitespace-pre-wrap">
+                        <div className="p-4 sm:p-5 bg-slate-50/80 rounded-xl border border-slate-200 text-slate-800 leading-relaxed text-sm whitespace-pre-wrap">
                           {selectedMessage.message}
                         </div>
                       </div>
@@ -2059,26 +2107,26 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       {/* Display replies if any */}
                       {selectedMessage.replies && selectedMessage.replies.length > 0 && (
                         <div className="space-y-2">
-                          <span className="text-xs font-bold uppercase tracking-wider text-teal-400">Previous Replies</span>
+                          <span className="text-xs font-bold uppercase tracking-wider text-teal-700">Previous Replies</span>
                           {selectedMessage.replies.map((r, idx) => (
-                            <div key={idx} className="p-3 bg-teal-500/10 border border-teal-500/20 rounded-xl text-xs space-y-1">
-                              <div className="flex justify-between text-teal-300 font-semibold">
+                            <div key={idx} className="p-3 bg-teal-50 border border-teal-200 rounded-xl text-xs space-y-1">
+                              <div className="flex justify-between text-teal-800 font-semibold">
                                 <span>{r.author}</span>
-                                <span className="text-slate-400">{r.date}</span>
+                                <span className="text-slate-500">{r.date}</span>
                               </div>
-                              <p className="text-slate-200">{r.text}</p>
+                              <p className="text-slate-700">{r.text}</p>
                             </div>
                           ))}
                         </div>
                       )}
 
                       {/* Reply Box */}
-                      <div className="pt-3 border-t border-slate-800 space-y-3">
+                      <div className="pt-3 border-t border-slate-100 space-y-3">
                         <div className="flex items-center justify-between">
-                          <label className="block font-semibold text-slate-300 text-xs">Direct Response</label>
+                          <label className="block font-semibold text-slate-700 text-xs">Direct Response</label>
                           <a
                             href={`mailto:${selectedMessage.email}?subject=${encodeURIComponent('Re: ' + (selectedMessage.subject || 'Inquiry'))}`}
-                            className="text-xs text-teal-400 hover:text-teal-300 underline flex items-center gap-1 font-medium"
+                            className="text-xs text-teal-600 hover:text-teal-700 underline flex items-center gap-1 font-medium"
                           >
                             <Mail className="w-3 h-3" />
                             <span>Open in Default Mail Client</span>
@@ -2089,7 +2137,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
                           placeholder={`Write a response to ${selectedMessage.senderName}...`}
-                          className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500 text-xs sm:text-sm"
+                          className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white text-xs sm:text-sm"
                         />
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] text-slate-400">
@@ -2109,7 +2157,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                               if (onToast) onToast(`Reply recorded for ${selectedMessage.email}`, 'success');
                               setReplyText('');
                             }}
-                            className="px-4 py-2 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-teal-500/20 transition-all cursor-pointer"
+                            className="px-4 py-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl text-xs flex items-center gap-1.5 shadow-md shadow-teal-600/20 transition-all cursor-pointer"
                           >
                             <Send className="w-3.5 h-3.5" />
                             <span>Save &amp; Send Reply</span>
@@ -2119,9 +2167,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     </div>
                   ) : (
                     <div className="py-24 text-center text-slate-400 text-xs space-y-2">
-                      <Inbox className="w-10 h-10 text-slate-600 mx-auto" />
-                      <p className="font-semibold text-slate-300 text-sm">Select an inquiry to view details</p>
-                      <p className="text-slate-500">
+                      <Inbox className="w-10 h-10 text-slate-300 mx-auto" />
+                      <p className="font-semibold text-slate-700 text-sm">Select an inquiry to view details</p>
+                      <p className="text-slate-400">
                         Choose any message from the left panel to inspect donor contact information, read full message, and reply.
                       </p>
                     </div>
@@ -2135,45 +2183,45 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {activeSubView === 'profile' && (
             <div className="max-w-4xl space-y-6 animate-fadeIn">
               {/* Profile Header Banner */}
-              <div className="bg-gradient-to-r from-teal-900/40 via-slate-850 to-slate-900 p-6 rounded-2xl border border-teal-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
+              <div className="bg-gradient-to-r from-teal-50 via-white to-emerald-50 p-6 rounded-2xl border border-teal-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 text-white font-extrabold text-2xl flex items-center justify-center shadow-lg shadow-teal-500/25 border border-teal-400/40">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-600 text-white font-extrabold text-2xl flex items-center justify-center shadow-lg shadow-teal-600/20 border border-teal-400/40">
                     {currentUser.avatar || currentUser.name.substring(0, 2).toUpperCase()}
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xl font-bold text-white">{currentUser.name}</h3>
-                      <span className="px-2.5 py-0.5 bg-teal-500/20 text-teal-300 border border-teal-500/30 rounded-full text-[11px] font-bold flex items-center gap-1">
-                        <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
+                      <h3 className="text-xl font-bold text-slate-900">{currentUser.name}</h3>
+                      <span className="px-2.5 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded-full text-[11px] font-bold flex items-center gap-1">
+                        <ShieldCheck className="w-3.5 h-3.5 text-teal-600" />
                         {currentUser.role}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400 mt-1 flex items-center gap-3">
+                    <p className="text-xs text-slate-500 mt-1 flex items-center gap-3">
                       <span>{currentUser.email}</span>
                       <span>•</span>
-                      <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3" /> KYC Verified Official
+                      <span className="text-emerald-700 font-semibold flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" /> KYC Verified Official
                       </span>
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <div className="px-3.5 py-2 bg-slate-800/80 rounded-xl border border-slate-700 text-right">
-                    <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">Audits Approved</div>
-                    <div className="text-lg font-mono font-bold text-teal-300">{currentUser.auditsApproved || 42} Cases</div>
+                  <div className="px-3.5 py-2 bg-white rounded-xl border border-slate-200 text-right shadow-xs">
+                    <div className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">Audits Approved</div>
+                    <div className="text-lg font-mono font-bold text-teal-700">{currentUser.auditsApproved || 42} Cases</div>
                   </div>
                 </div>
               </div>
 
               {/* Profile Edit Form */}
-              <div className="bg-slate-850 p-6 sm:p-7 rounded-2xl border border-slate-800 space-y-6 shadow-md">
-                <div className="border-b border-slate-800 pb-4">
-                  <h4 className="text-base font-bold text-white flex items-center gap-2">
-                    <UserCheck className="w-4 h-4 text-teal-400" />
+              <div className="bg-white p-6 sm:p-7 rounded-2xl border border-slate-200 space-y-6 shadow-xs">
+                <div className="border-b border-slate-100 pb-4">
+                  <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                    <UserCheck className="w-4 h-4 text-teal-600" />
                     <span>Edit Administrator Credentials &amp; Profile Details</span>
                   </h4>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 mt-1">
                     Update your official administrative profile. Changes are saved to database storage and reflected immediately across the NGO platform.
                   </p>
                 </div>
@@ -2181,7 +2229,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <form onSubmit={handleProfileSave} className="space-y-5 text-xs sm:text-sm">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-slate-300 font-semibold mb-1.5">
+                      <label className="block text-slate-700 font-semibold mb-1.5">
                         Administrator Full Name *
                       </label>
                       <input
@@ -2190,22 +2238,22 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         value={profName}
                         onChange={(e) => setProfName(e.target.value)}
                         placeholder="e.g. Dr. K. Radhakrishnan"
-                        className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 font-medium"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white font-medium"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-slate-300 font-semibold mb-1.5 flex items-center justify-between">
+                      <label className="block text-slate-700 font-semibold mb-1.5 flex items-center justify-between">
                         <span>Authorized Admin Email Address</span>
-                        <span className="text-[10px] text-amber-400 font-normal">Primary System Identity</span>
+                        <span className="text-[10px] text-amber-600 font-normal">Primary System Identity</span>
                       </label>
                       <input
                         type="email"
                         disabled
                         value={profEmail}
-                        className="w-full px-4 py-2.5 bg-slate-900/60 border border-slate-800 rounded-xl text-slate-400 font-mono cursor-not-allowed"
+                        className="w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 font-mono cursor-not-allowed"
                       />
-                      <p className="text-[10px] text-slate-500 mt-1">
+                      <p className="text-[10px] text-slate-400 mt-1">
                         Primary system administrator email is locked to protect board governance credentials.
                       </p>
                     </div>
@@ -2213,7 +2261,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
-                      <label className="block text-slate-300 font-semibold mb-1.5">
+                      <label className="block text-slate-700 font-semibold mb-1.5">
                         Official Direct Phone Number
                       </label>
                       <input
@@ -2221,25 +2269,25 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         value={profPhone}
                         onChange={(e) => setProfPhone(e.target.value)}
                         placeholder="e.g. +1 (555) 019-2834"
-                        className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                        className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-slate-300 font-semibold mb-1.5">
+                      <label className="block text-slate-700 font-semibold mb-1.5">
                         Board Governance Role
                       </label>
                       <input
                         type="text"
                         disabled
                         value="Executive Administrator & Audit Officer"
-                        className="w-full px-4 py-2.5 bg-slate-900/60 border border-slate-800 rounded-xl text-slate-400 cursor-not-allowed"
+                        className="w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-slate-500 cursor-not-allowed"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1.5">
+                    <label className="block text-slate-700 font-semibold mb-1.5">
                       Professional Bio &amp; Treasury Responsibility
                     </label>
                     <textarea
@@ -2247,19 +2295,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       value={profBio}
                       onChange={(e) => setProfBio(e.target.value)}
                       placeholder="Add non-profit governance experience, fiduciary licenses, and community responsibilities..."
-                      className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none leading-relaxed"
+                      className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white resize-none leading-relaxed"
                     />
                   </div>
 
-                  <div className="pt-2 flex items-center justify-between border-t border-slate-800/80">
-                    <div className="text-[11px] text-slate-400 flex items-center gap-1.5">
-                      <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                  <div className="pt-2 flex items-center justify-between border-t border-slate-100">
+                    <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
+                      <ShieldCheck className="w-4 h-4 text-emerald-600" />
                       <span>Changes are securely written to database storage.</span>
                     </div>
 
                     <button
                       type="submit"
-                      className="px-6 py-2.5 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-teal-500/25 flex items-center gap-2 transition-all cursor-pointer"
+                      className="px-6 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl shadow-md shadow-teal-600/20 flex items-center gap-2 transition-all cursor-pointer"
                     >
                       <Check className="w-4 h-4" />
                       <span>Save Profile Changes</span>
@@ -2273,56 +2321,56 @@ export const Dashboard: React.FC<DashboardProps> = ({
           {/* SUB-VIEW 7: SETTINGS */}
           {activeSubView === 'settings' && (
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 animate-fadeIn">
-              <div className="lg:col-span-6 bg-slate-850 p-6 rounded-2xl border border-slate-800 space-y-5">
-                <h3 className="font-bold text-white text-base flex items-center gap-2">
-                  <Building className="w-4 h-4 text-teal-400" />
+              <div className="lg:col-span-6 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-5">
+                <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
+                  <Building className="w-4 h-4 text-teal-600" />
                   NGO Organization Setup
                 </h3>
 
                 <form onSubmit={handleSaveSettingsSubmit} className="space-y-4 text-xs sm:text-sm">
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">NGO System Name</label>
+                    <label className="block text-slate-700 font-semibold mb-1">NGO System Name</label>
                     <input
                       type="text"
                       value={setNgoName}
                       onChange={(e) => setSetNgoName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">Official Registration Number</label>
+                    <label className="block text-slate-700 font-semibold mb-1">Official Registration Number</label>
                     <input
                       type="text"
                       value={setRegNum}
                       onChange={(e) => setSetRegNum(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">Section 80G Certificate ID</label>
+                    <label className="block text-slate-700 font-semibold mb-1">Section 80G Certificate ID</label>
                     <input
                       type="text"
                       value={setTax80G}
                       onChange={(e) => setSetTax80G(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-slate-300 font-semibold mb-1">Primary UPI ID for Dynamic QR</label>
+                    <label className="block text-slate-700 font-semibold mb-1">Primary UPI ID for Dynamic QR</label>
                     <input
                       type="text"
                       value={setUpiId}
                       onChange={(e) => setSetUpiId(e.target.value)}
-                      className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full py-3 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition-colors"
+                    className="w-full py-3 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl text-xs sm:text-sm shadow-md transition-colors cursor-pointer"
                   >
                     Save System Settings
                   </button>
@@ -2330,42 +2378,40 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
 
               {/* Maintenance & Reset Controls */}
-              <div className="lg:col-span-6 bg-slate-850 p-6 rounded-2xl border border-slate-800 space-y-6">
-                <h3 className="font-bold text-white text-base flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-amber-400" />
+              <div className="lg:col-span-6 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+                <h3 className="font-bold text-slate-800 text-base flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-amber-500" />
                   Gateway &amp; Data Maintenance
                 </h3>
 
                 <div className="space-y-3 text-xs sm:text-sm">
-                  <div className="flex justify-between items-center p-3 bg-slate-900 rounded-xl border border-slate-800">
+                  <div className="flex justify-between items-center p-3.5 bg-slate-50 rounded-xl border border-slate-200">
                     <div>
-                      <div className="font-semibold text-white">Enable UPI / QR Code Gateway</div>
-                      <div className="text-[11px] text-slate-400">Allow instant smartphone contributions</div>
+                      <div className="font-semibold text-slate-800">Enable UPI / QR Code Gateway</div>
+                      <div className="text-[11px] text-slate-500">Allow instant smartphone contributions</div>
                     </div>
-                    <span className="text-teal-400 font-bold">ACTIVE</span>
+                    <span className="text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded border border-teal-200">ACTIVE</span>
                   </div>
 
-                  <div className="flex justify-between items-center p-3 bg-slate-900 rounded-xl border border-slate-800">
+                  <div className="flex justify-between items-center p-3.5 bg-slate-50 rounded-xl border border-slate-200">
                     <div>
-                      <div className="font-semibold text-white">Automated Section 80G Invoicing</div>
-                      <div className="text-[11px] text-slate-400">Generate compliance receipts on donor confirmation</div>
+                      <div className="font-semibold text-slate-800">Automated Section 80G Invoicing</div>
+                      <div className="text-[11px] text-slate-500">Generate compliance receipts on donor confirmation</div>
                     </div>
-                    <span className="text-teal-400 font-bold">ACTIVE</span>
+                    <span className="text-teal-700 font-bold bg-teal-50 px-2 py-0.5 rounded border border-teal-200">ACTIVE</span>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-slate-800 space-y-3">
-                  <h4 className="font-bold text-rose-400 text-xs uppercase tracking-wider">System Maintenance</h4>
+                <div className="pt-4 border-t border-slate-100 space-y-3">
+                  <h4 className="font-bold text-rose-600 text-xs uppercase tracking-wider">System Maintenance</h4>
                   <div className="flex flex-wrap gap-3">
                     <button
                       type="button"
                       onClick={() => {
-                        if (confirm('Reset system data back to default demo state?')) {
-                          onResetData();
-                          notify('System data reset successfully.', 'info');
-                        }
+                        onResetData();
+                        notify('System data reset to initial demo state.', 'info');
                       }}
-                      className="px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 rounded-xl text-xs font-bold transition-colors"
+                      className="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 rounded-xl text-xs font-bold transition-colors cursor-pointer"
                     >
                       Reset Demo Data
                     </button>
@@ -2385,9 +2431,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                           notify('Failed to generate backup JSON.', 'error');
                         }
                       }}
-                      className="px-4 py-2 bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white border border-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                      className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                     >
-                      <Download className="w-3.5 h-3.5 text-teal-400" />
+                      <Download className="w-3.5 h-3.5 text-teal-600" />
                       <span>Backup Database JSON</span>
                     </button>
                   </div>
@@ -2401,45 +2447,45 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* RECORD DONATION MODAL */}
       {showDonationModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 space-y-5">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <h3 className="font-bold text-white text-base flex items-center gap-2">
-                <HandCoins className="w-4 h-4 text-teal-400" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+          <div className="relative w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-2xl p-6 space-y-5">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
+                <HandCoins className="w-4 h-4 text-teal-600" />
                 Record New Donation
               </h3>
-              <button onClick={() => setShowDonationModal(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setShowDonationModal(false)} className="text-slate-400 hover:text-slate-700 cursor-pointer">
                 <XCircle className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleRecordDonationSubmit} className="space-y-3.5 text-xs sm:text-sm">
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Donor Name *</label>
+                <label className="block text-slate-700 font-semibold mb-1">Donor Name *</label>
                 <input
                   type="text"
                   required
                   value={newDonName}
                   onChange={(e) => setNewDonName(e.target.value)}
                   placeholder="e.g. Ramesh Chandra"
-                  className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Donor Email</label>
+                <label className="block text-slate-700 font-semibold mb-1">Donor Email</label>
                 <input
                   type="email"
                   value={newDonEmail}
                   onChange={(e) => setNewDonEmail(e.target.value)}
                   placeholder="donor@example.com"
-                  className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Amount ($ USD) *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Amount (₹ INR) *</label>
                   <input
                     type="number"
                     min="1"
@@ -2447,15 +2493,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     value={newDonAmount}
                     onChange={(e) => setNewDonAmount(Number(e.target.value))}
                     placeholder="500"
-                    className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white font-mono"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Method</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Method</label>
                   <select
                     value={newDonMethod}
                     onChange={(e) => setNewDonMethod(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                   >
                     <option value="UPI / QR Code">UPI / QR Code</option>
                     <option value="Card / Stripe">Card / Stripe</option>
@@ -2466,11 +2512,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Fund Cause</label>
+                <label className="block text-slate-700 font-semibold mb-1">Fund Cause</label>
                 <select
                   value={newDonCause}
                   onChange={(e) => setNewDonCause(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                 >
                   <option value="Healthcare Camps">Healthcare Camps</option>
                   <option value="Child Education">Child Education</option>
@@ -2484,13 +2530,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowDonationModal(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-semibold text-xs"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-xl font-bold text-xs"
+                  className="px-5 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-xl font-bold text-xs shadow-md shadow-teal-600/20 cursor-pointer"
                 >
                   Save Donation
                 </button>
@@ -2502,46 +2548,46 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* SUBMIT EXPENSE MODAL */}
       {showExpenseModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-md bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 space-y-5">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <h3 className="font-bold text-white text-base flex items-center gap-2">
-                <Receipt className="w-4 h-4 text-amber-400" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+          <div className="relative w-full max-w-md bg-white border border-slate-200 rounded-2xl shadow-2xl p-6 space-y-5">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
+                <Receipt className="w-4 h-4 text-amber-500" />
                 Submit Expense Claim
               </h3>
-              <button onClick={() => setShowExpenseModal(false)} className="text-slate-400 hover:text-white">
+              <button onClick={() => setShowExpenseModal(false)} className="text-slate-400 hover:text-slate-700 cursor-pointer">
                 <XCircle className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleSubmitExpenseSubmit} className="space-y-3.5 text-xs sm:text-sm">
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Claim Title / Purpose *</label>
+                <label className="block text-slate-700 font-semibold mb-1">Claim Title / Purpose *</label>
                 <input
                   type="text"
                   required
                   value={newExpTitle}
                   onChange={(e) => setNewExpTitle(e.target.value)}
                   placeholder="e.g. Mobile Ambulance Medicine Stock"
-                  className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-semibold mb-1">Vendor / Supplier Name *</label>
+                <label className="block text-slate-700 font-semibold mb-1">Vendor / Supplier Name *</label>
                 <input
                   type="text"
                   required
                   value={newExpVendor}
                   onChange={(e) => setNewExpVendor(e.target.value)}
                   placeholder="e.g. Apex Health Logistics"
-                  className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Amount ($ USD) *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Amount (₹ INR) *</label>
                   <input
                     type="number"
                     min="1"
@@ -2549,15 +2595,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     value={newExpAmount}
                     onChange={(e) => setNewExpAmount(Number(e.target.value))}
                     placeholder="750"
-                    className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white font-mono"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 font-semibold mb-1">Category</label>
+                  <label className="block text-slate-700 font-semibold mb-1">Category</label>
                   <select
                     value={newExpCat}
                     onChange={(e) => setNewExpCat(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white"
                   >
                     <option value="Healthcare Camps">Healthcare Camps</option>
                     <option value="Child Education">Child Education</option>
@@ -2572,13 +2618,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <button
                   type="button"
                   onClick={() => setShowExpenseModal(false)}
-                  className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-semibold text-xs"
+                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-xs cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl font-bold text-xs"
+                  className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl font-bold text-xs shadow-md cursor-pointer"
                 >
                   Disburse &amp; Record
                 </button>
@@ -2590,21 +2636,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* PENDING ASSISTANCE & AID REQUESTS MODAL (WHO IS REQUESTING) */}
       {showRequestsModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/85 backdrop-blur-md animate-fadeIn overflow-y-auto">
-          <div className="relative w-full max-w-4xl bg-slate-900 border border-slate-700/80 rounded-2xl sm:rounded-3xl shadow-2xl p-5 sm:p-7 space-y-5 my-auto max-h-[92vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/60 backdrop-blur-xs animate-fadeIn overflow-y-auto">
+          <div className="relative w-full max-w-4xl bg-white border border-slate-200 rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-7 space-y-4 sm:space-y-5 my-auto max-h-[90dvh] sm:max-h-[92vh] flex flex-col">
             
             {/* Modal Header */}
-            <div className="flex justify-between items-start border-b border-slate-800 pb-4 flex-shrink-0">
+            <div className="flex justify-between items-start border-b border-slate-100 pb-4 flex-shrink-0">
               <div className="space-y-1">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30">
+                  <div className="p-2 rounded-xl bg-purple-50 text-purple-700 border border-purple-200">
                     <Clock className="w-5 h-5" />
                   </div>
-                  <h3 className="font-extrabold text-white text-lg sm:text-xl tracking-tight">
+                  <h3 className="font-extrabold text-slate-900 text-lg sm:text-xl tracking-tight">
                     Pending Assistance Requests (Who Requested Aid)
                   </h3>
                 </div>
-                <p className="text-xs text-slate-400 leading-relaxed max-w-2xl">
+                <p className="text-xs text-slate-500 leading-relaxed max-w-2xl">
                   Detailed registry of community leaders, healthcare providers, and students who have submitted requests for assistance.
                 </p>
               </div>
@@ -2613,7 +2659,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   setShowRequestsModal(false);
                   setSelectedRequestDetails(null);
                 }} 
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+                className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                 aria-label="Close dialog"
               >
                 <XCircle className="w-6 h-6" />
@@ -2622,21 +2668,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
             {/* Quick KPI stats chips */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 flex-shrink-0">
-              <div className="bg-slate-850 p-3 rounded-xl border border-slate-800 space-y-0.5">
-                <div className="text-[11px] text-slate-400 font-medium">Pending Applicants</div>
-                <div className="text-lg font-black text-purple-400 font-mono">{pendingRequestsCount}</div>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-0.5">
+                <div className="text-[11px] text-slate-500 font-medium">Pending Applicants</div>
+                <div className="text-lg font-black text-purple-700 font-mono">{pendingRequestsCount}</div>
               </div>
-              <div className="bg-slate-850 p-3 rounded-xl border border-slate-800 space-y-0.5">
-                <div className="text-[11px] text-slate-400 font-medium">Total Pending Aid</div>
-                <div className="text-lg font-black text-purple-300 font-mono">${pendingTotalAmount.toLocaleString()}</div>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-0.5">
+                <div className="text-[11px] text-slate-500 font-medium">Total Pending Aid</div>
+                <div className="text-lg font-black text-purple-900 font-mono">₹{pendingTotalAmount.toLocaleString('en-IN')}</div>
               </div>
-              <div className="bg-slate-850 p-3 rounded-xl border border-slate-800 space-y-0.5">
-                <div className="text-[11px] text-slate-400 font-medium">Under Review</div>
-                <div className="text-lg font-black text-amber-400 font-mono">{underReviewCount}</div>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-0.5">
+                <div className="text-[11px] text-slate-500 font-medium">Under Review</div>
+                <div className="text-lg font-black text-amber-700 font-mono">{underReviewCount}</div>
               </div>
-              <div className="bg-slate-850 p-3 rounded-xl border border-slate-800 space-y-0.5">
-                <div className="text-[11px] text-slate-400 font-medium">Field Audited (Ready)</div>
-                <div className="text-lg font-black text-sky-400 font-mono">{fieldAuditedCount}</div>
+              <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 space-y-0.5">
+                <div className="text-[11px] text-slate-500 font-medium">Field Audited (Ready)</div>
+                <div className="text-lg font-black text-sky-700 font-mono">{fieldAuditedCount}</div>
               </div>
             </div>
 
@@ -2645,50 +2691,50 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div className="flex flex-wrap items-center gap-1.5 text-xs">
                 <button
                   onClick={() => setRequestsFilter('pending')}
-                  className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
                     requestsFilter === 'pending'
-                      ? 'bg-purple-600 text-white shadow-md'
-                      : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                      ? 'bg-purple-700 text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   Pending ({pendingRequestsCount})
                 </button>
                 <button
                   onClick={() => setRequestsFilter('all')}
-                  className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+                  className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
                     requestsFilter === 'all'
-                      ? 'bg-purple-600 text-white shadow-md'
-                      : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                      ? 'bg-purple-700 text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   All ({requests.length})
                 </button>
                 <button
                   onClick={() => setRequestsFilter('Under Review')}
-                  className={`px-3 py-1.5 rounded-xl font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer ${
                     requestsFilter === 'Under Review'
-                      ? 'bg-amber-600 text-white shadow-md'
-                      : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                      ? 'bg-amber-600 text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   Under Review ({underReviewCount})
                 </button>
                 <button
                   onClick={() => setRequestsFilter('Field Audited')}
-                  className={`px-3 py-1.5 rounded-xl font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer ${
                     requestsFilter === 'Field Audited'
-                      ? 'bg-sky-600 text-white shadow-md'
-                      : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                      ? 'bg-sky-600 text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   Field Audited ({fieldAuditedCount})
                 </button>
                 <button
                   onClick={() => setRequestsFilter('Disbursed')}
-                  className={`px-3 py-1.5 rounded-xl font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-xl font-semibold transition-all cursor-pointer ${
                     requestsFilter === 'Disbursed'
-                      ? 'bg-emerald-600 text-white shadow-md'
-                      : 'bg-slate-800 text-slate-300 hover:bg-slate-750'
+                      ? 'bg-emerald-600 text-white shadow-xs'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                   }`}
                 >
                   Disbursed ({disbursedCount})
@@ -2702,7 +2748,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   value={requestsSearch}
                   onChange={(e) => setRequestsSearch(e.target.value)}
                   placeholder="Search applicant name..."
-                  className="w-full pl-9 pr-3.5 py-1.5 bg-slate-800 border border-slate-700 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-purple-500"
+                  className="w-full pl-9 pr-3.5 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-purple-500 focus:bg-white"
                 />
               </div>
             </div>
@@ -2733,12 +2779,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 .map((req) => (
                   <div
                     key={req.id}
-                    className="bg-slate-850 border border-slate-800 hover:border-purple-500/50 rounded-2xl p-4 sm:p-5 transition-all space-y-3.5 shadow-sm"
+                    className="bg-white border border-slate-200 hover:border-purple-400 rounded-2xl p-4 sm:p-5 transition-all space-y-3.5 shadow-xs"
                   >
                     {/* Applicant & Organization Header */}
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div className="flex items-start gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-700 text-white font-bold text-sm flex items-center justify-center flex-shrink-0 shadow-md">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-indigo-700 text-white font-bold text-sm flex items-center justify-center flex-shrink-0 shadow-md shadow-purple-600/20">
                           {req.applicantName
                             .split(' ')
                             .filter(Boolean)
@@ -2749,41 +2795,41 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <h4 className="text-base font-bold text-white">
+                            <h4 className="text-base font-bold text-slate-900">
                               {req.applicantName}
                             </h4>
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
                               {req.id}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
-                            <Building className="w-3.5 h-3.5 text-teal-400 flex-shrink-0" />
-                            <span className="font-medium text-slate-300">{req.org}</span>
-                            <span className="text-slate-500">•</span>
-                            <span className="text-slate-400">{req.date}</span>
+                          <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
+                            <Building className="w-3.5 h-3.5 text-teal-600 flex-shrink-0" />
+                            <span className="font-medium text-slate-700">{req.org}</span>
+                            <span className="text-slate-300">•</span>
+                            <span className="text-slate-500">{req.date}</span>
                           </p>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-3">
                         <div className="text-right">
-                          <div className="text-xs text-slate-400 font-medium">Requested Grant</div>
-                          <div className="text-xl font-black text-purple-400 font-mono">
-                            ${req.amount.toLocaleString()}
+                          <div className="text-xs text-slate-500 font-medium">Requested Grant</div>
+                          <div className="text-xl font-black text-purple-700 font-mono">
+                            ₹{req.amount.toLocaleString('en-IN')}
                           </div>
                         </div>
                         <div className="flex flex-col items-end gap-1">
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 ${
                             req.urgency === 'Emergency'
-                              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                              ? 'bg-rose-50 text-rose-700 border border-rose-200'
                               : req.urgency === 'Urgent'
-                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                              : 'bg-slate-800 text-slate-300 border border-slate-700'
+                              ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                              : 'bg-slate-100 text-slate-700 border border-slate-200'
                           }`}>
-                            {req.urgency === 'Emergency' && <AlertTriangle className="w-3 h-3" />}
+                            {req.urgency === 'Emergency' && <AlertTriangle className="w-3 h-3 text-rose-600" />}
                             {req.urgency}
                           </span>
-                          <span className="text-[10px] font-semibold text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                          <span className="text-[10px] font-semibold text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
                             {req.category}
                           </span>
                         </div>
@@ -2791,34 +2837,34 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     </div>
 
                     {/* Purpose of the request */}
-                    <div className="p-3.5 bg-slate-950/80 border border-slate-800 rounded-xl space-y-1">
-                      <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                        <FileText className="w-3.5 h-3.5 text-purple-400" />
+                    <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                      <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                        <FileText className="w-3.5 h-3.5 text-purple-600" />
                         <span>Purpose of Requested Assistance</span>
                       </div>
-                      <p className="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                      <p className="text-xs sm:text-sm text-slate-800 leading-relaxed">
                         {req.purpose}
                       </p>
                     </div>
 
                     {/* Audit Status & Action buttons */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-slate-800/80">
+                    <div className="flex flex-wrap items-center justify-between gap-3 pt-1 border-t border-slate-100">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-slate-400 font-medium">Status:</span>
+                        <span className="text-xs text-slate-500 font-medium">Status:</span>
                         <span className={`px-2.5 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 ${
                           req.status === 'Disbursed'
-                            ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                             : req.status === 'Field Audited'
-                            ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
-                            : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                            ? 'bg-sky-50 text-sky-700 border border-sky-200'
+                            : 'bg-amber-50 text-amber-700 border border-amber-200'
                         }`}>
-                          {req.status === 'Disbursed' && <CheckCircle2 className="w-3.5 h-3.5" />}
-                          {req.status === 'Field Audited' && <ShieldCheck className="w-3.5 h-3.5" />}
-                          {req.status === 'Under Review' && <Clock className="w-3.5 h-3.5" />}
+                          {req.status === 'Disbursed' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />}
+                          {req.status === 'Field Audited' && <ShieldCheck className="w-3.5 h-3.5 text-sky-600" />}
+                          {req.status === 'Under Review' && <Clock className="w-3.5 h-3.5 text-amber-600" />}
                           {req.status}
                         </span>
                         {req.remarks && (
-                          <span className="text-[11px] text-slate-400 truncate max-w-xs hidden sm:inline" title={req.remarks}>
+                          <span className="text-[11px] text-slate-500 truncate max-w-xs hidden sm:inline" title={req.remarks}>
                             ({req.remarks})
                           </span>
                         )}
@@ -2827,7 +2873,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => setSelectedRequestDetails(req)}
-                          className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors"
+                          className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           <span>Full Dossier</span>
@@ -2835,7 +2881,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         {req.status === 'Under Review' && (
                           <button
                             onClick={() => handleUpdateApplicantStatus(req, 'Field Audited')}
-                            className="px-3 py-1.5 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 border border-sky-500/40 rounded-xl text-xs font-bold transition-colors"
+                            className="px-3 py-1.5 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-xl text-xs font-bold transition-colors cursor-pointer"
                           >
                             Mark Field Audited
                           </button>
@@ -2843,7 +2889,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         {req.status !== 'Disbursed' && (
                           <button
                             onClick={() => handleApproveAndDisburse(req)}
-                            className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md flex items-center gap-1 transition-colors"
+                            className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-600/20 flex items-center gap-1 transition-colors cursor-pointer"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5" />
                             <span>Approve &amp; Disburse</span>
@@ -2856,13 +2902,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
 
             {/* Modal Footer */}
-            <div className="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3 flex-shrink-0">
+            <div className="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3 flex-shrink-0">
               <button
                 onClick={() => {
                   setShowRequestsModal(false);
                   setActiveSubView('requests');
                 }}
-                className="text-xs text-purple-400 hover:text-purple-300 font-semibold flex items-center gap-1.5 hover:underline"
+                className="text-xs text-purple-700 hover:text-purple-800 font-semibold flex items-center gap-1.5 hover:underline cursor-pointer"
               >
                 <span>Open Full Aid Requests Screen</span>
                 <ChevronRight className="w-4 h-4" />
@@ -2880,15 +2926,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       notify('Failed to export requests to CSV.', 'error');
                     }
                   }}
-                  className="px-3.5 py-2 bg-slate-800 hover:bg-slate-750 text-slate-200 hover:text-white rounded-xl text-xs font-bold border border-slate-700 flex items-center gap-1.5 transition-colors"
+                  className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 rounded-xl text-xs font-bold border border-slate-200 flex items-center gap-1.5 transition-colors cursor-pointer"
                   title="Export requests to CSV"
                 >
-                  <Download className="w-3.5 h-3.5 text-purple-400" />
+                  <Download className="w-3.5 h-3.5 text-purple-600" />
                   <span>Export CSV</span>
                 </button>
                 <button
                   onClick={() => setShowRequestsModal(false)}
-                  className="px-5 py-2 bg-slate-800 hover:bg-slate-750 text-slate-300 rounded-xl text-xs font-bold transition-colors"
+                  className="px-5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-colors cursor-pointer"
                 >
                   Close
                 </button>
@@ -2900,21 +2946,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* APPLICANT DETAIL DOSSIER MODAL */}
       {selectedRequestDetails && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-lg bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl p-6 sm:p-7 space-y-5">
-            <div className="flex justify-between items-start border-b border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+          <div className="relative w-full max-w-lg bg-white border border-slate-200 rounded-3xl shadow-2xl p-6 sm:p-7 space-y-5">
+            <div className="flex justify-between items-start border-b border-slate-100 pb-3">
               <div>
-                <span className="text-[11px] font-mono text-purple-400 font-bold">
+                <span className="text-[11px] font-mono text-purple-700 font-bold">
                   DOSSIER #{selectedRequestDetails.id}
                 </span>
-                <h3 className="text-lg font-black text-white">{selectedRequestDetails.applicantName}</h3>
-                <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
-                  <Building className="w-3.5 h-3.5 text-teal-400" /> {selectedRequestDetails.org}
+                <h3 className="text-lg font-black text-slate-900">{selectedRequestDetails.applicantName}</h3>
+                <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                  <Building className="w-3.5 h-3.5 text-teal-600" /> {selectedRequestDetails.org}
                 </p>
               </div>
               <button 
                 onClick={() => setSelectedRequestDetails(null)} 
-                className="text-slate-400 hover:text-white p-1 rounded-lg"
+                className="text-slate-400 hover:text-slate-700 p-1 rounded-lg cursor-pointer"
               >
                 <XCircle className="w-6 h-6" />
               </button>
@@ -2922,49 +2968,49 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
             <div className="space-y-3.5 text-xs sm:text-sm">
               <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 bg-slate-850 rounded-xl border border-slate-800">
-                  <span className="text-[11px] text-slate-400 block font-medium">Grant Requested</span>
-                  <span className="text-xl font-black text-purple-400 font-mono">
-                    ${selectedRequestDetails.amount.toLocaleString()}
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <span className="text-[11px] text-slate-500 block font-medium">Grant Requested</span>
+                  <span className="text-xl font-black text-purple-700 font-mono">
+                    ₹{selectedRequestDetails.amount.toLocaleString('en-IN')}
                   </span>
                 </div>
-                <div className="p-3 bg-slate-850 rounded-xl border border-slate-800">
-                  <span className="text-[11px] text-slate-400 block font-medium">Urgency &amp; Cause</span>
-                  <span className="font-bold text-white block mt-0.5">{selectedRequestDetails.category}</span>
-                  <span className="text-[11px] text-amber-300 font-semibold">{selectedRequestDetails.urgency} Priority</span>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                  <span className="text-[11px] text-slate-500 block font-medium">Urgency &amp; Cause</span>
+                  <span className="font-bold text-slate-900 block mt-0.5">{selectedRequestDetails.category}</span>
+                  <span className="text-[11px] text-amber-700 font-semibold">{selectedRequestDetails.urgency} Priority</span>
                 </div>
               </div>
 
-              <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800 space-y-1">
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+              <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
                   Detailed Justification
                 </span>
-                <p className="text-xs text-slate-200 leading-relaxed">
+                <p className="text-xs text-slate-800 leading-relaxed">
                   {selectedRequestDetails.purpose}
                 </p>
               </div>
 
-              <div className="p-3.5 bg-slate-850 rounded-xl border border-slate-800 space-y-1.5">
-                <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+              <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
                   Audit Notes &amp; Verification Trail
                 </span>
-                <p className="text-xs text-slate-300">
+                <p className="text-xs text-slate-700">
                   {selectedRequestDetails.remarks || 'Initial documentation submitted. Verification in progress.'}
                 </p>
               </div>
 
               <div className="flex items-center justify-between text-xs pt-1">
-                <span className="text-slate-400">Current Status:</span>
-                <span className="px-3 py-1 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-full font-bold text-xs">
+                <span className="text-slate-500">Current Status:</span>
+                <span className="px-3 py-1 bg-purple-50 text-purple-700 border border-purple-200 rounded-full font-bold text-xs">
                   {selectedRequestDetails.status}
                 </span>
               </div>
             </div>
 
-            <div className="pt-2 flex justify-end gap-2.5 border-t border-slate-800">
+            <div className="pt-2 flex justify-end gap-2.5 border-t border-slate-100">
               <button
                 onClick={() => setSelectedRequestDetails(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-semibold"
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold cursor-pointer"
               >
                 Back
               </button>
@@ -2974,9 +3020,9 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     handleApproveAndDisburse(selectedRequestDetails);
                     setSelectedRequestDetails(null);
                   }}
-                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md"
+                  className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-600/20 cursor-pointer"
                 >
-                  Approve &amp; Disburse ${selectedRequestDetails.amount.toLocaleString()}
+                  Approve &amp; Disburse ₹{selectedRequestDetails.amount.toLocaleString('en-IN')}
                 </button>
               )}
             </div>
@@ -2986,19 +3032,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* CONFIRM LOGOUT MODAL */}
       {showLogoutModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
-          <div className="relative w-full max-w-sm bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-6 space-y-4 text-center">
-            <div className="w-12 h-12 rounded-full bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+          <div className="relative w-full max-w-sm bg-white border border-slate-200 rounded-2xl shadow-2xl p-6 space-y-4 text-center">
+            <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center mx-auto border border-rose-200">
               <LogOut className="w-6 h-6" />
             </div>
-            <h3 className="font-bold text-white text-lg">Confirm Logout</h3>
-            <p className="text-xs text-slate-300">
+            <h3 className="font-bold text-slate-900 text-lg">Confirm Logout</h3>
+            <p className="text-xs text-slate-600">
               Are you sure you want to log out of the NGO Fund Management System?
             </p>
             <div className="flex gap-2.5 pt-2">
               <button
                 onClick={() => setShowLogoutModal(false)}
-                className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-semibold text-xs"
+                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-xs cursor-pointer"
               >
                 Cancel
               </button>
@@ -3007,7 +3053,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   setShowLogoutModal(false);
                   onLogout();
                 }}
-                className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-bold text-xs shadow-md"
+                className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl font-bold text-xs shadow-md shadow-rose-600/20 cursor-pointer"
               >
                 Logout Now
               </button>
@@ -3018,21 +3064,21 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
       {/* REAL VS FAKE AID REQUEST VERIFICATION AUDIT GUIDE MODAL */}
       {showVerificationGuideModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-950/85 backdrop-blur-md animate-fadeIn overflow-y-auto">
-          <div className="relative w-full max-w-3xl bg-slate-900 border border-slate-700/80 rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 my-auto max-h-[92vh] flex flex-col">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-slate-900/60 backdrop-blur-xs animate-fadeIn overflow-y-auto">
+          <div className="relative w-full max-w-3xl bg-white border border-slate-200 rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 my-auto max-h-[92vh] flex flex-col">
             
             {/* Modal Header */}
-            <div className="flex justify-between items-start border-b border-slate-800 pb-4 flex-shrink-0">
+            <div className="flex justify-between items-start border-b border-slate-100 pb-4 flex-shrink-0">
               <div className="space-y-1">
                 <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                    <ShieldCheck className="w-5 h-5" />
+                  <div className="p-2 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
+                    <ShieldCheck className="w-5 h-5 text-amber-600" />
                   </div>
                   <div>
-                    <h3 className="font-extrabold text-white text-lg sm:text-xl tracking-tight">
+                    <h3 className="font-extrabold text-slate-900 text-lg sm:text-xl tracking-tight">
                       How to Recognize Real vs. Fake Aid Requests
                     </h3>
-                    <p className="text-xs text-amber-400 font-semibold">
+                    <p className="text-xs text-amber-700 font-semibold">
                       NGO Standard Operating Procedure (SOP) &amp; Fraud Prevention Guide
                     </p>
                   </div>
@@ -3040,7 +3086,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
               <button 
                 onClick={() => setShowVerificationGuideModal(false)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+                className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                 aria-label="Close dialog"
               >
                 <XCircle className="w-6 h-6" />
@@ -3051,12 +3097,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
             <div className="overflow-y-auto flex-1 pr-1 space-y-5 text-xs sm:text-sm">
               
               {/* Golden Rule Banner */}
-              <div className="p-4 bg-teal-500/10 border border-teal-500/30 rounded-2xl space-y-1">
-                <div className="font-bold text-teal-300 flex items-center gap-2 text-sm">
-                  <Sparkles className="w-4 h-4 text-teal-400" />
+              <div className="p-4 bg-teal-50 border border-teal-200 rounded-2xl space-y-1">
+                <div className="font-bold text-teal-800 flex items-center gap-2 text-sm">
+                  <Sparkles className="w-4 h-4 text-teal-600" />
                   The #1 NGO Safeguard: "Direct Institutional Payment"
                 </div>
-                <p className="text-slate-300 text-xs leading-relaxed">
+                <p className="text-slate-700 text-xs leading-relaxed">
                   Never transfer grant money directly to a requester's personal bank or UPI account. 
                   Always disburse directly to the <strong>Hospital account</strong> (with patient IP registration number) or to the <strong>School / University account</strong> (with student roll number). Fraudsters will immediately withdraw their request when told the funds go directly to the institution!
                 </p>
@@ -3064,54 +3110,54 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
               {/* 5 Pillars to Detect Fake vs Real */}
               <div className="space-y-3">
-                <h4 className="font-bold text-white text-sm flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 text-purple-400" />
+                <h4 className="font-bold text-slate-900 text-sm flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-purple-600" />
                   5 Key Checkpoints to Detect Fake Requests:
                 </h4>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   
                   {/* Point 1 */}
-                  <div className="bg-slate-850 p-4 rounded-xl border border-slate-800 space-y-1.5">
-                    <div className="font-bold text-emerald-400 flex items-center gap-1.5 text-xs">
-                      <CheckCircle2 className="w-4 h-4" /> 1. Official Documentation Audit
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1.5">
+                    <div className="font-bold text-emerald-700 flex items-center gap-1.5 text-xs">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" /> 1. Official Documentation Audit
                     </div>
-                    <p className="text-slate-300 text-xs leading-relaxed">
+                    <p className="text-slate-700 text-xs leading-relaxed">
                       <strong>Real:</strong> Has stamped hospital estimates, doctor's registration number (MCI/NMC), diagnostic bills, or signed school fee vouchers.<br/>
-                      <span className="text-rose-400 font-semibold">Fake:</span> Blurry photos, cropped bills, missing hospital letterhead, or generic stock invoices.
+                      <span className="text-rose-600 font-semibold">Fake:</span> Blurry photos, cropped bills, missing hospital letterhead, or generic stock invoices.
                     </p>
                   </div>
 
                   {/* Point 2 */}
-                  <div className="bg-slate-850 p-4 rounded-xl border border-slate-800 space-y-1.5">
-                    <div className="font-bold text-emerald-400 flex items-center gap-1.5 text-xs">
-                      <CheckCircle2 className="w-4 h-4" /> 2. Independent Phone Verification
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1.5">
+                    <div className="font-bold text-emerald-700 flex items-center gap-1.5 text-xs">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" /> 2. Independent Phone Verification
                     </div>
-                    <p className="text-slate-300 text-xs leading-relaxed">
+                    <p className="text-slate-700 text-xs leading-relaxed">
                       <strong>Real:</strong> You search the hospital or school's phone number on Google independently (do not use the phone number printed on their paper) and confirm the patient is admitted in ward/bed.<br/>
-                      <span className="text-rose-400 font-semibold">Fake:</span> Requesters insist on contacting only their "personal middleman".
+                      <span className="text-rose-600 font-semibold">Fake:</span> Requesters insist on contacting only their "personal middleman".
                     </p>
                   </div>
 
                   {/* Point 3 */}
-                  <div className="bg-slate-850 p-4 rounded-xl border border-slate-800 space-y-1.5">
-                    <div className="font-bold text-emerald-400 flex items-center gap-1.5 text-xs">
-                      <CheckCircle2 className="w-4 h-4" /> 3. 2-Minute Live Video Verification
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1.5">
+                    <div className="font-bold text-emerald-700 flex items-center gap-1.5 text-xs">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" /> 3. 2-Minute Live Video Verification
                     </div>
-                    <p className="text-slate-300 text-xs leading-relaxed">
+                    <p className="text-slate-700 text-xs leading-relaxed">
                       <strong>Real:</strong> The beneficiary or local guardian readily joins a quick WhatsApp video call from the hospital or school.<br/>
-                      <span className="text-rose-400 font-semibold">Fake:</span> Refuse video calls, claiming poor internet or camera broken, while demanding immediate cash transfer.
+                      <span className="text-rose-600 font-semibold">Fake:</span> Refuse video calls, claiming poor internet or camera broken, while demanding immediate cash transfer.
                     </p>
                   </div>
 
                   {/* Point 4 */}
-                  <div className="bg-slate-850 p-4 rounded-xl border border-slate-800 space-y-1.5">
-                    <div className="font-bold text-emerald-400 flex items-center gap-1.5 text-xs">
-                      <CheckCircle2 className="w-4 h-4" /> 4. Emotional Pressure & Urgency Traps
+                  <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-1.5">
+                    <div className="font-bold text-emerald-700 flex items-center gap-1.5 text-xs">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" /> 4. Emotional Pressure & Urgency Traps
                     </div>
-                    <p className="text-slate-300 text-xs leading-relaxed">
+                    <p className="text-slate-700 text-xs leading-relaxed">
                       <strong>Real:</strong> Hospitals provide 24-48 hour treatment schedules and allow billing team coordination.<br/>
-                      <span className="text-rose-400 font-semibold">Fake:</span> "Need funds in 30 minutes or patient will die!" Extreme emotional blackmail is the #1 tactic of internet scammers.
+                      <span className="text-rose-600 font-semibold">Fake:</span> "Need funds in 30 minutes or patient will die!" Extreme emotional blackmail is the #1 tactic of internet scammers.
                     </p>
                   </div>
 
@@ -3119,12 +3165,12 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
 
               {/* Red Flags Summary Table */}
-              <div className="p-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl space-y-2">
-                <div className="font-bold text-rose-300 flex items-center gap-2 text-xs">
-                  <AlertTriangle className="w-4 h-4 text-rose-400" />
+              <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl space-y-2">
+                <div className="font-bold text-rose-700 flex items-center gap-2 text-xs">
+                  <AlertTriangle className="w-4 h-4 text-rose-600" />
                   🚨 Immediate Red Flags to Reject the Request:
                 </div>
-                <ul className="text-slate-300 text-xs space-y-1.5 list-disc pl-5">
+                <ul className="text-slate-700 text-xs space-y-1.5 list-disc pl-5">
                   <li>The applicant's bank account or UPI ID is in a completely different city/state than the hospital or school.</li>
                   <li>Multiple aid requests submitted under different names but using the same phone number or UPI handle.</li>
                   <li>Reverse image search on Google shows the patient/child photo was stolen from an old news article or crowdfunding campaign.</li>
@@ -3133,14 +3179,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
 
               {/* Workflow in Fund Bridge */}
-              <div className="p-4 bg-slate-850 rounded-2xl border border-slate-800 space-y-2">
-                <div className="font-bold text-white text-xs flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-teal-400" />
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-2">
+                <div className="font-bold text-slate-900 text-xs flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-teal-600" />
                   Recommended Audit Steps in this Portal:
                 </div>
-                <div className="text-slate-400 text-xs space-y-1 leading-relaxed">
-                  <p>1. Keep applicant status at <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">Under Review</span> while reviewing bills and ID.</p>
-                  <p>2. Call the hospital/school and complete video audit. Click <span className="px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 font-bold">Audit OK</span> to mark as <span className="text-sky-300 font-bold">Field Audited</span>.</p>
+                <div className="text-slate-600 text-xs space-y-1 leading-relaxed">
+                  <p>1. Keep applicant status at <span className="px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 font-bold">Under Review</span> while reviewing bills and ID.</p>
+                  <p>2. Call the hospital/school and complete video audit. Click <span className="px-1.5 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200 font-bold">Audit OK</span> to mark as <span className="text-sky-700 font-bold">Field Audited</span>.</p>
                   <p>3. Transfer directly to the verified institutional account, then click <span className="px-1.5 py-0.5 rounded bg-emerald-600 text-white font-bold">Disburse</span> to save into the permanent financial check ledger.</p>
                 </div>
               </div>
@@ -3148,10 +3194,10 @@ export const Dashboard: React.FC<DashboardProps> = ({
             </div>
 
             {/* Modal Footer */}
-            <div className="pt-3 border-t border-slate-800 flex justify-end flex-shrink-0">
+            <div className="pt-3 border-t border-slate-100 flex justify-end flex-shrink-0">
               <button
                 onClick={() => setShowVerificationGuideModal(false)}
-                className="px-5 py-2.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl font-bold text-xs shadow-md transition-colors cursor-pointer"
+                className="px-5 py-2.5 bg-teal-600 hover:bg-teal-500 text-white rounded-xl font-bold text-xs shadow-md shadow-teal-600/20 transition-colors cursor-pointer"
               >
                 Understood &amp; Close Guide
               </button>
