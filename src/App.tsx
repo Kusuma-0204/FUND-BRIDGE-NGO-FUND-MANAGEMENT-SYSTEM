@@ -574,7 +574,7 @@ export default function App() {
 
     setReceiptDonation(newDon);
     setIsReceiptOpen(true);
-    showToast(`Donation of $${newDon.amount} recorded! 80G Receipt generated.`, 'success');
+    showToast(`Donation of ₹${newDon.amount.toLocaleString('en-IN')} recorded! 80G Receipt generated.`, 'success');
 
     try {
       const token = localStorage.getItem('fb_jwt_token');
@@ -607,7 +607,7 @@ export default function App() {
   // Submit Expense
   const handleSubmitExpense = async (newExp: Expense) => {
     setExpenses(prev => [newExp, ...prev]);
-    showToast(`Expense claim "${newExp.title}" of $${newExp.amount} submitted & approved!`, 'success');
+    showToast(`Expense claim "${newExp.title}" of ₹${newExp.amount.toLocaleString('en-IN')} submitted & approved!`, 'success');
 
     try {
       const token = localStorage.getItem('fb_jwt_token');
@@ -677,6 +677,55 @@ export default function App() {
     }
   };
 
+  // Mark message as read/unread
+  const handleMarkMessageRead = async (id: string, forceRead?: boolean) => {
+    setMessages(prev => {
+      const updated = prev.map(m => m.id === id ? { ...m, read: forceRead !== undefined ? forceRead : !m.read } : m);
+      try {
+        localStorage.setItem('fb_messages', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+
+    try {
+      const token = localStorage.getItem('fb_jwt_token');
+      await fetch(`/api/messages/${id}/read`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      });
+    } catch (e) {
+      console.warn('Backend sync failed for marking message read:', e);
+    }
+  };
+
+  // Delete message
+  const handleDeleteMessage = async (id: string) => {
+    setMessages(prev => {
+      const updated = prev.filter(m => m.id !== id);
+      try {
+        localStorage.setItem('fb_messages', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    showToast('Message inquiry deleted successfully.', 'info');
+
+    try {
+      const token = localStorage.getItem('fb_jwt_token');
+      await fetch(`/api/messages/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        }
+      });
+    } catch (e) {
+      console.warn('Backend sync failed for deleting message:', e);
+    }
+  };
+
   // Reset demo data
   const handleResetData = async () => {
     try {
@@ -696,34 +745,34 @@ export default function App() {
   const totalDisbursedAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-teal-500 selection:text-white relative">
+    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col selection:bg-teal-600 selection:text-white relative">
       
       {/* Toast Notification Container */}
       {toast && (
-        <div className="fixed top-5 right-5 z-50 animate-slideDown flex items-center gap-3 px-4 py-3 rounded-2xl bg-slate-900 border border-teal-500/50 text-white shadow-2xl text-xs sm:text-sm font-medium">
-          {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />}
-          {toast.type === 'info' && <Info className="w-5 h-5 text-teal-400 flex-shrink-0" />}
-          {toast.type === 'error' && <AlertCircle className="w-5 h-5 text-rose-400 flex-shrink-0" />}
+        <div className="fixed top-5 right-5 z-50 animate-slideDown flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border border-slate-200 text-slate-900 shadow-xl text-xs sm:text-sm font-medium">
+          {toast.type === 'success' && <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0" />}
+          {toast.type === 'info' && <Info className="w-5 h-5 text-teal-600 flex-shrink-0" />}
+          {toast.type === 'error' && <AlertCircle className="w-5 h-5 text-rose-600 flex-shrink-0" />}
           <span>{toast.message}</span>
         </div>
       )}
 
       {/* 1. FRONT SCREEN (BEFORE LOGIN): Show portal buttons on front only before login */}
       {!isLoggedIn ? (
-        <div className="min-h-screen flex flex-col bg-slate-900">
-          <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 transition-all">
+        <div className="min-h-screen flex flex-col bg-slate-50">
+          <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 transition-all shadow-xs">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="flex items-center justify-between h-16 sm:h-20">
                 {/* NGO Logo & Title */}
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-black border border-slate-800 p-0.5 flex items-center justify-center shadow-md overflow-hidden">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white border border-slate-200 p-0.5 flex items-center justify-center shadow-xs overflow-hidden">
                     <img src="/assets/ngo-logo.svg" alt="Fund Bridge Logo" className="w-full h-full object-contain" />
                   </div>
                   <div>
-                    <span className="font-extrabold text-base sm:text-xl tracking-wider text-white flex items-center gap-1.5">
+                    <span className="font-extrabold text-base sm:text-xl tracking-wider text-slate-900 flex items-center gap-1.5">
                       FUND BRIDGE
                     </span>
-                    <span className="text-[10px] sm:text-xs text-teal-400 font-semibold tracking-widest block uppercase -mt-0.5">
+                    <span className="text-[10px] sm:text-xs text-teal-600 font-semibold tracking-widest block uppercase -mt-0.5">
                       NGO Management System
                     </span>
                   </div>
@@ -736,7 +785,7 @@ export default function App() {
                       window.location.hash = 'donor';
                       setCurrentView('login');
                     }}
-                    className="px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-200 hover:text-white bg-slate-800 hover:bg-slate-750 border border-slate-700 transition-all cursor-pointer"
+                    className="px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-700 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 shadow-xs transition-all cursor-pointer"
                   >
                     🤝 Donor Portal
                   </button>
@@ -745,7 +794,7 @@ export default function App() {
                       window.location.hash = 'admin';
                       setCurrentView('login');
                     }}
-                    className="px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-md shadow-amber-500/20 transition-all flex items-center gap-1.5 cursor-pointer"
+                    className="px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 shadow-xs shadow-amber-500/20 transition-all flex items-center gap-1.5 cursor-pointer"
                   >
                     <ShieldCheck className="w-4 h-4 text-slate-950" />
                     <span>Admin Portal</span>
@@ -755,7 +804,7 @@ export default function App() {
                       window.location.hash = 'register';
                       setCurrentView('login');
                     }}
-                    className="hidden xs:inline-flex px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-teal-600 hover:bg-teal-500 shadow-md shadow-teal-500/20 transition-all cursor-pointer"
+                    className="hidden xs:inline-flex px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-teal-600 hover:bg-teal-500 shadow-xs shadow-teal-500/20 transition-all cursor-pointer"
                   >
                     ✨ New Register
                   </button>
@@ -843,10 +892,12 @@ export default function App() {
             setCurrentView(v as any);
             window.location.hash = v;
           }}
+          onMarkMessageRead={handleMarkMessageRead}
+          onDeleteMessage={handleDeleteMessage}
         />
       ) : (
         /* 2. AUTHENTICATED DONOR PORTAL: Donor Portal (No Donor Portal/Admin Portal buttons here!) */
-        <div className="min-h-screen flex flex-col bg-slate-900">
+        <div className="min-h-screen flex flex-col bg-slate-50">
           <Navbar
             currentView={currentView}
             onNavigate={(v) => {
