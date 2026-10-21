@@ -197,9 +197,9 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   const fullOtp = otpDigits.join('');
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
       <div
-        className="relative w-full max-w-lg bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden"
+        className="relative w-full max-w-lg bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -227,19 +227,19 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         </div>
 
         {/* Body */}
-        <div className="p-6 sm:p-7 space-y-5">
+        <div className="p-6 sm:p-7 space-y-5 bg-white">
           {step === 'email' ? (
             /* STEP 1: ENTER EMAIL TO SEND OTP TO GMAIL */
             <form onSubmit={handleSendOtp} className="space-y-4">
               {otpError && (
-                <div className="p-3.5 bg-rose-500/15 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center gap-2">
+                <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0" />
                   <span>{otpError}</span>
                 </div>
               )}
 
               <div>
-                <label htmlFor="forgot-email" className="block text-sm font-semibold text-slate-300 mb-1.5">
+                <label htmlFor="forgot-email" className="block text-sm font-semibold text-slate-700 mb-1.5">
                   Registered Login Email Address
                 </label>
                 <div className="relative">
@@ -253,14 +253,14 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="e.g. yourname@gmail.com"
-                    className="w-full pl-11 pr-4 py-3 bg-slate-800/90 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all text-sm font-medium"
+                    className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all text-sm font-medium"
                     autoFocus
                   />
                 </div>
-                <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-teal-400"></span>
+                <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-500">
+                  <span className="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
                   <span>
-                    6-digit OTP will be sent to: <strong className="text-teal-300">{maskEmail(email)}</strong>
+                    6-digit OTP will be sent to: <strong className="text-teal-700">{maskEmail(email)}</strong>
                   </span>
                 </div>
               </div>
@@ -269,7 +269,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="w-full sm:w-1/3 px-4 py-3 border border-slate-700 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white font-medium text-sm transition-colors cursor-pointer"
+                  className="w-full sm:w-1/3 px-4 py-3 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 hover:text-slate-900 font-medium text-sm transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -295,23 +295,23 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           ) : (
             /* STEP 2: ENTER 6-DIGIT OTP FROM GMAIL ON WEBSITE */
             <form onSubmit={handleVerifyOtp} className="space-y-5">
-              <div className="p-4 bg-teal-500/10 border border-teal-500/30 rounded-xl space-y-2">
+              <div className="p-4 bg-teal-50 border border-teal-200 rounded-xl space-y-2">
                 <div className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-200 leading-relaxed">
-                    <span className="font-bold text-teal-300 block text-sm">6-Digit Code Dispatched!</span>
-                    <span>Dispatched to: <strong className="text-white underline">{maskEmail(deliveredTo || email)}</strong></span>
+                  <CheckCircle2 className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
+                  <div className="text-xs text-slate-700 leading-relaxed">
+                    <span className="font-bold text-teal-800 block text-sm">6-Digit Code Dispatched!</span>
+                    <span>Dispatched to: <strong className="text-slate-900 underline">{maskEmail(deliveredTo || email)}</strong></span>
                   </div>
                 </div>
 
-                <div className="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-lg text-[11px] text-amber-200 leading-relaxed">
+                <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-[11px] text-amber-800 leading-relaxed">
                   ⚠️ <strong>Check your Spam / Junk folder:</strong> In the Gmail app, automated emails from institutional domains often land in the <strong>Spam</strong> folder.
                 </div>
               </div>
 
               {/* Error Alert */}
               {otpError && (
-                <div className="p-3.5 bg-rose-500/15 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex items-center gap-2">
+                <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 flex-shrink-0" />
                   <span>{otpError}</span>
                 </div>
@@ -319,7 +319,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
               {/* 6-Digit OTP Input Boxes */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 text-center mb-3">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 text-center mb-3">
                   Enter 6-Digit OTP Code
                 </label>
                 <div className="flex items-center justify-center gap-2 sm:gap-3">
@@ -336,7 +336,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                       onChange={(e) => handleOtpChange(index, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
                       onPaste={handleOtpPaste}
-                      className="w-11 h-13 sm:w-12 sm:h-14 text-center text-xl font-extrabold bg-slate-800 border-2 border-slate-700 rounded-xl text-white focus:outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-500/30 transition-all font-mono"
+                      className="w-11 h-13 sm:w-12 sm:h-14 text-center text-xl font-extrabold bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all font-mono shadow-xs"
                     />
                   ))}
                 </div>
@@ -363,14 +363,14 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               </button>
 
               {/* Resend OTP & Change Email Actions */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-800 text-xs">
+              <div className="flex items-center justify-between pt-2 border-t border-slate-200 text-xs">
                 <button
                   type="button"
                   onClick={() => {
                     setStep('email');
                     setOtpError(null);
                   }}
-                  className="text-slate-400 hover:text-white inline-flex items-center gap-1.5 font-medium transition-colors cursor-pointer"
+                  className="text-slate-500 hover:text-slate-800 inline-flex items-center gap-1.5 font-medium transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Change Email</span>
@@ -380,7 +380,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                   type="button"
                   disabled={isSendingOtp}
                   onClick={() => handleSendOtp()}
-                  className="text-teal-400 hover:text-teal-300 inline-flex items-center gap-1.5 font-semibold transition-colors cursor-pointer disabled:opacity-50"
+                  className="text-teal-700 hover:text-teal-800 inline-flex items-center gap-1.5 font-semibold transition-colors cursor-pointer disabled:opacity-50"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${isSendingOtp ? 'animate-spin' : ''}`} />
                   <span>{isSendingOtp ? 'Sending...' : 'Resend OTP to Gmail'}</span>
