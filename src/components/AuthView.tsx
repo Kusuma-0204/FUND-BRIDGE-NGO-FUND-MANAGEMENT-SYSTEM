@@ -276,47 +276,47 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14 animate-fadeIn">
-      <div className="max-w-5xl mx-auto bg-slate-850 rounded-3xl border border-slate-800 shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
+      <div className="max-w-5xl mx-auto bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden grid grid-cols-1 lg:grid-cols-12">
         
         {/* Left: Graphic Illustration Side */}
-        <div className="lg:col-span-5 bg-gradient-to-br from-teal-950 via-slate-900 to-slate-950 p-6 sm:p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-800">
+        <div className="lg:col-span-5 bg-gradient-to-br from-teal-50/80 via-slate-50 to-emerald-50/50 p-6 sm:p-8 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-slate-200">
           <div className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-black border border-slate-700/80 p-0.5 flex items-center justify-center flex-shrink-0 shadow-lg shadow-black/60 overflow-hidden">
+              <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 p-0.5 flex items-center justify-center flex-shrink-0 shadow-xs overflow-hidden">
                 <img
                   src="/assets/ngo-logo.svg"
                   alt="Fund Bridge NGO Logo"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-[11px] font-bold text-teal-300">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-[11px] font-bold text-teal-800 shadow-xs">
                 {activePortalTab === 'admin' ? (
                   <>
-                    <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                    <span className="text-amber-300">Official Administration Gateway</span>
+                    <ShieldCheck className="w-3.5 h-3.5 text-amber-500" />
+                    <span className="text-amber-800">Official Administration Gateway</span>
                   </>
                 ) : activePortalTab === 'register' ? (
                   <>
-                    <UserCheck className="w-3.5 h-3.5 text-teal-400" />
+                    <UserCheck className="w-3.5 h-3.5 text-teal-600" />
                     <span>New Donor Registration</span>
                   </>
                 ) : (
                   <>
-                    <Zap className="w-3.5 h-3.5 text-teal-400" />
+                    <Zap className="w-3.5 h-3.5 text-teal-600" />
                     <span>Public Donor Portal</span>
                   </>
                 )}
               </div>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               {activePortalTab === 'admin'
                 ? 'Fund Bridge Admin Portal'
                 : activePortalTab === 'register'
                 ? 'Join Fund Bridge'
                 : 'Fund Bridge Donor Portal'}
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               {activePortalTab === 'admin'
                 ? 'Executive management dashboard, treasury controls, Section 80G tax certificates, and verified aid disbursements.'
                 : activePortalTab === 'register'
@@ -326,36 +326,36 @@ export const AuthView: React.FC<AuthViewProps> = ({
           </div>
 
           <div className="my-6 text-center flex flex-col items-center justify-center">
-            <div className="w-56 h-56 sm:w-64 sm:h-64 rounded-3xl bg-black border border-slate-800 shadow-2xl p-2.5 flex items-center justify-center overflow-hidden hover:scale-105 transition-transform duration-300">
+            <div className="w-56 h-56 sm:w-64 sm:h-64 rounded-3xl bg-white border border-slate-200 shadow-md p-3 flex items-center justify-center overflow-hidden hover:scale-105 transition-transform duration-300">
               <img
                 src="/assets/ngo-logo.svg"
                 alt="Fund Bridge NGO Logo"
-                className="w-full h-full object-contain drop-shadow-xl"
+                className="w-full h-full object-contain drop-shadow-sm"
               />
             </div>
-            <span className="text-[11px] text-teal-400 font-semibold tracking-wider uppercase mt-3">
+            <span className="text-[11px] text-teal-700 font-bold tracking-wider uppercase mt-3">
               Official Non-Profit Emblem
             </span>
           </div>
 
-          <div className="text-[11px] text-slate-400 border-t border-slate-800/80 pt-3 flex items-center justify-between">
+          <div className="text-[11px] text-slate-500 border-t border-slate-200 pt-3 flex items-center justify-between">
             <span>NGO Board &amp; Public Transparency</span>
-            <span className="text-teal-400 font-medium">Secured with 256-bit Encryption</span>
+            <span className="text-teal-700 font-semibold">Secured with 256-bit Encryption</span>
           </div>
         </div>
 
         {/* Right: Forms Side */}
-        <div className="lg:col-span-7 p-6 sm:p-10 space-y-6 flex flex-col justify-center">
+        <div className="lg:col-span-7 p-6 sm:p-10 space-y-6 flex flex-col justify-center bg-white">
           
           {/* Top Switcher: 3 Displayed Portals (Donor, Admin, and Register) */}
-          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 p-1.5 bg-slate-900 rounded-2xl border border-slate-700/80">
+          <div className="grid grid-cols-3 gap-1.5 sm:gap-2 p-1.5 bg-slate-100 rounded-2xl border border-slate-200">
             <button
               type="button"
               onClick={() => switchPortalTab('donor')}
               className={`py-2.5 sm:py-3 px-2 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 activePortalTab === 'donor'
-                  ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg shadow-teal-500/25 ring-1 ring-teal-400/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                  ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md shadow-teal-600/20 ring-1 ring-teal-500/30'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
               }`}
             >
               <span>🤝 Donor</span>
@@ -366,8 +366,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
               onClick={() => switchPortalTab('admin')}
               className={`py-2.5 sm:py-3 px-2 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 activePortalTab === 'admin'
-                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-lg shadow-amber-500/25 ring-1 ring-amber-300 font-extrabold'
-                  : 'text-amber-400/90 hover:text-amber-300 hover:bg-slate-800/60'
+                  ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 shadow-md shadow-amber-500/20 ring-1 ring-amber-400 font-extrabold'
+                  : 'text-amber-700 hover:text-amber-900 hover:bg-white/80'
               }`}
             >
               <ShieldCheck className="w-4 h-4 text-current" />
@@ -379,8 +379,8 @@ export const AuthView: React.FC<AuthViewProps> = ({
               onClick={() => switchPortalTab('register')}
               className={`py-2.5 sm:py-3 px-2 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                 activePortalTab === 'register'
-                  ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-lg shadow-teal-500/25 ring-1 ring-teal-400/30'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                  ? 'bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-md shadow-teal-600/20 ring-1 ring-teal-500/30'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
               }`}
             >
               <span>✨ Register</span>
@@ -388,17 +388,17 @@ export const AuthView: React.FC<AuthViewProps> = ({
           </div>
 
           {authError && (
-            <div className="p-3.5 bg-rose-500/15 border border-rose-500/30 rounded-xl text-rose-300 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
+            <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5">
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-rose-400 flex-shrink-0" />
+                <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
                 <span>{authError}</span>
               </div>
               <button
                 type="button"
                 onClick={handleForgotPasswordClick}
-                className="px-3 py-1.5 bg-rose-500/25 hover:bg-rose-500/40 text-white font-bold rounded-lg border border-rose-400/40 transition-colors flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
+                className="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-900 font-bold rounded-lg border border-rose-300 transition-colors flex items-center gap-1.5 flex-shrink-0 cursor-pointer"
               >
-                <Mail className="w-3.5 h-3.5 text-teal-300" />
+                <Mail className="w-3.5 h-3.5 text-teal-700" />
                 <span>Send OTP to Email</span>
               </button>
             </div>
@@ -408,16 +408,16 @@ export const AuthView: React.FC<AuthViewProps> = ({
           {activePortalTab === 'donor' && (
             <form onSubmit={handleLoginSubmit} className="space-y-4 text-xs sm:text-sm">
               <div className="space-y-1">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                   <span>Donor &amp; Member Login</span>
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   Enter your registered email address and password to sign in.
                 </p>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1.5">
+                <label className="block font-semibold text-slate-700 mb-1.5">
                   Donor Mail ID
                 </label>
                 <div className="relative">
@@ -430,13 +430,13 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     value={loginEmail}
                     onChange={(e) => handleEmailChange(e.target.value)}
                     placeholder="Enter your email ID (e.g. yourname@domain.com)"
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1.5">
+                <label className="block font-semibold text-slate-700 mb-1.5">
                   Password
                 </label>
                 <div className="relative">
@@ -449,12 +449,12 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     placeholder="Enter password (e.g. Donor@2026)"
-                    className="w-full pl-10 pr-10 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                   <button
                     type="button"
                     onClick={() => setShowLoginPassword(!showLoginPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 cursor-pointer"
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
                     title={showLoginPassword ? "Hide password" : "Show password"}
                   >
                     {showLoginPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -467,12 +467,12 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
               {/* Remember Session & Forgot Password Link */}
               <div className="flex items-center justify-between text-xs pt-1">
-                <label className="flex items-center gap-2 text-slate-400 cursor-pointer">
+                <label className="flex items-center gap-2 text-slate-600 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded text-teal-500 bg-slate-900 border-slate-700"
+                    className="w-4 h-4 rounded text-teal-600 bg-white border-slate-300"
                   />
                   <span>Remember session</span>
                 </label>
@@ -481,17 +481,17 @@ export const AuthView: React.FC<AuthViewProps> = ({
                 <button
                   type="button"
                   onClick={handleForgotPasswordClick}
-                  className="font-semibold text-teal-400 hover:text-teal-300 underline transition-colors cursor-pointer flex items-center gap-1"
+                  className="font-semibold text-teal-700 hover:text-teal-800 underline transition-colors cursor-pointer flex items-center gap-1"
                   title="Click to send 6-digit OTP to your mail ID"
                 >
-                  <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+                  <KeyRound className="w-3.5 h-3.5 text-amber-500" />
                   <span>Forgot password?</span>
                 </button>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-teal-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer mt-2"
+                className="w-full py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl shadow-md shadow-teal-600/20 flex items-center justify-center gap-2 transition-all cursor-pointer mt-2"
               >
                 <span>Login to Donor Portal</span>
                 <ArrowRight className="w-4 h-4" />
@@ -503,18 +503,18 @@ export const AuthView: React.FC<AuthViewProps> = ({
           {activePortalTab === 'admin' && (
             <form onSubmit={handleLoginSubmit} className="space-y-4 text-xs sm:text-sm">
               <div className="space-y-1">
-                <h3 className="text-base font-bold text-amber-300 flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-amber-400" />
+                <h3 className="text-base font-bold text-amber-800 flex items-center gap-2">
+                  <ShieldCheck className="w-5 h-5 text-amber-600" />
                   <span>Administrator Portal Login</span>
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   Exclusive access for NGO board administration and treasury controllers.
                 </p>
               </div>
 
               {/* Email ID Field */}
               <div>
-                <label className="block font-semibold text-slate-300 mb-1.5">
+                <label className="block font-semibold text-slate-700 mb-1.5">
                   Email ID
                 </label>
                 <div className="relative">
@@ -527,7 +527,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     value={loginEmail}
                     onChange={(e) => handleEmailChange(e.target.value)}
                     placeholder="Enter email ID"
-                    className="w-full pl-10 pr-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                     autoFocus
                   />
                 </div>
@@ -535,7 +535,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
               {/* Password Field */}
               <div>
-                <label className="block font-semibold text-slate-300 mb-1.5">
+                <label className="block font-semibold text-slate-700 mb-1.5">
                   Password
                 </label>
                 <div className="relative">
@@ -548,12 +548,12 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
                     placeholder="Enter password"
-                    className="w-full pl-10 pr-10 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
+                    className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                   />
                   <button
                     type="button"
                     onClick={() => setShowLoginPassword(!showLoginPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 cursor-pointer"
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
                     title={showLoginPassword ? "Hide password" : "Show password"}
                   >
                     {showLoginPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -562,12 +562,12 @@ export const AuthView: React.FC<AuthViewProps> = ({
               </div>
 
               <div className="flex items-center justify-between text-xs pt-1">
-                <label className="flex items-center gap-2 text-slate-400 cursor-pointer">
+                <label className="flex items-center gap-2 text-slate-600 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded text-amber-500 bg-slate-900 border-slate-700"
+                    className="w-4 h-4 rounded text-amber-500 bg-white border-slate-300"
                   />
                   <span>Remember admin session</span>
                 </label>
@@ -575,28 +575,28 @@ export const AuthView: React.FC<AuthViewProps> = ({
                 <button
                   type="button"
                   onClick={handleForgotPasswordClick}
-                  className="font-semibold text-amber-400 hover:text-amber-300 underline transition-colors cursor-pointer flex items-center gap-1"
+                  className="font-semibold text-amber-700 hover:text-amber-800 underline transition-colors cursor-pointer flex items-center gap-1"
                 >
-                  <KeyRound className="w-3.5 h-3.5 text-amber-400" />
+                  <KeyRound className="w-3.5 h-3.5 text-amber-500" />
                   <span>Forgot password?</span>
                 </button>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer mt-2"
+                className="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer mt-2"
               >
                 <ShieldCheck className="w-4 h-4 text-slate-950" />
                 <span>Login to Admin Dashboard</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
 
-              <div className="pt-2 flex items-center justify-between text-xs text-slate-400 border-t border-slate-800/80">
-                <span className="flex items-center gap-1.5 text-slate-400">
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+              <div className="pt-2 flex items-center justify-between text-xs text-slate-500 border-t border-slate-200">
+                <span className="flex items-center gap-1.5 text-slate-500">
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
                   <span>Administrative Security Gateway</span>
                 </span>
-                <span className="text-[11px] text-amber-400/90 font-medium">Restricted Access</span>
+                <span className="text-[11px] text-amber-700 font-medium">Restricted Access</span>
               </div>
             </form>
           )}
@@ -605,52 +605,52 @@ export const AuthView: React.FC<AuthViewProps> = ({
           {activePortalTab === 'register' && (
             <form onSubmit={handleRegisterSubmit} className="space-y-4 text-xs sm:text-sm">
               <div className="space-y-1">
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                   <span>Register as a New Donor</span>
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-500">
                   Create your donor profile with your personal email ID to contribute via QR Code and submit verified fund requests.
                 </p>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1.5">Full Name *</label>
+                <label className="block font-semibold text-slate-700 mb-1.5">Full Name *</label>
                 <input
                   type="text"
                   required
                   value={regName}
                   onChange={(e) => setRegName(e.target.value)}
                   placeholder="e.g. John Doe"
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1.5">Email Address *</label>
+                  <label className="block font-semibold text-slate-700 mb-1.5">Email Address *</label>
                   <input
                     type="email"
                     required
                     value={regEmail}
                     onChange={(e) => setRegEmail(e.target.value)}
                     placeholder="yourname@domain.com"
-                    className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-300 mb-1.5">Phone Number</label>
+                  <label className="block font-semibold text-slate-700 mb-1.5">Phone Number</label>
                   <input
                     type="tel"
                     value={regPhone}
                     onChange={(e) => setRegPhone(e.target.value)}
                     placeholder="+91 98765 43210"
-                    className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1.5">Password *</label>
+                <label className="block font-semibold text-slate-700 mb-1.5">Password *</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
                     <Lock className="w-4 h-4" />
@@ -661,12 +661,12 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     value={regPassword}
                     onChange={(e) => setRegPassword(e.target.value)}
                     placeholder="e.g. Donor@2026"
-                    className="w-full pl-10 pr-10 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                   <button
                     type="button"
                     onClick={() => setShowRegPassword(!showRegPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 cursor-pointer"
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
                     title={showRegPassword ? "Hide password" : "Show password"}
                   >
                     {showRegPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -677,7 +677,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
               <button
                 type="submit"
-                className="w-full py-3.5 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-bold rounded-xl shadow-lg shadow-teal-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer mt-2"
+                className="w-full py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 text-white font-bold rounded-xl shadow-md shadow-teal-600/20 flex items-center justify-center gap-2 transition-all cursor-pointer mt-2"
               >
                 <UserCheck className="w-4 h-4" />
                 <span>Complete Registration &amp; Enter Donor Portal</span>
