@@ -3,10 +3,60 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      (function() {
+        const OrigWebSocket = window.WebSocket;
+        if (OrigWebSocket) {
+          window.WebSocket = function(url, protocols) {
+            const isViteHmr = (Array.isArray(protocols) && protocols.includes('vite-hmr')) ||
+                              protocols === 'vite-hmr' ||
+                              (typeof url === 'string' && (url.includes('token=') || url.includes('/@vite/client')));
+            if (isViteHmr) {
+              const emitter = new EventTarget();
+              emitter.readyState = 1;
+              emitter.OPEN = 1;
+              emitter.CLOSED = 3;
+              emitter.send = function() {};
+              emitter.close = function() {
+                emitter.readyState = 3;
+                emitter.dispatchEvent(new Event('close'));
+              };
+              setTimeout(() => {
+                emitter.dispatchEvent(new Event('open'));
+              }, 0);
+              return emitter;
+            }
+            return new OrigWebSocket(url, protocols);
+          };
+          window.WebSocket.prototype = OrigWebSocket.prototype;
+          window.WebSocket.CONNECTING = OrigWebSocket.CONNECTING;
+          window.WebSocket.OPEN = OrigWebSocket.OPEN;
+          window.WebSocket.CLOSING = OrigWebSocket.CLOSING;
+          window.WebSocket.CLOSED = OrigWebSocket.CLOSED;
+        }
+
+        window.addEventListener('unhandledrejection', function(event) {
+          const reason = event.reason;
+          const msg = (reason && (reason.message || reason.stack || String(reason))) || '';
+          if (msg.includes('WebSocket') || msg.includes('@vite/client') || msg.includes('createWebSocketModuleRunnerTransport')) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        });
+        window.addEventListener('error', function(event) {
+          const msg = event.message || '';
+          const filename = event.filename || '';
+          if (msg.includes('WebSocket') || filename.includes('@vite/client')) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        });
+      })();
+    </script>
     <link rel="icon" type="image/svg+xml" href="/assets/ngo-logo.svg" />
-    <title>Fund Bridge - NGO Fund Management System</title>
+    <title>Remix Remix Remix Fund Bridge - NGO Fund Management System</title>
     <meta name="description" content="Transparent non-profit financial platform with donation tracking, expense audits, and secure password recovery." />
-    <meta property="og:title" content="Fund Bridge - NGO Fund Management System" />
+    <meta property="og:title" content="Remix Remix Remix Fund Bridge - NGO Fund Management System" />
     <meta property="og:description" content="Transparent non-profit financial platform with donation tracking, expense audits, and secure password recovery." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -15,7 +65,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-slate-900 text-slate-100 antialiased selection:bg-teal-500 selection:text-white">
+  <body class="bg-slate-50 text-slate-800 antialiased selection:bg-teal-600 selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
