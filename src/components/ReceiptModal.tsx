@@ -18,20 +18,20 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
   if (!isOpen || !donation) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-950/80 backdrop-blur-md animate-fadeIn">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
       <div 
         className="relative w-full max-w-xl bg-white text-slate-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 print:border-none print:shadow-none max-h-[92vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <div className="bg-slate-900 text-white p-4 sm:p-5 flex items-center justify-between border-b border-slate-800 print:hidden">
-          <div className="flex items-center gap-2 text-sm font-semibold">
-            <ShieldCheck className="w-5 h-5 text-teal-400" />
+        <div className="bg-slate-50 text-slate-900 p-4 sm:p-5 flex items-center justify-between border-b border-slate-200 print:hidden">
+          <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
+            <ShieldCheck className="w-5 h-5 text-teal-600" />
             <span>Official 80G Donation Receipt</span>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            className="p-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -42,7 +42,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
           {/* Certificate Header */}
           <div className="border-b-2 border-teal-600 pb-5 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-black border border-slate-300 flex items-center justify-center p-0.5 overflow-hidden">
+              <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-0.5 overflow-hidden shadow-xs">
                 <img src="/assets/ngo-logo.svg" alt="NGO Logo" className="w-full h-full object-contain" />
               </div>
               <div>
@@ -134,7 +134,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
             </button>
             <button
               onClick={onClose}
-              className="px-5 py-2 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl text-xs sm:text-sm shadow-sm transition-colors cursor-pointer"
+              className="px-5 py-2 bg-teal-600 hover:bg-teal-500 text-white font-semibold rounded-xl text-xs sm:text-sm shadow-sm transition-colors cursor-pointer"
             >
               Done
             </button>
