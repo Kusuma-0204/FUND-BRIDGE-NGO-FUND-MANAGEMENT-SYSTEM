@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
+import http from 'http';
 import { createServer as createViteServer } from 'vite';
 
 import { initDatabase, store } from './database/db.js';
@@ -31,10 +32,13 @@ async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
 
-  // Security Headers & CORS
+  // Security Headers & CORS (Configured to support AI Studio iframe embedding)
   app.use(helmet({
     contentSecurityPolicy: false,
-    crossOriginEmbedderPolicy: false
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: false,
+    crossOriginResourcePolicy: false,
+    frameguard: false
   }));
 
   app.use(cors({
@@ -81,10 +85,16 @@ async function startServer() {
   app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
   app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
 
+  const httpServer = http.createServer(app);
+
   // Vite middleware in development or static dist in production
   if (process.env.NODE_ENV !== 'production') {
+    const isHmrDisabled = process.env.DISABLE_HMR === 'true';
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        hmr: isHmrDisabled ? false : { server: httpServer }
+      },
       appType: 'spa'
     });
     app.use(vite.middlewares);
@@ -96,7 +106,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  httpServer.listen(PORT, '0.0.0.0', () => {
     console.log(`[Fund Bridge] Full-stack Server running at http://0.0.0.0:${PORT}`);
     warmUpSmtp();
   });
