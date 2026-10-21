@@ -240,4 +240,5 @@ export const ContactView: React.FC<ContactViewProps> = ({ onSendMessage }) => {
       </div>
     </div>
   );
+  
 };
