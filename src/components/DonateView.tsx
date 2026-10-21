@@ -74,31 +74,31 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 animate-fadeIn">
       {/* Title */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
-        <span className="text-xs font-bold uppercase tracking-widest text-teal-400 bg-teal-500/10 px-3.5 py-1.5 rounded-full border border-teal-500/20 inline-flex items-center gap-1.5">
-          <QrCode className="w-3.5 h-3.5 text-teal-400" />
+        <span className="text-xs font-bold uppercase tracking-widest text-teal-800 bg-teal-50 px-3.5 py-1.5 rounded-full border border-teal-200 inline-flex items-center gap-1.5">
+          <QrCode className="w-3.5 h-3.5 text-teal-600" />
           Official QR Code &amp; Direct Contribution
         </span>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
           Scan QR Code &amp; Make a Donation
         </h1>
-        <p className="text-slate-300 text-sm sm:text-base">
+        <p className="text-slate-600 text-sm sm:text-base">
           Scan the verified UPI QR Code with Google Pay, PhonePe, Paytm, or BHIM. Instant 80G Tax Exemption receipts.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Left: Donation Form */}
-        <div className="lg:col-span-8 bg-slate-850 p-6 sm:p-8 rounded-2xl border border-slate-800 shadow-xl space-y-6">
+        <div className="lg:col-span-8 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Category */}
             <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-2">
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Select Cause / Program
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 <option value="General Fund">General Emergency &amp; Greatest Need Fund</option>
                 <option value="Food Relief">Food Donations (Food Relief)</option>
@@ -117,7 +117,7 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
 
             {/* Amount Presets */}
             <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-2">
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Select Contribution Amount (₹ INR)
               </label>
               <div className="grid grid-cols-4 gap-2.5 mb-3">
@@ -126,10 +126,10 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
                     key={amt}
                     type="button"
                     onClick={() => setAmount(amt)}
-                    className={`py-3 rounded-xl font-bold text-sm sm:text-base transition-all ${
+                    className={`py-3 rounded-xl font-bold text-sm sm:text-base transition-all cursor-pointer ${
                       amount === amt
                         ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/25 scale-[1.02]'
-                        : 'bg-slate-800 hover:bg-slate-750 text-slate-300 border border-slate-700'
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200'
                     }`}
                   >
                     ₹{amt.toLocaleString('en-IN')}
@@ -149,7 +149,7 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
                   value={amount}
                   onChange={(e) => setAmount(Number(e.target.value))}
                   placeholder="Custom Amount"
-                  className="w-full pl-9 pr-4 py-3 bg-slate-900 border border-slate-700 rounded-xl text-white text-base font-bold focus:outline-none focus:ring-2 focus:ring-teal-500 font-mono"
+                  className="w-full pl-9 pr-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 text-base font-bold focus:outline-none focus:ring-2 focus:ring-teal-500 font-mono"
                 />
               </div>
             </div>
@@ -157,7 +157,7 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
             {/* Donor Information */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Full Name *
                 </label>
                 <input
@@ -166,12 +166,12 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
                   value={donorName}
                   onChange={(e) => setDonorName(e.target.value)}
                   placeholder="e.g. John Doe"
-                  className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
                   Email (For 80G Receipt) *
                 </label>
                 <input
@@ -180,19 +180,19 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
                   value={donorEmail}
                   onChange={(e) => setDonorEmail(e.target.value)}
                   placeholder="e.g. john@example.com"
-                  className="w-full px-4 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
             </div>
 
             {/* Checkboxes */}
-            <div className="space-y-2 text-xs text-slate-300">
+            <div className="space-y-2 text-xs text-slate-600">
               <label className="flex items-center gap-2.5 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={taxExemption}
                   onChange={(e) => setTaxExemption(e.target.checked)}
-                  className="w-4 h-4 rounded text-teal-500 bg-slate-900 border-slate-700 focus:ring-0"
+                  className="w-4 h-4 rounded text-teal-600 bg-white border-slate-300 focus:ring-0"
                 />
                 <span>Generate official Section 80G Tax Exemption Certificate</span>
               </label>
@@ -202,7 +202,7 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
                   type="checkbox"
                   checked={anonymous}
                   onChange={(e) => setAnonymous(e.target.checked)}
-                  className="w-4 h-4 rounded text-teal-500 bg-slate-900 border-slate-700 focus:ring-0"
+                  className="w-4 h-4 rounded text-teal-600 bg-white border-slate-300 focus:ring-0"
                 />
                 <span>Keep this donation anonymous on the public donor honor roll</span>
               </label>
@@ -210,17 +210,17 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
 
             {/* Payment Method Selector */}
             <div>
-              <label className="block text-sm font-semibold text-slate-300 mb-2">
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
                 Payment Gateway Method
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setPaymentMethod('upi')}
-                  className={`p-3 rounded-xl border font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
+                  className={`p-3 rounded-xl border font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     paymentMethod === 'upi'
-                      ? 'bg-teal-500/20 border-teal-500 text-teal-300'
-                      : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
+                      ? 'bg-teal-50 border-teal-500 text-teal-800'
+                      : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
                   <QrCode className="w-4 h-4" />
@@ -230,10 +230,10 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
                 <button
                   type="button"
                   onClick={() => setPaymentMethod('card')}
-                  className={`p-3 rounded-xl border font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all ${
+                  className={`p-3 rounded-xl border font-semibold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
                     paymentMethod === 'card'
-                      ? 'bg-teal-500/20 border-teal-500 text-teal-300'
-                      : 'bg-slate-900 border-slate-700 text-slate-400 hover:text-white'
+                      ? 'bg-teal-50 border-teal-500 text-teal-800'
+                      : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                   }`}
                 >
                   <CreditCard className="w-4 h-4" />
@@ -244,53 +244,53 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
 
             {/* UPI QR Display */}
             {paymentMethod === 'upi' ? (
-              <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 text-center space-y-3">
-                <p className="text-xs font-semibold text-teal-400">
+              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 text-center space-y-3">
+                <p className="text-xs font-semibold text-teal-800">
                   Scan with any UPI App (Google Pay, PhonePe, Paytm, BHIM, Bank App)
                 </p>
-                <div className="w-48 h-48 mx-auto bg-white p-2.5 rounded-2xl shadow-inner flex items-center justify-center">
+                <div className="w-48 h-48 mx-auto bg-white p-2.5 rounded-2xl border border-slate-200 shadow-xs flex items-center justify-center">
                   <img src={qrDataUrl} alt="UPI QR Code - 9391514815@pthdfc" className="w-full h-full object-contain" />
                 </div>
-                <div className="text-lg font-extrabold text-teal-300 font-mono">
+                <div className="text-lg font-extrabold text-teal-700 font-mono">
                   ₹{amount.toLocaleString('en-IN')} INR
                 </div>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-slate-800 rounded-full border border-slate-700 text-xs text-slate-300">
-                  <span>UPI ID: <strong className="text-white">9391514815@pthdfc</strong></span>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white rounded-full border border-slate-200 text-xs text-slate-700 shadow-xs">
+                  <span>UPI ID: <strong className="text-slate-900">9391514815@pthdfc</strong></span>
                   <button
                     type="button"
                     onClick={handleCopyUpi}
-                    className="p-1 hover:text-teal-400"
+                    className="p-1 hover:text-teal-600 cursor-pointer"
                     title="Copy UPI ID"
                   >
-                    {copiedUpi ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedUpi ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-3">
+              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-3">
                 <div>
-                  <label className="block text-xs text-slate-400 mb-1">Card Number</label>
+                  <label className="block text-xs text-slate-600 mb-1">Card Number</label>
                   <input
                     type="text"
                     defaultValue="4242 •••• •••• 4242"
-                    className="w-full px-3.5 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-xs font-mono"
+                    className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 text-xs font-mono"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs text-slate-400 mb-1">Expiry Date</label>
+                    <label className="block text-xs text-slate-600 mb-1">Expiry Date</label>
                     <input
                       type="text"
                       defaultValue="08 / 28"
-                      className="w-full px-3.5 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-xs font-mono"
+                      className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 text-xs font-mono"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-slate-400 mb-1">CVC / CVV</label>
+                    <label className="block text-xs text-slate-600 mb-1">CVC / CVV</label>
                     <input
                       type="password"
                       defaultValue="894"
-                      className="w-full px-3.5 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-xs font-mono"
+                      className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-lg text-slate-900 text-xs font-mono"
                     />
                   </div>
                 </div>
@@ -311,7 +311,7 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
               ) : (
                 <>
                   <Lock className="w-5 h-5" />
-                  <span>Confirm Donation (${amount}) &amp; Generate 80G Receipt</span>
+                  <span>Confirm Donation (₹{amount.toLocaleString('en-IN')}) &amp; Generate 80G Receipt</span>
                 </>
               )}
             </button>
@@ -320,33 +320,33 @@ export const DonateView: React.FC<DonateViewProps> = ({ onDonationComplete, defa
 
         {/* Right: Trust & Guarantee */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-slate-850 p-6 rounded-2xl border border-slate-800 space-y-4">
-            <h3 className="font-bold text-white text-base flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-teal-400" />
+          <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+            <h3 className="font-bold text-slate-900 text-base flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-teal-600" />
               Donor Protection Promise
             </h3>
-            <ul className="space-y-3 text-xs sm:text-sm text-slate-300">
+            <ul className="space-y-3 text-xs sm:text-sm text-slate-600">
               <li className="flex gap-2.5 items-start">
-                <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
                 <span><strong>100% Tax Deductible:</strong> Recognized Section 80G certificate provided instantly.</span>
               </li>
               <li className="flex gap-2.5 items-start">
-                <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
                 <span><strong>Bank-Grade Encryption:</strong> 256-bit SSL secured transaction processing.</span>
               </li>
               <li className="flex gap-2.5 items-start">
-                <CheckCircle2 className="w-4 h-4 text-teal-400 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-teal-600 flex-shrink-0 mt-0.5" />
                 <span><strong>Direct Ground Tracking:</strong> Receive email updates and photographic proof of utilization.</span>
               </li>
             </ul>
           </div>
 
-          <div className="bg-gradient-to-br from-teal-950 to-slate-900 p-6 rounded-2xl border border-teal-500/40 text-white space-y-3">
-            <h4 className="font-bold text-teal-300 text-sm flex items-center gap-2">
-              <HeartHandshake className="w-4 h-4" />
+          <div className="bg-gradient-to-br from-teal-50 to-emerald-50/70 p-6 rounded-2xl border border-teal-200 text-slate-800 space-y-3 shadow-xs">
+            <h4 className="font-bold text-teal-900 text-sm flex items-center gap-2">
+              <HeartHandshake className="w-4 h-4 text-teal-700" />
               Corporate CSR Matching
             </h4>
-            <p className="text-xs text-teal-100/80 leading-relaxed">
+            <p className="text-xs text-slate-600 leading-relaxed">
               Many employers match charitable employee contributions 1:1. Inquire about corporate partnership packages and tax receipts.
             </p>
           </div>
