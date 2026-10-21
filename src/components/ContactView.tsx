@@ -54,13 +54,13 @@ export const ContactView: React.FC<ContactViewProps> = ({ onSendMessage }) => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12 animate-fadeIn">
       {/* Title */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
-        <span className="text-xs font-bold uppercase tracking-widest text-teal-400 bg-teal-500/10 px-3.5 py-1.5 rounded-full border border-teal-500/20">
+        <span className="text-xs font-bold uppercase tracking-widest text-teal-800 bg-teal-50 px-3.5 py-1.5 rounded-full border border-teal-200">
           Get In Touch
         </span>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
           Contact NGO Fund Management Team
         </h1>
-        <p className="text-slate-300 text-sm sm:text-base">
+        <p className="text-slate-600 text-sm sm:text-base">
           Have questions about fund allocation, corporate partnerships, or volunteer programs? We are here to assist.
         </p>
       </div>
@@ -68,49 +68,49 @@ export const ContactView: React.FC<ContactViewProps> = ({ onSendMessage }) => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Left: Info Cards */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="bg-slate-850 p-5 rounded-2xl border border-slate-800 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center flex-shrink-0">
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center flex-shrink-0">
               <MapPin className="w-5 h-5" />
             </div>
             <div className="space-y-1">
-              <h4 className="font-bold text-white text-sm">Global Headquarters</h4>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h4 className="font-bold text-slate-900 text-sm">Global Headquarters</h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
                 Global NGO Tower, Suite 400, Financial District, NY &amp; MG Road, New Delhi
               </p>
             </div>
           </div>
 
-          <div className="bg-slate-850 p-5 rounded-2xl border border-slate-800 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0">
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
               <Phone className="w-5 h-5" />
             </div>
             <div className="space-y-1">
-              <h4 className="font-bold text-white text-sm">24/7 Helpline &amp; Inquiries</h4>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h4 className="font-bold text-slate-900 text-sm">24/7 Helpline &amp; Inquiries</h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
                 +1 (800) 456-7890 / +91 98765 43210
               </p>
             </div>
           </div>
 
-          <div className="bg-slate-850 p-5 rounded-2xl border border-slate-800 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center flex-shrink-0">
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center flex-shrink-0">
               <Mail className="w-5 h-5" />
             </div>
             <div className="space-y-1">
-              <h4 className="font-bold text-white text-sm">Official Email</h4>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h4 className="font-bold text-slate-900 text-sm">Official Email</h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
                 contact@ngofunds.org / support@ngofunds.org
               </p>
             </div>
           </div>
 
-          <div className="bg-slate-850 p-5 rounded-2xl border border-slate-800 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+          <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs flex items-start gap-4">
+            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
               <Clock className="w-5 h-5" />
             </div>
             <div className="space-y-1">
-              <h4 className="font-bold text-white text-sm">Audit &amp; Operational Hours</h4>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <h4 className="font-bold text-slate-900 text-sm">Audit &amp; Operational Hours</h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
                 Monday – Saturday: 9:00 AM – 6:00 PM (Emergency Desk 24/7)
               </p>
             </div>
@@ -118,15 +118,15 @@ export const ContactView: React.FC<ContactViewProps> = ({ onSendMessage }) => {
         </div>
 
         {/* Right: Contact Form */}
-        <div className="lg:col-span-7 bg-slate-850 p-6 sm:p-8 rounded-2xl border border-slate-800 shadow-xl space-y-5">
-          <div className="flex items-center gap-2 pb-3 border-b border-slate-800">
-            <Send className="w-5 h-5 text-teal-400" />
-            <h3 className="font-bold text-white text-lg">Send Direct Inquiry</h3>
+        <div className="lg:col-span-7 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+          <div className="flex items-center gap-2 pb-3 border-b border-slate-100">
+            <Send className="w-5 h-5 text-teal-600" />
+            <h3 className="font-bold text-slate-900 text-lg">Send Direct Inquiry</h3>
           </div>
 
           {sentSuccess && (
-            <div className="p-3.5 bg-emerald-500/15 border border-emerald-500/30 rounded-xl text-emerald-300 text-xs flex items-center gap-2 font-medium">
-              <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+            <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs flex items-center gap-2 font-medium">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
               <span>Thank you! Your message has been received by our leadership desk.</span>
             </div>
           )}
@@ -134,69 +134,69 @@ export const ContactView: React.FC<ContactViewProps> = ({ onSendMessage }) => {
           <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block font-semibold text-slate-300 mb-1.5">Your Name *</label>
+                <label className="block font-semibold text-slate-700 mb-1.5">Your Name *</label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. John Doe"
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1.5">Email Address *</label>
+                <label className="block font-semibold text-slate-700 mb-1.5">Email Address *</label>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="e.g. john@example.com"
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block font-semibold text-slate-300 mb-1.5">Phone Number (Optional)</label>
+                <label className="block font-semibold text-slate-700 mb-1.5">Phone Number (Optional)</label>
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="e.g. +91 98765 43210"
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-300 mb-1.5">Subject / Category</label>
+                <label className="block font-semibold text-slate-700 mb-1.5">Subject / Category</label>
                 <input
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
                   placeholder="e.g. Donation Receipt / Aid Inquiry"
-                  className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-300 mb-1.5">Your Message *</label>
+              <label className="block font-semibold text-slate-700 mb-1.5">Your Message *</label>
               <textarea
                 rows={4}
                 required
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type your message or inquiry here..."
-                className="w-full px-3.5 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-3.5 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl shadow-lg shadow-teal-600/25 flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              className="w-full py-3.5 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-xl shadow-md shadow-teal-600/20 flex items-center justify-center gap-2 transition-colors cursor-pointer"
             >
               <Send className="w-4 h-4" />
               <span>Send Direct Message</span>
@@ -206,10 +206,10 @@ export const ContactView: React.FC<ContactViewProps> = ({ onSendMessage }) => {
       </div>
 
       {/* FAQ Accordion */}
-      <div className="pt-6 border-t border-slate-800 space-y-6">
+      <div className="pt-6 border-t border-slate-200 space-y-6">
         <div className="text-center max-w-2xl mx-auto space-y-1">
-          <span className="text-xs font-bold uppercase tracking-wider text-teal-400">Common Inquiries</span>
-          <h3 className="text-xl sm:text-2xl font-bold text-white">Frequently Asked Questions</h3>
+          <span className="text-xs font-bold uppercase tracking-wider text-teal-700">Common Inquiries</span>
+          <h3 className="text-xl sm:text-2xl font-bold text-slate-900">Frequently Asked Questions</h3>
         </div>
 
         <div className="max-w-3xl mx-auto space-y-3">
@@ -218,18 +218,18 @@ export const ContactView: React.FC<ContactViewProps> = ({ onSendMessage }) => {
             return (
               <div
                 key={idx}
-                className="bg-slate-850 rounded-xl border border-slate-800 overflow-hidden transition-colors"
+                className="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden transition-colors"
               >
                 <button
                   type="button"
                   onClick={() => setOpenFaq(isOpen ? null : idx)}
-                  className="w-full p-4 text-left flex justify-between items-center font-semibold text-white text-xs sm:text-sm hover:text-teal-300"
+                  className="w-full p-4 text-left flex justify-between items-center font-semibold text-slate-900 text-xs sm:text-sm hover:text-teal-700 cursor-pointer"
                 >
                   <span>{faq.q}</span>
-                  <ChevronDown className={`w-4 h-4 text-teal-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-4 h-4 text-teal-600 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
                 </button>
                 {isOpen && (
-                  <div className="px-4 pb-4 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/80 pt-3">
+                  <div className="px-4 pb-4 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
                     {faq.a}
                   </div>
                 )}
@@ -240,5 +240,4 @@ export const ContactView: React.FC<ContactViewProps> = ({ onSendMessage }) => {
       </div>
     </div>
   );
-  
 };
