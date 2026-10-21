@@ -54,6 +54,7 @@ INSERT INTO `expenses` (`id`, `title`, `category`, `amount`, `vendor`, `expense_
 ('EXP-2026-004', 'Clean Drinking Water RO Filtration Modules (5 units)', 'Clean Water', 1750.00, 'AquaPure Engineering', '2026-09-15', 'user-volunteer-1', 'Dr. Sarah Jenkins', 'Verified & Paid', 'Village community bore-wells')
 ON DUPLICATE KEY UPDATE `amount` = VALUES(`amount`);
 
+
 -- -----------------------------------------------------------------------------
 -- Seed: Requests
 -- -----------------------------------------------------------------------------
