@@ -70,13 +70,13 @@ export const Dashboard: React.FC<DashboardProps> = ({
   // RBAC Security Guard: If not Administrator with authorized email, block dashboard and redirect
   if (currentUser.role !== 'Administrator' || currentUser.email.toLowerCase() !== 'aadminngo@gmail.com') {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-6 text-center">
-        <div className="max-w-md p-8 bg-slate-900 border border-rose-500/30 rounded-3xl space-y-4 shadow-2xl">
-          <div className="w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto">
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-6 text-center">
+        <div className="max-w-md p-8 bg-white border border-slate-200 rounded-3xl space-y-4 shadow-xl">
+          <div className="w-14 h-14 rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto">
             <AlertCircle className="w-8 h-8" />
           </div>
-          <h2 className="text-xl font-bold text-white">Access Restricted to Administrator</h2>
-          <p className="text-xs text-slate-300 leading-relaxed">
+          <h2 className="text-xl font-bold text-slate-900">Access Restricted to Administrator</h2>
+          <p className="text-xs text-slate-600 leading-relaxed">
             You are currently logged in as ({currentUser.name || currentUser.email}). The Dashboard, financial expenses, and administrative settings are exclusively accessible by authorized administrative accounts.
           </p>
           <button
