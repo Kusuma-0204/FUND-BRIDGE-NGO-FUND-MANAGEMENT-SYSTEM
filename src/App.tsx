@@ -425,7 +425,7 @@ export default function App() {
       const data = await res.json();
       if (res.ok && data.success) {
         showToast(
-          `6-digit OTP sent to ${email}! Please check your email inbox (and Spam folder).`,
+          `6-digit OTP dispatched to ${email}! Please check your Gmail Inbox, Spam, or Sent folder.`,
           'success'
         );
         return data;
