@@ -424,8 +424,11 @@ export default function App() {
       });
       const data = await res.json();
       if (res.ok && data.success) {
+        const isMobile = !email.includes('@');
         showToast(
-          `6-digit OTP dispatched to ${email}! Please check your Gmail Inbox, Spam, or Sent folder.`,
+          isMobile
+            ? `6-digit OTP sent via SMS to mobile ${data.deliveredTo || email}!`
+            : `6-digit OTP sent to ${data.deliveredTo || email}!`,
           'success'
         );
         return data;
@@ -452,8 +455,12 @@ export default function App() {
 
   // Handler: Password Reset Completion (Updates password, authenticates, and directs to appropriate portal)
   const handlePasswordResetSuccess = (email: string, newPass: string) => {
-    // 1. Update user password in users list
-    let targetUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    // 1. Update user password in users list (match by email or phone)
+    const cleanDigits = email.replace(/[^0-9]/g, '');
+    let targetUser = users.find(u => 
+      u.email.toLowerCase() === email.toLowerCase() || 
+      (cleanDigits.length >= 7 && u.phone && u.phone.replace(/[^0-9]/g, '').slice(-10) === cleanDigits.slice(-10))
+    );
     let nextUsers: User[] = [];
     if (targetUser) {
       nextUsers = users.map(u => 
