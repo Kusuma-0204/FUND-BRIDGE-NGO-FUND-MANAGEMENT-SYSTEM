@@ -13,11 +13,11 @@ export async function sendPasswordResetEmail(
   recipientEmail: string,
   resetLink: string
 ): Promise<SendEmailResult> {
-  const host = process.env.SMTP_HOST;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-  const port = Number(process.env.SMTP_PORT || 587);
-  const from = process.env.SMTP_FROM || (user ? `"Fund Bridge Support" <${user}>` : '"Fund Bridge Security" <noreply@ngofunds.org>');
+  const host = process.env.SMTP_HOST || 'smtp.gmail.com';
+  const user = process.env.SMTP_USER || 'o220786@rguktong.ac.in';
+  const pass = process.env.SMTP_PASSWORD || process.env.SMTP_PASS || 'ylutzrcaldznpcpi';
+  const port = Number(process.env.SMTP_PORT || 465);
+  const from = process.env.MAIL_FROM || process.env.SMTP_FROM || (user ? `"Fund Bridge Support" <${user}>` : '"Fund Bridge Security" <noreply@ngofunds.org>');
 
   // 1. If real SMTP credentials are provided in .env, send live email
   if (host && user && pass) {
