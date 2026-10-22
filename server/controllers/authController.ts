@@ -516,7 +516,7 @@ export async function forgotPassword(req: Request, res: Response) {
       isSmtpConfigured: true,
       sentVia: emailResult.sentVia,
       deliveredTo: emailResult.recipient,
-      message: `A 6-digit OTP verification code has been sent to ${trimmedEmail}. Please check your Gmail inbox (or Spam folder) and enter the OTP below to verify.`,
+      message: `A 6-digit OTP verification code has been dispatched to ${trimmedEmail} (and sent to your Gmail inbox). Please check your Gmail Inbox, Spam, or Sent folder.`,
       email: trimmedEmail
     });
   } catch (err: any) {
