@@ -487,7 +487,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             title={sidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
             <div className="w-9 h-9 rounded-xl bg-white border border-slate-200 p-0.5 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform overflow-hidden shadow-2xs">
-              <img src="/assets/ngo-logo.svg" alt="NGO Logo" className="w-full h-full object-contain" />
+              <img src="/assets/ngo-logo.svg?v=light" alt="NGO Logo" className="w-full h-full object-contain" />
             </div>
             {!sidebarCollapsed && (
               <div className="flex-1 min-w-0">
