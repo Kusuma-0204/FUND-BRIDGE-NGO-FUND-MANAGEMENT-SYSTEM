@@ -75,7 +75,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
   const handleForgotPasswordClick = () => {
     if (activePortalTab === 'admin') {
-      onOpenForgotPassword('aadminngo@gmail.com');
+      onOpenForgotPassword(loginEmail.trim() || 'o220786@rguktong.ac.in');
     } else {
       onOpenForgotPassword(loginEmail.trim());
     }
