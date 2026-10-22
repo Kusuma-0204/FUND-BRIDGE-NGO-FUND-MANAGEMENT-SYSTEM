@@ -15,7 +15,6 @@ export interface SendResetResult {
   success: boolean;
   isSmtpConfigured?: boolean;
   sentVia?: 'smtp' | 'ethereal' | 'simulated';
-  otpCode?: string;
   deliveredTo?: string;
   message?: string;
 }
@@ -295,7 +294,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           ) : (
             /* STEP 2: ENTER 6-DIGIT OTP FROM GMAIL ON WEBSITE */
             <form onSubmit={handleVerifyOtp} className="space-y-5">
-              <div className="p-4 bg-teal-50 border border-teal-200 rounded-xl space-y-2">
+              <div className="p-4 bg-teal-50 border border-teal-200 rounded-xl space-y-2.5">
                 <div className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
                   <div className="text-xs text-slate-700 leading-relaxed">
@@ -304,8 +303,16 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                   </div>
                 </div>
 
-                <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-[11px] text-amber-800 leading-relaxed">
-                  ⚠️ <strong>Check your Spam / Junk folder:</strong> In the Gmail app, automated emails from institutional domains often land in the <strong>Spam</strong> folder.
+
+                <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-[11px] text-amber-900 leading-relaxed space-y-1">
+                  <span className="font-bold block text-amber-800">
+                    📬 Important Gmail Delivery Tips:
+                  </span>
+                  <p>
+                    • Check your <strong>Spam / Junk</strong> folder in the Gmail app.<br/>
+                    • If sent from/to your own account, Gmail frequently files it in the <strong>Sent</strong> folder instead of Inbox.<br/>
+                    • Or search for subject <strong>"Fund Bridge"</strong> in Gmail search.
+                  </p>
                 </div>
               </div>
 
