@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Mail,
+  Smartphone,
   ArrowRight,
   X,
   ShieldCheck,
@@ -14,9 +15,10 @@ import {
 export interface SendResetResult {
   success: boolean;
   isSmtpConfigured?: boolean;
-  sentVia?: 'smtp' | 'ethereal' | 'simulated';
+  sentVia?: string;
   deliveredTo?: string;
   message?: string;
+  isPhone?: boolean;
 }
 
 interface ForgotPasswordModalProps {
@@ -27,20 +29,6 @@ interface ForgotPasswordModalProps {
   onOpenResetPassword?: (email: string, token: string) => void;
 }
 
-const maskEmail = (val: string) => {
-  if (!val) return 'your registered email';
-  if (val.toLowerCase() === 'aadminngo@gmail.com' || val.toLowerCase() === 'adminngo@gmail.com') {
-    return 'authorized administrator email';
-  }
-  const parts = val.split('@');
-  if (parts.length === 2) {
-    const u = parts[0];
-    const masked = u.length <= 2 ? '**' : `${u[0]}${'*'.repeat(Math.min(u.length - 2, 6))}${u[u.length - 1]}`;
-    return `${masked}@${parts[1]}`;
-  }
-  return val;
-};
-
 export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   isOpen,
   onClose,
@@ -48,56 +36,84 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   onSendResetLink,
   onOpenResetPassword
 }) => {
-  const [step, setStep] = useState<'email' | 'otp'>('email');
-  const [email, setEmail] = useState(defaultEmail);
+  const [step, setStep] = useState<'contact' | 'otp'>('contact');
+  const [contact, setContact] = useState(defaultEmail);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
 
-  // 6-digit OTP state
+  // 6-digit OTP states - strictly blank for manual entry from user's mobile SMS
   const [otpDigits, setOtpDigits] = useState<string[]>(['', '', '', '', '', '']);
   const [deliveredTo, setDeliveredTo] = useState<string>('');
+  const [isMobileContact, setIsMobileContact] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [otpError, setOtpError] = useState<string | null>(null);
+  const [resendCooldown, setResendCooldown] = useState<number>(0);
 
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
+  // Reset modal state on open
   useEffect(() => {
     if (isOpen) {
-      setEmail(defaultEmail);
-      setStep('email');
+      setContact(defaultEmail);
+      setStep('contact');
       setOtpDigits(['', '', '', '', '', '']);
       setDeliveredTo('');
       setOtpError(null);
+      setResendCooldown(0);
     }
   }, [defaultEmail, isOpen]);
 
+  // Handle resend countdown timer
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => Math.max(0, prev - 1));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
   if (!isOpen) return null;
 
-  // Step 1: Send 6-Digit OTP to User's Gmail Inbox
+  // Step 1: Send 6-digit OTP via SMS to user's mobile phone or email
   const handleSendOtp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!email.trim()) return;
+    const cleanContact = contact.trim();
+    if (!cleanContact) return;
 
     setIsSendingOtp(true);
     setOtpError(null);
 
+    const isMobile = !cleanContact.includes('@') && /^[+]?[0-9\s-]{8,16}$/.test(cleanContact.replace(/\s+/g, ''));
+    setIsMobileContact(isMobile);
+
     try {
-      const result = await onSendResetLink(email.trim());
-      if (result?.deliveredTo) {
-        setDeliveredTo(result.deliveredTo);
+      const result = await onSendResetLink(cleanContact);
+      if (result && result.success !== false) {
+        if (result.deliveredTo) {
+          setDeliveredTo(result.deliveredTo);
+        } else {
+          setDeliveredTo(cleanContact);
+        }
+
+        // Leave all 6 input fields completely empty for the user to manually enter the OTP from their mobile SMS
+        setOtpDigits(['', '', '', '', '', '']);
+        setStep('otp');
+        setResendCooldown(30);
+
+        // Auto-focus on the first digit input
+        setTimeout(() => {
+          inputRefs.current[0]?.focus();
+        }, 120);
+      } else {
+        setOtpError(result?.message || 'Could not dispatch verification code. Please check your number.');
       }
-      setOtpDigits(['', '', '', '', '', '']);
-      setStep('otp');
-      setTimeout(() => {
-        inputRefs.current[0]?.focus();
-      }, 100);
     } catch {
-      setOtpError('Failed to send OTP to your email. Please try again.');
+      setOtpError('Failed to send verification code. Please check your connection and try again.');
     } finally {
       setIsSendingOtp(false);
     }
   };
 
-  // Handle individual OTP digit changes
+  // Handle individual OTP digit changes (manual input only)
   const handleOtpChange = (index: number, value: string) => {
     const cleaned = value.replace(/[^0-9]/g, '');
     if (!cleaned) {
@@ -107,7 +123,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       return;
     }
 
-    // Support pasting or typing multiple digits
+    // Support manual copy-paste of 6-digit code
     if (cleaned.length > 1) {
       const chars = cleaned.slice(0, 6).split('');
       const next = [...otpDigits];
@@ -125,6 +141,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     setOtpDigits(next);
     setOtpError(null);
 
+    // Jump to next input box
     if (index < 5) {
       inputRefs.current[index + 1]?.focus();
     }
@@ -150,12 +167,12 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     inputRefs.current[focusIdx]?.focus();
   };
 
-  // Step 2: Verify 6-Digit OTP entered on the website
+  // Step 2: Verify the 6-Digit OTP entered manually by user
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     const enteredOtp = otpDigits.join('').trim();
     if (enteredOtp.length !== 6) {
-      setOtpError('Please enter the complete 6-digit OTP sent to your Gmail.');
+      setOtpError('Please enter all 6 digits of the OTP received on your mobile.');
       return;
     }
 
@@ -167,7 +184,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: email.trim(),
+          email: contact.trim(),
           otp: enteredOtp
         })
       });
@@ -175,20 +192,20 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setOtpError(data.message || 'Incorrect OTP code. Please check your Gmail inbox and try again.');
+        setOtpError(data.message || 'Incorrect verification code. Please check your SMS and try again.');
         setIsVerifyingOtp(false);
         return;
       }
 
-      // OTP Verified! Open Set New Password screen
+      // OTP Verified successfully! Open Set New Password screen
       const verifiedToken = data.resetToken || enteredOtp;
       setIsVerifyingOtp(false);
       onClose();
       if (onOpenResetPassword) {
-        onOpenResetPassword(email.trim(), verifiedToken);
+        onOpenResetPassword(contact.trim(), verifiedToken);
       }
     } catch {
-      setOtpError('Unable to verify OTP at the moment. Please try again.');
+      setOtpError('Unable to verify OTP right now. Please check your connection and try again.');
       setIsVerifyingOtp(false);
     }
   };
@@ -213,22 +230,22 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-xs font-semibold tracking-wide uppercase mb-2 text-teal-100">
             <ShieldCheck className="w-3.5 h-3.5" />
-            {step === 'email' ? 'Step 1 of 2: Send Email OTP' : 'Step 2 of 2: Verify Email OTP'}
+            {step === 'contact' ? 'Step 1 of 2: Mobile / Email Verification' : 'Step 2 of 2: Enter Mobile OTP'}
           </div>
           <h3 className="text-xl sm:text-2xl font-bold tracking-tight">
-            {step === 'email' ? 'Forgot Password' : 'Verify 6-Digit OTP'}
+            {step === 'contact' ? 'Forgot Password' : 'Verify Mobile OTP'}
           </h3>
           <p className="text-teal-100 text-sm mt-1 leading-relaxed">
-            {step === 'email'
-              ? 'Enter your login email address to receive a 6-digit OTP in your Gmail inbox.'
-              : `Enter the 6-digit OTP sent to ${maskEmail(email)}`}
+            {step === 'contact'
+              ? 'Enter your mobile number to receive your 6-digit OTP via SMS and reset your password.'
+              : `Enter the 6-digit code sent via SMS to your mobile phone`}
           </p>
         </div>
 
         {/* Body */}
         <div className="p-6 sm:p-7 space-y-5 bg-white">
-          {step === 'email' ? (
-            /* STEP 1: ENTER EMAIL TO SEND OTP TO GMAIL */
+          {step === 'contact' ? (
+            /* STEP 1: ENTER MOBILE NUMBER OR EMAIL */
             <form onSubmit={handleSendOtp} className="space-y-4">
               {otpError && (
                 <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2">
@@ -238,28 +255,35 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               )}
 
               <div>
-                <label htmlFor="forgot-email" className="block text-sm font-semibold text-slate-700 mb-1.5">
-                  Registered Login Email Address
+                <label htmlFor="forgot-contact" className="block text-sm font-semibold text-slate-700 mb-1.5">
+                  Mobile Phone Number or Email Address
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Mail className="w-5 h-5" />
+                    {contact && !contact.includes('@') ? (
+                      <Smartphone className="w-5 h-5 text-teal-600" />
+                    ) : (
+                      <Mail className="w-5 h-5" />
+                    )}
                   </div>
                   <input
-                    id="forgot-email"
-                    type="email"
+                    id="forgot-contact"
+                    type="text"
                     required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="e.g. yourname@gmail.com"
-                    className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all text-sm font-medium"
+                    value={contact}
+                    onChange={(e) => setContact(e.target.value)}
+                    placeholder="e.g. 9876543210 or yourname@gmail.com"
+                    className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all text-sm font-medium font-mono"
                     autoFocus
                   />
                 </div>
                 <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-500">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
                   <span>
-                    6-digit OTP will be sent to: <strong className="text-teal-700">{maskEmail(email)}</strong>
+                    OTP code will be sent via{' '}
+                    <strong className="text-teal-700 font-semibold">
+                      {contact && !contact.includes('@') ? 'SMS text message to your mobile phone' : 'SMS / Email'}
+                    </strong>
                   </span>
                 </div>
               </div>
@@ -274,17 +298,17 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 </button>
                 <button
                   type="submit"
-                  disabled={isSendingOtp || !email.trim()}
+                  disabled={isSendingOtp || !contact.trim()}
                   className="w-full sm:w-2/3 px-5 py-3 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-400 hover:to-emerald-500 text-white font-semibold rounded-xl text-sm shadow-lg shadow-teal-500/25 flex items-center justify-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
                 >
                   {isSendingOtp ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Sending OTP to Gmail...</span>
+                      <span>Sending SMS to Mobile...</span>
                     </>
                   ) : (
                     <>
-                      <span>Send OTP to Email</span>
+                      <span>Send OTP to Mobile</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
@@ -292,26 +316,24 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               </div>
             </form>
           ) : (
-            /* STEP 2: ENTER 6-DIGIT OTP FROM GMAIL ON WEBSITE */
-            <form onSubmit={handleVerifyOtp} className="space-y-5">
-              <div className="p-4 bg-teal-50 border border-teal-200 rounded-xl space-y-2.5">
-                <div className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
-                  <div className="text-xs text-slate-700 leading-relaxed">
-                    <span className="font-bold text-teal-800 block text-sm">6-Digit Code Dispatched!</span>
-                    <span>Dispatched to: <strong className="text-slate-900 underline">{maskEmail(deliveredTo || email)}</strong></span>
-                  </div>
+            /* STEP 2: ENTER 6-DIGIT OTP RECEIVED VIA MOBILE SMS */
+            <form onSubmit={handleVerifyOtp} className="space-y-4">
+              {/* Delivery notification card */}
+              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-3">
+                <div className="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700 shrink-0 mt-0.5">
+                  {isMobileContact ? <Smartphone className="w-5 h-5" /> : <Mail className="w-5 h-5" />}
                 </div>
-
-
-                <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-[11px] text-amber-900 leading-relaxed space-y-1">
-                  <span className="font-bold block text-amber-800">
-                    📬 Important Gmail Delivery Tips:
-                  </span>
-                  <p>
-                    • Check your <strong>Spam / Junk</strong> folder in the Gmail app.<br/>
-                    • If sent from/to your own account, Gmail frequently files it in the <strong>Sent</strong> folder instead of Inbox.<br/>
-                    • Or search for subject <strong>"Fund Bridge"</strong> in Gmail search.
+                <div className="text-left">
+                  <div className="text-xs font-bold uppercase tracking-wider text-emerald-900 mb-0.5 flex items-center gap-2">
+                    <span>{isMobileContact ? 'SMS Sent to Mobile' : 'Verification Code Sent'}</span>
+                    <span className="inline-flex items-center gap-1 text-[10px] bg-emerald-200 text-emerald-800 px-2 py-0.5 rounded-full font-bold">
+                      <CheckCircle2 className="w-3 h-3" /> Dispatched
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-700 leading-relaxed">
+                    A 6-digit OTP has been sent to{' '}
+                    <strong className="text-slate-900 font-mono font-bold">{deliveredTo || contact}</strong>.
+                    Please check your messages and type the code below:
                   </p>
                 </div>
               </div>
@@ -325,9 +347,9 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               )}
 
               {/* 6-Digit OTP Input Boxes */}
-              <div>
+              <div className="py-2">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 text-center mb-3">
-                  Enter 6-Digit OTP Code
+                  Type 6-Digit Verification Code
                 </label>
                 <div className="flex items-center justify-center gap-2 sm:gap-3">
                   {otpDigits.map((digit, index) => (
@@ -338,15 +360,20 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                       }}
                       type="text"
                       inputMode="numeric"
+                      pattern="[0-9]*"
                       maxLength={6}
                       value={digit}
                       onChange={(e) => handleOtpChange(index, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
                       onPaste={handleOtpPaste}
-                      className="w-11 h-13 sm:w-12 sm:h-14 text-center text-xl font-extrabold bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all font-mono shadow-xs"
+                      className="w-11 h-14 sm:w-12 sm:h-15 text-center text-2xl font-extrabold bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-teal-600 focus:ring-2 focus:ring-teal-500/20 transition-all font-mono shadow-xs"
+                      autoComplete="one-time-code"
                     />
                   ))}
                 </div>
+                <p className="text-[11px] text-center text-slate-500 mt-2">
+                  Enter the numbers sent to your phone messages
+                </p>
               </div>
 
               {/* Verify OTP Button */}
@@ -358,39 +385,45 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 {isVerifyingOtp ? (
                   <>
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Verifying OTP...</span>
+                    <span>Verifying Code...</span>
                   </>
                 ) : (
                   <>
                     <KeyRound className="w-4 h-4" />
-                    <span>Verify OTP</span>
+                    <span>Verify Code &amp; Reset Password</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>
 
-              {/* Resend OTP & Change Email Actions */}
-              <div className="flex items-center justify-between pt-2 border-t border-slate-200 text-xs">
+              {/* Resend OTP & Change Contact Actions */}
+              <div className="flex items-center justify-between pt-3 border-t border-slate-200 text-xs">
                 <button
                   type="button"
                   onClick={() => {
-                    setStep('email');
+                    setStep('contact');
                     setOtpError(null);
                   }}
                   className="text-slate-500 hover:text-slate-800 inline-flex items-center gap-1.5 font-medium transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Change Email</span>
+                  <span>Change Mobile Number</span>
                 </button>
 
                 <button
                   type="button"
-                  disabled={isSendingOtp}
+                  disabled={isSendingOtp || resendCooldown > 0}
                   onClick={() => handleSendOtp()}
-                  className="text-teal-700 hover:text-teal-800 inline-flex items-center gap-1.5 font-semibold transition-colors cursor-pointer disabled:opacity-50"
+                  className="text-teal-700 hover:text-teal-800 inline-flex items-center gap-1.5 font-semibold transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <RefreshCw className={`w-3.5 h-3.5 ${isSendingOtp ? 'animate-spin' : ''}`} />
-                  <span>{isSendingOtp ? 'Sending...' : 'Resend OTP to Gmail'}</span>
+                  <span>
+                    {isSendingOtp
+                      ? 'Sending SMS...'
+                      : resendCooldown > 0
+                      ? `Resend SMS (${resendCooldown}s)`
+                      : 'Resend SMS'}
+                  </span>
                 </button>
               </div>
             </form>
