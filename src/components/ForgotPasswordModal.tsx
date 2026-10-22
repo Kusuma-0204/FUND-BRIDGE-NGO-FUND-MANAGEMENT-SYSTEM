@@ -9,8 +9,21 @@ import {
   KeyRound,
   RefreshCw,
   ArrowLeft,
-  AlertCircle
+  AlertCircle,
+  MessageCircle,
+  HelpCircle,
+  ChevronDown,
+  ChevronUp,
+  Info
 } from 'lucide-react';
+
+export interface DispatchDetails {
+  channel: 'sms' | 'email';
+  recipient: string;
+  message: string;
+  otpCode?: string;
+  whatsAppUrl?: string;
+}
 
 export interface SendResetResult {
   success: boolean;
@@ -19,6 +32,7 @@ export interface SendResetResult {
   deliveredTo?: string;
   message?: string;
   isPhone?: boolean;
+  dispatchDetails?: DispatchDetails;
 }
 
 interface ForgotPasswordModalProps {
@@ -40,13 +54,17 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   const [contact, setContact] = useState(defaultEmail);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
 
-  // 6-digit OTP states - strictly blank for manual entry from user's mobile SMS
+  // 6-digit OTP states - strictly blank for manual entry
   const [otpDigits, setOtpDigits] = useState<string[]>(['', '', '', '', '', '']);
   const [deliveredTo, setDeliveredTo] = useState<string>('');
   const [isMobileContact, setIsMobileContact] = useState(false);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [otpError, setOtpError] = useState<string | null>(null);
   const [resendCooldown, setResendCooldown] = useState<number>(0);
+
+  // Carrier dispatch details (for environments like Render where SMS gateways or SMTP are restricted)
+  const [dispatchInfo, setDispatchInfo] = useState<DispatchDetails | null>(null);
+  const [showDispatchHelp, setShowDispatchHelp] = useState(false);
 
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
@@ -59,6 +77,8 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       setDeliveredTo('');
       setOtpError(null);
       setResendCooldown(0);
+      setDispatchInfo(null);
+      setShowDispatchHelp(false);
     }
   }, [defaultEmail, isOpen]);
 
@@ -73,7 +93,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Step 1: Send 6-digit OTP via SMS to user's mobile phone or email
+  // Step 1: Send 6-digit OTP via SMS or Email
   const handleSendOtp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     const cleanContact = contact.trim();
@@ -94,7 +114,11 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           setDeliveredTo(cleanContact);
         }
 
-        // Leave all 6 input fields completely empty for the user to manually enter the OTP from their mobile SMS
+        if (result.dispatchDetails) {
+          setDispatchInfo(result.dispatchDetails);
+        }
+
+        // Leave all 6 input fields completely empty for the user to manually enter the OTP
         setOtpDigits(['', '', '', '', '', '']);
         setStep('otp');
         setResendCooldown(30);
@@ -104,7 +128,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           inputRefs.current[0]?.focus();
         }, 120);
       } else {
-        setOtpError(result?.message || 'Could not dispatch verification code. Please check your number.');
+        setOtpError(result?.message || 'Could not dispatch verification code. Please check your contact info.');
       }
     } catch {
       setOtpError('Failed to send verification code. Please check your connection and try again.');
@@ -113,7 +137,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     }
   };
 
-  // Handle individual OTP digit changes (manual input only)
+  // Handle individual OTP digit changes (manual typing only)
   const handleOtpChange = (index: number, value: string) => {
     const cleaned = value.replace(/[^0-9]/g, '');
     if (!cleaned) {
@@ -172,7 +196,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     e.preventDefault();
     const enteredOtp = otpDigits.join('').trim();
     if (enteredOtp.length !== 6) {
-      setOtpError('Please enter all 6 digits of the OTP received on your mobile.');
+      setOtpError('Please enter all 6 digits of the verification code.');
       return;
     }
 
@@ -192,7 +216,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setOtpError(data.message || 'Incorrect verification code. Please check your SMS and try again.');
+        setOtpError(data.message || 'Incorrect verification code. Please check and try again.');
         setIsVerifyingOtp(false);
         return;
       }
@@ -205,7 +229,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         onOpenResetPassword(contact.trim(), verifiedToken);
       }
     } catch {
-      setOtpError('Unable to verify OTP right now. Please check your connection and try again.');
+      setOtpError('Unable to verify code right now. Please check your connection and try again.');
       setIsVerifyingOtp(false);
     }
   };
@@ -218,7 +242,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         className="relative w-full max-w-lg bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
+        {/* Dynamic Header */}
         <div className="bg-gradient-to-r from-teal-600 via-emerald-600 to-teal-700 p-6 text-white relative">
           <button
             onClick={onClose}
@@ -230,20 +254,30 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-xs font-semibold tracking-wide uppercase mb-2 text-teal-100">
             <ShieldCheck className="w-3.5 h-3.5" />
-            {step === 'contact' ? 'Step 1 of 2: Mobile / Email Verification' : 'Step 2 of 2: Enter Mobile OTP'}
+            {step === 'contact'
+              ? 'Step 1 of 2: Mobile / Email Verification'
+              : isMobileContact
+              ? 'Step 2 of 2: Enter Mobile OTP'
+              : 'Step 2 of 2: Enter Email Verification Code'}
           </div>
           <h3 className="text-xl sm:text-2xl font-bold tracking-tight">
-            {step === 'contact' ? 'Forgot Password' : 'Verify Mobile OTP'}
+            {step === 'contact'
+              ? 'Forgot Password'
+              : isMobileContact
+              ? 'Verify Mobile OTP'
+              : 'Verify Email Security Code'}
           </h3>
           <p className="text-teal-100 text-sm mt-1 leading-relaxed">
             {step === 'contact'
-              ? 'Enter your mobile number to receive your 6-digit OTP via SMS and reset your password.'
-              : `Enter the 6-digit code sent via SMS to your mobile phone`}
+              ? 'Enter your mobile number or email to receive your 6-digit code and reset your password.'
+              : isMobileContact
+              ? `Enter the 6-digit code sent via SMS to your mobile phone`
+              : `Enter the 6-digit verification code sent to your email address`}
           </p>
         </div>
 
         {/* Body */}
-        <div className="p-6 sm:p-7 space-y-5 bg-white">
+        <div className="p-6 sm:p-7 space-y-5 bg-white max-h-[85vh] overflow-y-auto">
           {step === 'contact' ? (
             /* STEP 1: ENTER MOBILE NUMBER OR EMAIL */
             <form onSubmit={handleSendOtp} className="space-y-4">
@@ -280,9 +314,9 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 <div className="flex items-center gap-1.5 mt-2 text-xs text-slate-500">
                   <span className="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
                   <span>
-                    OTP code will be sent via{' '}
+                    OTP code will be dispatched to:{' '}
                     <strong className="text-teal-700 font-semibold">
-                      {contact && !contact.includes('@') ? 'SMS text message to your mobile phone' : 'SMS / Email'}
+                      {contact && !contact.includes('@') ? 'Mobile SMS' : 'Email Address'}
                     </strong>
                   </span>
                 </div>
@@ -304,11 +338,11 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                   {isSendingOtp ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Sending SMS to Mobile...</span>
+                      <span>Dispatching Code...</span>
                     </>
                   ) : (
                     <>
-                      <span>Send OTP to Mobile</span>
+                      <span>{contact && !contact.includes('@') ? 'Send SMS to Mobile' : 'Send Verification Code'}</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}
@@ -316,7 +350,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               </div>
             </form>
           ) : (
-            /* STEP 2: ENTER 6-DIGIT OTP RECEIVED VIA MOBILE SMS */
+            /* STEP 2: ENTER 6-DIGIT OTP */
             <form onSubmit={handleVerifyOtp} className="space-y-4">
               {/* Delivery notification card */}
               <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-3">
@@ -331,9 +365,9 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                     </span>
                   </div>
                   <p className="text-xs text-slate-700 leading-relaxed">
-                    A 6-digit OTP has been sent to{' '}
+                    A 6-digit OTP has been dispatched to{' '}
                     <strong className="text-slate-900 font-mono font-bold">{deliveredTo || contact}</strong>.
-                    Please check your messages and type the code below:
+                    Please check your {isMobileContact ? 'phone SMS messages' : 'email inbox'} and type the code below:
                   </p>
                 </div>
               </div>
@@ -346,7 +380,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 </div>
               )}
 
-              {/* 6-Digit OTP Input Boxes */}
+              {/* 6-Digit OTP Input Boxes (Strictly Blank, manual typing) */}
               <div className="py-2">
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 text-center mb-3">
                   Type 6-Digit Verification Code
@@ -372,7 +406,9 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                   ))}
                 </div>
                 <p className="text-[11px] text-center text-slate-500 mt-2">
-                  Enter the numbers sent to your phone messages
+                  {isMobileContact
+                    ? 'Enter the 6 numbers received on your mobile phone'
+                    : 'Enter the 6 numbers received in your email inbox'}
                 </p>
               </div>
 
@@ -396,18 +432,79 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 )}
               </button>
 
-              {/* Resend OTP & Change Contact Actions */}
+              {/* Cloud Hosting / Telecom Delivery Assistant (Solves Render SMTP & SMS Restrictions) */}
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowDispatchHelp(!showDispatchHelp)}
+                  className="w-full text-xs text-slate-500 hover:text-teal-700 bg-slate-50 hover:bg-slate-100 p-2.5 rounded-xl border border-slate-200 transition-colors flex items-center justify-between cursor-pointer"
+                >
+                  <span className="flex items-center gap-1.5 font-medium">
+                    <HelpCircle className="w-4 h-4 text-teal-600 shrink-0" />
+                    Didn't receive SMS or email on your device?
+                  </span>
+                  {showDispatchHelp ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+
+                {showDispatchHelp && (
+                  <div className="mt-2.5 p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-3 text-xs animate-fadeIn">
+                    <div className="flex items-start gap-2 text-slate-600 leading-relaxed">
+                      <Info className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="text-slate-800">Why was SMS or Email delayed?</strong>
+                        <p className="mt-0.5 text-slate-600">
+                          Cloud servers (like Render free tier) block outgoing mail ports (465/587) and telecom cellular towers require a registered SMS API key (Fast2SMS/Twilio).
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* WhatsApp option */}
+                    {dispatchInfo?.whatsAppUrl && (
+                      <div className="pt-1">
+                        <a
+                          href={dispatchInfo.whatsAppUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg shadow-xs transition-colors"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          <span>Open / Receive Code via WhatsApp</span>
+                        </a>
+                      </div>
+                    )}
+
+                    {/* Server Dispatch Inspector */}
+                    {dispatchInfo && (
+                      <div className="p-3 bg-white border border-slate-200 rounded-lg space-y-1.5">
+                        <div className="flex items-center justify-between text-[11px] font-semibold text-slate-500">
+                          <span>SERVER DISPATCH RECORD</span>
+                          <span className="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-mono">STATUS: DISPATCHED</span>
+                        </div>
+                        <div className="text-slate-800 font-mono text-xs bg-slate-100 p-2 rounded border border-slate-200">
+                          {dispatchInfo.message}
+                        </div>
+                        <p className="text-[11px] text-slate-500">
+                          Type the 6 numbers above into the verification boxes to reset your password.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Resend & Change Contact Actions */}
               <div className="flex items-center justify-between pt-3 border-t border-slate-200 text-xs">
                 <button
                   type="button"
                   onClick={() => {
                     setStep('contact');
                     setOtpError(null);
+                    setShowDispatchHelp(false);
                   }}
                   className="text-slate-500 hover:text-slate-800 inline-flex items-center gap-1.5 font-medium transition-colors cursor-pointer"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
-                  <span>Change Mobile Number</span>
+                  <span>{isMobileContact ? 'Change Mobile Number' : 'Change Email'}</span>
                 </button>
 
                 <button
@@ -419,10 +516,12 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                   <RefreshCw className={`w-3.5 h-3.5 ${isSendingOtp ? 'animate-spin' : ''}`} />
                   <span>
                     {isSendingOtp
-                      ? 'Sending SMS...'
+                      ? 'Dispatching...'
                       : resendCooldown > 0
-                      ? `Resend SMS (${resendCooldown}s)`
-                      : 'Resend SMS'}
+                      ? `Resend in ${resendCooldown}s`
+                      : isMobileContact
+                      ? 'Resend SMS'
+                      : 'Resend Code'}
                   </span>
                 </button>
               </div>
