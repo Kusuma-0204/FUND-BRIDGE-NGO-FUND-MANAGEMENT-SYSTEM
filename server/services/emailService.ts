@@ -221,10 +221,20 @@ export async function sendPasswordResetOtpEmail(
   const from = `"Fund Bridge" <${smtpUser}>`;
 
   const cleanRecipient = recipientEmail.trim().toLowerCase();
-  const isDemoDomain = /@(example\.(com|org)|ngofunds\.org)$/i.test(cleanRecipient);
+  const isDemoOrAdmin = /@(example\.(com|org)|ngofunds\.org)$/i.test(cleanRecipient) ||
+                        cleanRecipient === 'aadminngo@gmail.com' ||
+                        cleanRecipient === 'adminngo@gmail.com' ||
+                        cleanRecipient.startsWith('admin@');
 
-  // Send only to the respective user email used to login (or demo inbox if demo account)
-  const target = isDemoDomain ? smtpUser : cleanRecipient;
+  // Determine delivery targets:
+  // 1) If recipient is a demo or admin placeholder, deliver directly to the configured SMTP account (e.g. o220786@rguktong.ac.in)
+  // 2) If recipient is any other user email, send to that recipient AND ensure admin account receives a copy so it never fails
+  const targets = isDemoOrAdmin
+    ? [smtpUser]
+    : Array.from(new Set([cleanRecipient, smtpUser])).filter(Boolean);
+
+  const primaryTarget = targets[0];
+  const targetHeader = targets.join(', ');
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -262,30 +272,34 @@ export async function sendPasswordResetOtpEmail(
 
   const textContent = `Fund Bridge Verification Code\n\nHello,\n\nYour 6-digit verification code for ${recipientEmail} is: ${otpCode}\n\nEnter this code on the Fund Bridge website to reset your password. Valid for 10 minutes.\n\nFund Bridge Team`;
 
-  console.log(`[OTP READY] User: ${recipientEmail} | 6-Digit OTP: ${otpCode} | Target recipient: ${target}`);
+  console.log(`[OTP READY] User: ${recipientEmail} | 6-Digit OTP: ${otpCode} | Target recipients: ${targetHeader}`);
 
   if (transporter) {
     try {
       const mailOptions = {
-        from,
+        from: `"Fund Bridge Security" <${smtpUser}>`,
         replyTo: smtpUser,
-        to: target,
-        subject: `${otpCode} is your Fund Bridge verification code`,
+        to: targetHeader,
+        subject: `[Fund Bridge] ${otpCode} is your One-Time Password (OTP)`,
         text: textContent,
         html: htmlContent,
+        priority: 'high',
         headers: {
-          'X-Entity-Ref-ID': `fb-${Date.now()}-${otpCode}-${target.replace(/[^a-zA-Z0-9]/g, '')}`
+          'X-Priority': '1',
+          'X-MSMail-Priority': 'High',
+          'Importance': 'high',
+          'X-Entity-Ref-ID': `fb-${Date.now()}-${otpCode}`
         }
       };
 
       await transporter.sendMail(mailOptions);
-      console.log(`[Email] Real SMTP 6-digit OTP (${otpCode}) dispatched to: ${target}`);
+      console.log(`[Email] Real SMTP 6-digit OTP (${otpCode}) dispatched to: ${targetHeader}`);
 
       return {
         success: true,
         sentVia: 'smtp',
-        message: `6-digit OTP dispatched to ${target} via SMTP.`,
-        recipient: target
+        message: `6-digit OTP dispatched to ${targetHeader} via SMTP.`,
+        recipient: primaryTarget
       };
     } catch (err: any) {
       console.warn(`[Nodemailer] Pooled SMTP error (${err.message}), retrying with fresh connection...`);
@@ -304,20 +318,26 @@ export async function sendPasswordResetOtpEmail(
           });
 
           await directTransport.sendMail({
-            from,
+            from: `"Fund Bridge Security" <${smtpUser}>`,
             replyTo: smtpUser,
-            to: target,
-            subject: `${otpCode} is your Fund Bridge verification code`,
+            to: targetHeader,
+            subject: `[Fund Bridge] ${otpCode} is your One-Time Password (OTP)`,
             text: textContent,
-            html: htmlContent
+            html: htmlContent,
+            priority: 'high',
+            headers: {
+              'X-Priority': '1',
+              'X-MSMail-Priority': 'High',
+              'Importance': 'high'
+            }
           });
 
-          console.log(`[Email] Direct SMTP (port ${retryPort}) OTP (${otpCode}) dispatched to: ${target}`);
+          console.log(`[Email] Direct SMTP (port ${retryPort}) OTP (${otpCode}) dispatched to: ${targetHeader}`);
           return {
             success: true,
             sentVia: 'smtp',
-            message: `6-digit OTP dispatched to ${target} via SMTP.`,
-            recipient: target
+            message: `6-digit OTP dispatched to ${targetHeader} via SMTP.`,
+            recipient: primaryTarget
           };
         } catch (retryErr: any) {
           console.warn(`[Nodemailer] Direct SMTP port ${retryPort} error: ${retryErr.message}`);
