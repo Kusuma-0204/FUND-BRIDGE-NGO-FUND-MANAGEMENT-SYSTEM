@@ -43,7 +43,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
           <div className="border-b-2 border-teal-600 pb-5 flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-white border border-slate-200 flex items-center justify-center p-0.5 overflow-hidden shadow-xs">
-                <img src="/assets/ngo-logo.svg" alt="NGO Logo" className="w-full h-full object-contain" />
+                <img src="/assets/ngo-logo.svg?v=light" alt="NGO Logo" className="w-full h-full object-contain" />
               </div>
               <div>
                 <h2 className="text-xl font-black tracking-tight text-slate-900">FUND BRIDGE NGO</h2>
