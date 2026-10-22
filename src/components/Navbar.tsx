@@ -54,7 +54,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="flex items-center gap-2 sm:gap-3 text-left group cursor-pointer flex-shrink-0"
           >
             <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white border border-slate-200 p-0.5 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform flex-shrink-0 overflow-hidden">
-              <img src="/assets/ngo-logo.svg" alt="Fund Bridge Logo" className="w-full h-full object-contain" />
+              <img src="/assets/ngo-logo.svg?v=light" alt="Fund Bridge Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <span className="font-extrabold text-sm sm:text-base lg:text-lg tracking-wider text-slate-900 flex items-center gap-1.5">
