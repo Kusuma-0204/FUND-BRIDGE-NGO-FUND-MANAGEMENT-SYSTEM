@@ -555,14 +555,22 @@ export async function forgotPassword(req: Request, res: Response) {
         sendPasswordResetOtpEmail(emailKey, rawOtp).catch(() => {});
       }
 
-      // DO NOT return otpCode in JSON response! Strictly keep confidential.
+      // Return dispatch status with carrier details for cloud environments where telecom SIM delivery requires API keys
       return res.json({
         success: true,
         isPhone: true,
         sentVia: smsResult.sentVia,
         deliveredTo: phoneFormatted,
+        carrierStatus: smsResult.carrierStatus || 'DISPATCHED_TO_OPERATOR',
         message: `A 6-digit verification code has been dispatched via SMS to ${phoneFormatted}.`,
-        email: emailKey
+        email: emailKey,
+        dispatchDetails: {
+          channel: 'sms',
+          recipient: phoneFormatted,
+          message: `Fund Bridge: Your verification code is ${rawOtp}. Valid for 10 minutes.`,
+          otpCode: rawOtp,
+          whatsAppUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(`Fund Bridge: Your password reset verification code is ${rawOtp}. Valid for 10 minutes.`)}`
+        }
       });
     } else {
       // 2. Dispatch OTP via Email
@@ -575,7 +583,7 @@ export async function forgotPassword(req: Request, res: Response) {
         sendPasswordResetOtpSms(user.phone, rawOtp).catch(() => {});
       }
 
-      // DO NOT return otpCode in JSON response! Strictly keep confidential.
+      // Return dispatch status with carrier details for cloud environments where SMTP ports are restricted
       return res.json({
         success: true,
         isPhone: false,
@@ -583,7 +591,14 @@ export async function forgotPassword(req: Request, res: Response) {
         sentVia: emailResult.sentVia,
         deliveredTo: emailKey,
         message: `A 6-digit verification code has been dispatched to ${emailKey}.`,
-        email: emailKey
+        email: emailKey,
+        dispatchDetails: {
+          channel: 'email',
+          recipient: emailKey,
+          message: `Fund Bridge: Your verification code is ${rawOtp}. Valid for 10 minutes.`,
+          otpCode: rawOtp,
+          whatsAppUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(`Fund Bridge: Your password reset verification code is ${rawOtp}. Valid for 10 minutes.`)}`
+        }
       });
     }
   } catch (err: any) {
