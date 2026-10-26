@@ -29,9 +29,10 @@ export function isSmtpConfigured(): boolean {
 
 function getTransporter(): any {
   reloadEnv();
-  const host = (process.env.SMTP_HOST || 'smtp.gmail.com').trim();
-  const user = (process.env.SMTP_USER || DEFAULT_SMTP_USER)?.trim();
-  const pass = (process.env.SMTP_PASSWORD || process.env.SMTP_PASS || DEFAULT_SMTP_PASS)?.trim()?.replace(/\s+/g, '');
+  const host = (process.env.SMTP_HOST?.trim() || 'smtp.gmail.com').trim();
+  const user = (process.env.SMTP_USER?.trim() || DEFAULT_SMTP_USER).trim();
+  const rawPass = process.env.SMTP_PASSWORD?.trim() || process.env.SMTP_PASS?.trim() || DEFAULT_SMTP_PASS;
+  const pass = rawPass.trim().replace(/\s+/g, '');
   const port = parseInt(process.env.SMTP_PORT || '465', 10);
 
   if (!user || !pass) {
@@ -50,9 +51,9 @@ function getTransporter(): any {
         port: 465,
         secure: true,
         auth: { user, pass },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 12000
+        connectionTimeout: 4000,
+        greetingTimeout: 4000,
+        socketTimeout: 4000
       });
     } else {
       smtpTransporter = nodemailer.createTransport({
@@ -63,9 +64,9 @@ function getTransporter(): any {
         port,
         secure: port === 465,
         auth: { user, pass },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 12000,
+        connectionTimeout: 4000,
+        greetingTimeout: 4000,
+        socketTimeout: 4000,
         tls: {
           rejectUnauthorized: false
         }
@@ -90,7 +91,8 @@ export async function sendPasswordResetEmail(
   resetLink: string,
   otpCode?: string
 ): Promise<EmailResult> {
-  const from = process.env.MAIL_FROM || process.env.SMTP_FROM || 'Fund Bridge Security <no-reply@fundbridge.org>';
+  const smtpUser = (process.env.SMTP_USER?.trim() || DEFAULT_SMTP_USER).trim();
+  const from = process.env.MAIL_FROM || `"Fund Bridge Security" <${smtpUser}>`;
   const transporter = getTransporter();
 
   const codeDisplay = otpCode ? `
@@ -212,29 +214,79 @@ export async function sendPasswordResetEmail(
   }
 }
 
+async function sendViaHttpApi(to: string, subject: string, html: string, text: string): Promise<boolean> {
+  const resendKey = process.env.RESEND_API_KEY?.trim();
+  if (resendKey) {
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: process.env.RESEND_FROM || 'Fund Bridge <onboarding@resend.dev>',
+          to: [to],
+          subject,
+          html,
+          text
+        })
+      });
+      if (res.ok) {
+        console.log(`[Email] Dispatched via Resend HTTP API (port 443) to: ${to}`);
+        return true;
+      }
+      const errBody = await res.text();
+      console.warn('[Resend API non-200]', errBody);
+    } catch (e: any) {
+      console.warn('[Resend API Warning]', e?.message);
+    }
+  }
+
+  const brevoKey = (process.env.BREVO_API_KEY || process.env.SENDINBLUE_API_KEY)?.trim();
+  if (brevoKey) {
+    try {
+      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': brevoKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          sender: { name: 'Fund Bridge', email: process.env.BREVO_FROM || 'no-reply@fundbridge.org' },
+          to: [{ email: to }],
+          subject,
+          htmlContent: html,
+          textContent: text
+        })
+      });
+      if (res.ok) {
+        console.log(`[Email] Dispatched via Brevo HTTP API (port 443) to: ${to}`);
+        return true;
+      }
+      const errBody = await res.text();
+      console.warn('[Brevo API non-200]', errBody);
+    } catch (e: any) {
+      console.warn('[Brevo API Warning]', e?.message);
+    }
+  }
+
+  return false;
+}
+
 export async function sendPasswordResetOtpEmail(
   recipientEmail: string,
   otpCode: string
 ): Promise<EmailResult> {
   const transporter = getTransporter();
-  const smtpUser = (process.env.SMTP_USER || DEFAULT_SMTP_USER)?.trim();
-  const from = `"Fund Bridge" <${smtpUser}>`;
+  const smtpUser = (process.env.SMTP_USER?.trim() || DEFAULT_SMTP_USER).trim();
+  const from = `"Fund Bridge Security" <${smtpUser}>`;
 
   const cleanRecipient = recipientEmail.trim().toLowerCase();
-  const isDemoOrAdmin = /@(example\.(com|org)|ngofunds\.org)$/i.test(cleanRecipient) ||
-                        cleanRecipient === 'aadminngo@gmail.com' ||
-                        cleanRecipient === 'adminngo@gmail.com' ||
-                        cleanRecipient.startsWith('admin@');
+  const isDemoDomain = /@(example\.(com|org)|ngofunds\.org)$/i.test(cleanRecipient);
 
-  // Determine delivery targets:
-  // 1) If recipient is a demo or admin placeholder, deliver directly to the configured SMTP account (e.g. o220786@rguktong.ac.in)
-  // 2) If recipient is any other user email, send to that recipient AND ensure admin account receives a copy so it never fails
-  const targets = isDemoOrAdmin
-    ? [smtpUser]
-    : Array.from(new Set([cleanRecipient, smtpUser])).filter(Boolean);
-
-  const primaryTarget = targets[0];
-  const targetHeader = targets.join(', ');
+  // Send only to the respective user email used to login (or demo inbox if demo account)
+  const target = isDemoDomain ? smtpUser : cleanRecipient;
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -272,77 +324,54 @@ export async function sendPasswordResetOtpEmail(
 
   const textContent = `Fund Bridge Verification Code\n\nHello,\n\nYour 6-digit verification code for ${recipientEmail} is: ${otpCode}\n\nEnter this code on the Fund Bridge website to reset your password. Valid for 10 minutes.\n\nFund Bridge Team`;
 
-  console.log(`[OTP READY] User: ${recipientEmail} | 6-Digit OTP: ${otpCode} | Target recipients: ${targetHeader}`);
+  console.log(`[OTP READY] User: ${recipientEmail} | 6-Digit OTP: ${otpCode} | Target recipient: ${target}`);
 
+  // 1. Try HTTP Email API first (works on Render free tier where SMTP ports 25, 465, 587 are blocked)
+  const sentViaHttp = await sendViaHttpApi(
+    target,
+    `${otpCode} is your Fund Bridge verification code`,
+    htmlContent,
+    textContent
+  );
+  if (sentViaHttp) {
+    return {
+      success: true,
+      sentVia: 'smtp',
+      message: `6-digit OTP dispatched to ${target}.`,
+      recipient: target
+    };
+  }
+
+  // 2. Direct SMTP Transport (Gmail port 465)
   if (transporter) {
     try {
       const mailOptions = {
-        from: `"Fund Bridge Security" <${smtpUser}>`,
+        from,
         replyTo: smtpUser,
-        to: targetHeader,
-        subject: `[Fund Bridge] ${otpCode} is your One-Time Password (OTP)`,
+        to: target,
+        subject: `${otpCode} is your Fund Bridge verification code`,
         text: textContent,
         html: htmlContent,
-        priority: 'high',
         headers: {
-          'X-Priority': '1',
-          'X-MSMail-Priority': 'High',
-          'Importance': 'high',
-          'X-Entity-Ref-ID': `fb-${Date.now()}-${otpCode}`
+          'X-Entity-Ref-ID': `fb-${Date.now()}-${otpCode}-${target.replace(/[^a-zA-Z0-9]/g, '')}`
         }
       };
 
-      await transporter.sendMail(mailOptions);
-      console.log(`[Email] Real SMTP 6-digit OTP (${otpCode}) dispatched to: ${targetHeader}`);
+      const sendPromise = transporter.sendMail(mailOptions);
+      const timeoutPromise = new Promise<never>((_, reject) => 
+        setTimeout(() => reject(new Error('SMTP timeout after 4s (Render firewall restriction)')), 4000)
+      );
+      const sendInfo: any = await Promise.race([sendPromise, timeoutPromise]);
 
+      console.log(`[Email] Real SMTP 6-digit OTP (${otpCode}) dispatched to: ${target}`, sendInfo?.response || '');
       return {
         success: true,
         sentVia: 'smtp',
-        message: `6-digit OTP dispatched to ${targetHeader} via SMTP.`,
-        recipient: primaryTarget
+        message: `6-digit OTP dispatched to ${target} via SMTP.`,
+        recipient: target
       };
     } catch (err: any) {
-      console.warn(`[Nodemailer] Pooled SMTP error (${err.message}), retrying with fresh connection...`);
-      smtpTransporter = null;
-      const pass = (process.env.SMTP_PASSWORD || process.env.SMTP_PASS || DEFAULT_SMTP_PASS)?.trim()?.replace(/\s+/g, '');
-      
-      for (const retryPort of [465, 587]) {
-        try {
-          const directTransport = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: retryPort,
-            secure: retryPort === 465,
-            auth: { user: smtpUser, pass },
-            tls: { rejectUnauthorized: false },
-            connectionTimeout: 10000
-          });
-
-          await directTransport.sendMail({
-            from: `"Fund Bridge Security" <${smtpUser}>`,
-            replyTo: smtpUser,
-            to: targetHeader,
-            subject: `[Fund Bridge] ${otpCode} is your One-Time Password (OTP)`,
-            text: textContent,
-            html: htmlContent,
-            priority: 'high',
-            headers: {
-              'X-Priority': '1',
-              'X-MSMail-Priority': 'High',
-              'Importance': 'high'
-            }
-          });
-
-          console.log(`[Email] Direct SMTP (port ${retryPort}) OTP (${otpCode}) dispatched to: ${targetHeader}`);
-          return {
-            success: true,
-            sentVia: 'smtp',
-            message: `6-digit OTP dispatched to ${targetHeader} via SMTP.`,
-            recipient: primaryTarget
-          };
-        } catch (retryErr: any) {
-          console.warn(`[Nodemailer] Direct SMTP port ${retryPort} error: ${retryErr.message}`);
-        }
-      }
+      console.warn(`[Nodemailer] SMTP send error/timeout: ${err?.message || err}. Target: ${target}`);
     }
   }
 
