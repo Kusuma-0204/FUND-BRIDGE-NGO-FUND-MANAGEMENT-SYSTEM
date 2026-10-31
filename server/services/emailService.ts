@@ -29,10 +29,9 @@ export function isSmtpConfigured(): boolean {
 
 function getTransporter(): any {
   reloadEnv();
-  const host = (process.env.SMTP_HOST?.trim() || 'smtp.gmail.com').trim();
-  const user = (process.env.SMTP_USER?.trim() || DEFAULT_SMTP_USER).trim();
-  const rawPass = process.env.SMTP_PASSWORD?.trim() || process.env.SMTP_PASS?.trim() || DEFAULT_SMTP_PASS;
-  const pass = rawPass.trim().replace(/\s+/g, '');
+  const host = (process.env.SMTP_HOST || 'smtp.gmail.com').trim();
+  const user = (process.env.SMTP_USER || DEFAULT_SMTP_USER)?.trim();
+  const pass = (process.env.SMTP_PASSWORD || process.env.SMTP_PASS || DEFAULT_SMTP_PASS)?.trim()?.replace(/\s+/g, '');
   const port = parseInt(process.env.SMTP_PORT || '465', 10);
 
   if (!user || !pass) {
@@ -51,9 +50,9 @@ function getTransporter(): any {
         port: 465,
         secure: true,
         auth: { user, pass },
-        connectionTimeout: 4000,
-        greetingTimeout: 4000,
-        socketTimeout: 4000
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 12000
       });
     } else {
       smtpTransporter = nodemailer.createTransport({
@@ -64,9 +63,9 @@ function getTransporter(): any {
         port,
         secure: port === 465,
         auth: { user, pass },
-        connectionTimeout: 4000,
-        greetingTimeout: 4000,
-        socketTimeout: 4000,
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 12000,
         tls: {
           rejectUnauthorized: false
         }
@@ -91,8 +90,7 @@ export async function sendPasswordResetEmail(
   resetLink: string,
   otpCode?: string
 ): Promise<EmailResult> {
-  const smtpUser = (process.env.SMTP_USER?.trim() || DEFAULT_SMTP_USER).trim();
-  const from = process.env.MAIL_FROM || `"Fund Bridge Security" <${smtpUser}>`;
+  const from = process.env.MAIL_FROM || process.env.SMTP_FROM || 'Fund Bridge Security <no-reply@fundbridge.org>';
   const transporter = getTransporter();
 
   const codeDisplay = otpCode ? `
@@ -214,173 +212,146 @@ export async function sendPasswordResetEmail(
   }
 }
 
-async function sendViaHttpApi(to: string, subject: string, html: string, text: string): Promise<boolean> {
-  const resendKey = process.env.RESEND_API_KEY?.trim();
-  if (resendKey) {
-    try {
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${resendKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          from: process.env.RESEND_FROM || 'Fund Bridge <onboarding@resend.dev>',
-          to: [to],
-          subject,
-          html,
-          text
-        })
-      });
-      if (res.ok) {
-        console.log(`[Email] Dispatched via Resend HTTP API (port 443) to: ${to}`);
-        return true;
-      }
-      const errBody = await res.text();
-      console.warn('[Resend API non-200]', errBody);
-    } catch (e: any) {
-      console.warn('[Resend API Warning]', e?.message);
-    }
-  }
-
-  const brevoKey = (process.env.BREVO_API_KEY || process.env.SENDINBLUE_API_KEY)?.trim();
-  if (brevoKey) {
-    try {
-      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'api-key': brevoKey,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          sender: { name: 'Fund Bridge', email: process.env.BREVO_FROM || 'no-reply@fundbridge.org' },
-          to: [{ email: to }],
-          subject,
-          htmlContent: html,
-          textContent: text
-        })
-      });
-      if (res.ok) {
-        console.log(`[Email] Dispatched via Brevo HTTP API (port 443) to: ${to}`);
-        return true;
-      }
-      const errBody = await res.text();
-      console.warn('[Brevo API non-200]', errBody);
-    } catch (e: any) {
-      console.warn('[Brevo API Warning]', e?.message);
-    }
-  }
-
-  return false;
-}
-
 export async function sendPasswordResetOtpEmail(
   recipientEmail: string,
   otpCode: string
 ): Promise<EmailResult> {
   const transporter = getTransporter();
-  const smtpUser = (process.env.SMTP_USER?.trim() || DEFAULT_SMTP_USER).trim();
-  const from = `"Fund Bridge Security" <${smtpUser}>`;
+  const smtpUser = (process.env.SMTP_USER || DEFAULT_SMTP_USER)?.trim();
+  const from = process.env.MAIL_FROM || `"Fund Bridge" <${smtpUser}>`;
 
   const cleanRecipient = recipientEmail.trim().toLowerCase();
-  const isDemoDomain = /@(example\.(com|org)|ngofunds\.org)$/i.test(cleanRecipient);
-
-  // Send only to the respective user email used to login (or demo inbox if demo account)
-  const target = isDemoDomain ? smtpUser : cleanRecipient;
+  // Only pure test domains without mail servers are redirected to smtpUser
+  const isMockDomain = /@(example\.(com|org)|ngofunds\.org|test\.com)$/i.test(cleanRecipient);
+  const targetEmail = isMockDomain ? smtpUser : cleanRecipient;
 
   const htmlContent = `
     <!DOCTYPE html>
-    <html>
-    <head><meta charset="utf-8"></head>
-    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 24px;">
-      <div style="max-width: 520px; margin: 0 auto; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+    <html lang="en">
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Fund Bridge Verification Code</title>
+    </head>
+    <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; margin: 0; padding: 24px; color: #1e293b;">
+      <div style="max-width: 520px; margin: 0 auto; background: #ffffff; border-radius: 16px; border: 1px solid #e2e8f0; padding: 32px; box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
         <div style="border-bottom: 2px solid #0d9488; padding-bottom: 16px; margin-bottom: 24px;">
-          <h1 style="color: #0d9488; margin: 0; font-size: 20px; font-weight: 800; letter-spacing: 0.5px;">FUND BRIDGE</h1>
-          <p style="color: #64748b; margin: 4px 0 0 0; font-size: 12px;">NGO Fund Management System</p>
+          <h1 style="color: #0d9488; margin: 0; font-size: 22px; font-weight: 800; letter-spacing: 0.5px;">FUND BRIDGE</h1>
+          <p style="color: #64748b; margin: 4px 0 0 0; font-size: 12px; font-weight: 500;">NGO Fund Management &amp; Relief Portal</p>
         </div>
 
-        <h2 style="color: #0f172a; font-size: 17px; font-weight: 700; margin: 0 0 12px 0;">Your Verification Code</h2>
-        <p style="color: #334155; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
+        <div style="display: inline-block; background-color: #f0fdfa; border: 1px solid #99f6e4; color: #0f766e; font-size: 11px; font-weight: 700; text-transform: uppercase; padding: 4px 10px; border-radius: 9999px; margin-bottom: 14px;">
+          Password Recovery Verification
+        </div>
+
+        <h2 style="color: #0f172a; font-size: 18px; font-weight: 700; margin: 0 0 12px 0;">Your Verification Code</h2>
+        <p style="color: #475569; font-size: 14px; line-height: 1.6; margin: 0 0 20px 0;">
           Hello,<br/><br/>
-          You requested a password reset for your account associated with <strong>${recipientEmail}</strong>. Use the following 6-digit code to complete the verification:
+          We received a request to reset your password for your account (<strong>${cleanRecipient}</strong>). Enter the following 6-digit code on the Fund Bridge website to proceed:
         </p>
 
-        <div style="background-color: #f0fdfa; border: 2px dashed #0d9488; border-radius: 10px; padding: 18px; text-align: center; margin: 24px 0;">
-          <div style="color: #0f766e; font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 6px;">One-Time Verification Code</div>
-          <div style="font-size: 36px; font-weight: 800; letter-spacing: 8px; color: #0f766e; font-family: monospace;">${otpCode}</div>
+        <div style="background-color: #f0fdfa; border: 2px dashed #0d9488; border-radius: 12px; padding: 20px; text-align: center; margin: 24px 0;">
+          <div style="color: #0f766e; font-size: 11px; text-transform: uppercase; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 6px;">One-Time Verification Code</div>
+          <div style="font-size: 38px; font-weight: 800; letter-spacing: 8px; color: #0d9488; font-family: 'Courier New', Courier, monospace;">${otpCode}</div>
         </div>
 
-        <p style="color: #64748b; font-size: 12px; line-height: 1.5; margin: 0 0 16px 0;">
-          This code is valid for <strong>10 minutes</strong>. If you did not request this code, you can safely disregard this message.
+        <p style="color: #64748b; font-size: 12px; line-height: 1.6; margin: 0 0 16px 0;">
+          &bull; This code is valid for <strong>10 minutes</strong>.<br/>
+          &bull; If you did not request this verification, your account is safe and you can safely ignore this email.
         </p>
 
-        <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #f1f5f9; color: #94a3b8; font-size: 11px;">
-          <p style="margin: 0;">Fund Bridge NGO Portal &bull; Automated Security Service</p>
+        <div style="margin-top: 28px; padding-top: 16px; border-top: 1px solid #f1f5f9; color: #94a3b8; font-size: 11px; text-align: center;">
+          <p style="margin: 0;">Fund Bridge NGO Portal &bull; Non-Profit Public Welfare Foundation</p>
         </div>
       </div>
     </body>
     </html>
   `;
 
-  const textContent = `Fund Bridge Verification Code\n\nHello,\n\nYour 6-digit verification code for ${recipientEmail} is: ${otpCode}\n\nEnter this code on the Fund Bridge website to reset your password. Valid for 10 minutes.\n\nFund Bridge Team`;
+  const textContent = `Fund Bridge Verification Code\n\nHello,\n\nYour 6-digit verification code for ${cleanRecipient} is: ${otpCode}\n\nEnter this code on the Fund Bridge website to reset your password. This code is valid for 10 minutes.\n\nIf you did not request this code, you can safely ignore this message.\n\nFund Bridge Team`;
 
-  console.log(`[OTP READY] User: ${recipientEmail} | 6-Digit OTP: ${otpCode} | Target recipient: ${target}`);
+  console.log(`[OTP DISPATCH] Recipient: ${targetEmail} | Code: ${otpCode}`);
 
-  // 1. Try HTTP Email API first (works on Render free tier where SMTP ports 25, 465, 587 are blocked)
-  const sentViaHttp = await sendViaHttpApi(
-    target,
-    `${otpCode} is your Fund Bridge verification code`,
-    htmlContent,
-    textContent
-  );
-  if (sentViaHttp) {
-    return {
-      success: true,
-      sentVia: 'smtp',
-      message: `6-digit OTP dispatched to ${target}.`,
-      recipient: target
-    };
-  }
-
-  // 2. Direct SMTP Transport (Gmail port 465)
   if (transporter) {
     try {
-      const mailOptions = {
+      const mailOptions: any = {
         from,
         replyTo: smtpUser,
-        to: target,
-        subject: `${otpCode} is your Fund Bridge verification code`,
+        to: targetEmail,
+        subject: `Your Fund Bridge Verification Code: ${otpCode}`,
         text: textContent,
         html: htmlContent,
         headers: {
-          'X-Entity-Ref-ID': `fb-${Date.now()}-${otpCode}-${target.replace(/[^a-zA-Z0-9]/g, '')}`
+          'X-Mailer': 'FundBridge/1.0'
         }
       };
 
-      const sendPromise = transporter.sendMail(mailOptions);
-      const timeoutPromise = new Promise<never>((_, reject) => 
-        setTimeout(() => reject(new Error('SMTP timeout after 4s (Render firewall restriction)')), 4000)
-      );
-      const sendInfo: any = await Promise.race([sendPromise, timeoutPromise]);
+      // If sending to a different recipient than the configured SMTP account,
+      // BCC smtpUser so the account owner always has a verifiable record
+      if (targetEmail !== smtpUser && !isMockDomain) {
+        mailOptions.bcc = smtpUser;
+      }
 
-      console.log(`[Email] Real SMTP 6-digit OTP (${otpCode}) dispatched to: ${target}`, sendInfo?.response || '');
+      await transporter.sendMail(mailOptions);
+      console.log(`[Email] 6-digit OTP (${otpCode}) dispatched to: ${targetEmail}`);
+
       return {
         success: true,
         sentVia: 'smtp',
-        message: `6-digit OTP dispatched to ${target} via SMTP.`,
-        recipient: target
+        message: `Verification code sent to ${targetEmail} via SMTP.`,
+        recipient: targetEmail
       };
     } catch (err: any) {
-      console.warn(`[Nodemailer] SMTP send error/timeout: ${err?.message || err}. Target: ${target}`);
+      console.warn(`[Nodemailer] Pooled send failed (${err.message}), retrying direct connection...`);
+      smtpTransporter = null;
+      const pass = (process.env.SMTP_PASSWORD || process.env.SMTP_PASS || DEFAULT_SMTP_PASS)?.trim()?.replace(/\s+/g, '');
+
+      for (const retryPort of [465, 587]) {
+        try {
+          const directTransport = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: retryPort,
+            secure: retryPort === 465,
+            auth: { user: smtpUser, pass },
+            tls: { rejectUnauthorized: false },
+            connectionTimeout: 10000
+          });
+
+          const directOptions: any = {
+            from,
+            replyTo: smtpUser,
+            to: targetEmail,
+            subject: `Your Fund Bridge Verification Code: ${otpCode}`,
+            text: textContent,
+            html: htmlContent
+          };
+
+          if (targetEmail !== smtpUser && !isMockDomain) {
+            directOptions.bcc = smtpUser;
+          }
+
+          await directTransport.sendMail(directOptions);
+          console.log(`[Email] Direct SMTP (port ${retryPort}) dispatched OTP to: ${targetEmail}`);
+
+          return {
+            success: true,
+            sentVia: 'smtp',
+            message: `Verification code dispatched to ${targetEmail} via SMTP.`,
+            recipient: targetEmail
+          };
+        } catch (retryErr: any) {
+          console.warn(`[Nodemailer] Port ${retryPort} direct error: ${retryErr.message}`);
+        }
+      }
     }
   }
 
-  // Fast fallback mode
-  console.log(`[OTP Email Fallback] Generated for: ${recipientEmail} | OTP: ${otpCode}`);
+  // Fallback simulator if no SMTP is configured
+  console.log(`[OTP Generated] For: ${recipientEmail} | OTP: ${otpCode}`);
   return {
     success: true,
     sentVia: 'simulated',
-    message: `6-digit OTP generated for ${recipientEmail}.`,
+    message: `Verification code generated for ${recipientEmail}.`,
     recipient: recipientEmail
   };
 }
