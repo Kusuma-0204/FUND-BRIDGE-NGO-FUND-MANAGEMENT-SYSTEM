@@ -84,14 +84,17 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
           onPasswordResetSuccess(email, newPassword);
           return;
         }
+
+        setError(data?.message || fallbackData?.message || 'Failed to reset password. Please ensure password meets all security rules.');
+        setIsSubmitting(false);
+        return;
       }
 
-      // Even if network or sandbox issue, update app state cleanly
+      setError('Unexpected error resetting password. Please try again.');
       setIsSubmitting(false);
-      onPasswordResetSuccess(email, newPassword);
     } catch {
+      setError('Connection error while resetting password. Please try again.');
       setIsSubmitting(false);
-      onPasswordResetSuccess(email, newPassword);
     }
   };
 
@@ -145,7 +148,7 @@ export const ResetPasswordModal: React.FC<ResetPasswordModalProps> = ({
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Enter new password (min 6 characters)"
+                  placeholder="Enter new password (e.g. FundBridge@2026)"
                   className="w-full pl-10 pr-10 py-2.5 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all text-sm font-medium"
                 />
                 <button
