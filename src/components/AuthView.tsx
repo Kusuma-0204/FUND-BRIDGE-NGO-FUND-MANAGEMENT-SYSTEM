@@ -75,9 +75,9 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
   const handleForgotPasswordClick = () => {
     if (activePortalTab === 'admin') {
-      onOpenForgotPassword(loginEmail.trim() || 'o220786@rguktong.ac.in');
+      onOpenForgotPassword(loginEmail.trim() || 'aadminngo@gmail.com');
     } else {
-      onOpenForgotPassword(loginEmail.trim());
+      onOpenForgotPassword(loginEmail.trim() || localStorage.getItem('fb_last_login_email') || '');
     }
   };
 
@@ -284,7 +284,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 p-0.5 flex items-center justify-center flex-shrink-0 shadow-xs overflow-hidden">
                 <img
-                  src="/assets/ngo-logo.svg"
+                  src="/assets/ngo-logo.svg?v=light"
                   alt="Fund Bridge NGO Logo"
                   className="w-full h-full object-contain"
                 />
@@ -326,11 +326,11 @@ export const AuthView: React.FC<AuthViewProps> = ({
           </div>
 
           <div className="my-6 text-center flex flex-col items-center justify-center">
-            <div className="w-56 h-56 sm:w-64 sm:h-64 rounded-3xl bg-white border border-slate-200 shadow-md p-3 flex items-center justify-center overflow-hidden hover:scale-105 transition-transform duration-300">
+            <div className="w-56 h-56 sm:w-64 sm:h-64 rounded-3xl bg-white border border-teal-100/90 shadow-sm p-2.5 flex items-center justify-center overflow-hidden hover:scale-105 transition-transform duration-300">
               <img
-                src="/assets/ngo-logo.svg"
+                src="/assets/ngo-logo.svg?v=light"
                 alt="Fund Bridge NGO Logo"
-                className="w-full h-full object-contain drop-shadow-sm"
+                className="w-full h-full object-contain"
               />
             </div>
             <span className="text-[11px] text-teal-700 font-bold tracking-wider uppercase mt-3">
@@ -526,10 +526,23 @@ export const AuthView: React.FC<AuthViewProps> = ({
                     required
                     value={loginEmail}
                     onChange={(e) => handleEmailChange(e.target.value)}
-                    placeholder="Enter email ID"
+                    placeholder="e.g. aadminngo@gmail.com"
                     className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
                     autoFocus
                   />
+                </div>
+                <div className="flex items-center justify-between mt-1.5 text-xs text-slate-500">
+                  <span className="flex items-center gap-1 text-slate-600">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                    <span>Official ID: <strong className="text-amber-800">aadminngo@gmail.com</strong></span>
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleEmailChange('aadminngo@gmail.com')}
+                    className="text-[11px] text-amber-700 hover:text-amber-900 font-bold bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2 py-0.5 rounded transition-colors cursor-pointer"
+                  >
+                    Autofill ID
+                  </button>
                 </div>
               </div>
 
