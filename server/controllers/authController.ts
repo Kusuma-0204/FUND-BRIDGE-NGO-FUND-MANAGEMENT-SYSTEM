@@ -5,7 +5,6 @@ import crypto from 'crypto';
 import { store, getPool, isMySQL, DBUser, DBOtp, DBResetToken } from '../../database/db.js';
 import { JWT_SECRET, AuthRequest } from '../middleware/authMiddleware.js';
 import { sendPasswordResetEmail, sendPasswordResetOtpEmail } from '../services/emailService.js';
-import { sendPasswordResetOtpSms, normalizePhoneNumber } from '../services/smsService.js';
 
 // Helper for audit logging
 export async function logAudit(userId: string | null, action: string, description: string, req?: Request) {
@@ -236,19 +235,8 @@ export async function login(req: Request, res: Response) {
     if (!trimmedEmail) {
       return res.status(400).json({
         success: false,
-        message: 'Email address or mobile number is required.'
+        message: 'Email address is required.'
       });
-    }
-
-    const isLoginPhone = /^[+]?[0-9\s-]{8,15}$/.test(trimmedEmail.replace(/\s+/g, ''));
-    if (isLoginPhone) {
-      const cleanDigits = trimmedEmail.replace(/[^0-9]/g, '');
-      const matchedUser = store.users.find(u => (u.phone || '').replace(/[^0-9]/g, '').includes(cleanDigits.slice(-10)));
-      if (matchedUser) {
-        trimmedEmail = matchedUser.email.toLowerCase();
-      } else {
-        trimmedEmail = `${cleanDigits}@mobile.in`;
-      }
     }
 
     if (trimmedEmail === 'adminngo@gmail.com') {
@@ -426,44 +414,20 @@ export async function login(req: Request, res: Response) {
 // -----------------------------------------------------------------------------
 // POST /api/auth/forgot-password (Step 1)
 // -----------------------------------------------------------------------------
-// Helper to resolve email/phone identifiers consistently
-function resolveAccountIdentifier(input: string): { isPhone: boolean; emailKey: string; phoneFormatted: string; raw: string } {
-  const raw = (input || '').trim();
-  const lower = raw.toLowerCase();
-  const isPhone = !raw.includes('@') && /^[+]?[0-9\s-]{8,16}$/.test(raw.replace(/\s+/g, ''));
-  if (isPhone) {
-    const norm = normalizePhoneNumber(raw);
-    const cleanDigits = norm.cleanDigits;
-    const last10 = cleanDigits.slice(-10);
-    const matched = store.users.find(u => {
-      const userDigits = (u.phone || '').replace(/[^0-9]/g, '');
-      return userDigits.length >= 10 && userDigits.includes(last10);
-    });
-    if (matched) {
-      return { isPhone: true, emailKey: matched.email.toLowerCase(), phoneFormatted: norm.formatted, raw };
-    }
-    return { isPhone: true, emailKey: `${cleanDigits}@mobile.in`, phoneFormatted: norm.formatted, raw };
-  }
-  return { isPhone: false, emailKey: lower, phoneFormatted: raw, raw };
-}
-
-// -----------------------------------------------------------------------------
-// POST /api/auth/forgot-password (Step 1)
-// -----------------------------------------------------------------------------
 export async function forgotPassword(req: Request, res: Response) {
   try {
     const { email } = req.body;
     if (!email) {
-      return res.status(400).json({ success: false, message: 'Email address or mobile phone number is required.' });
+      return res.status(400).json({ success: false, message: 'Email address is required.' });
     }
 
-    const { isPhone, emailKey, phoneFormatted } = resolveAccountIdentifier(email);
+    const trimmedEmail = email.trim().toLowerCase();
 
-    // Verify user exists or auto-provision for seamless recovery
-    let userExists = store.users.some(u => u.email.toLowerCase() === emailKey);
+    // Verify user exists or auto-provision for robust user experience
+    let userExists = store.users.some(u => u.email.toLowerCase() === trimmedEmail);
     if (isMySQL() && getPool()) {
       try {
-        const [rows]: any = await getPool()!.query('SELECT id FROM users WHERE email = ?', [emailKey]);
+        const [rows]: any = await getPool()!.query('SELECT id FROM users WHERE email = ?', [trimmedEmail]);
         if (rows && rows.length > 0) userExists = true;
       } catch (e) {
         // Fallback to memory store check
@@ -474,9 +438,8 @@ export async function forgotPassword(req: Request, res: Response) {
       const defaultHash = await bcrypt.hash('password123', 10);
       const newUser: DBUser = {
         id: `user-${Date.now()}`,
-        full_name: isPhone ? `Mobile User (${phoneFormatted})` : emailKey.split('@')[0].replace(/[._-]/g, ' '),
-        email: emailKey,
-        phone: isPhone ? phoneFormatted : undefined,
+        full_name: trimmedEmail.split('@')[0].replace(/[._-]/g, ' '),
+        email: trimmedEmail,
         password_hash: defaultHash,
         role: 'Donor Member',
         kyc_verified: 1,
@@ -489,8 +452,8 @@ export async function forgotPassword(req: Request, res: Response) {
       if (isMySQL() && getPool()) {
         try {
           await getPool()!.query(
-            'INSERT INTO users (id, full_name, email, phone, password_hash, role, kyc_verified, status, member_since, audits_approved) VALUES (?, ?, ?, ?, ?, "Donor Member", 1, "active", "2026", 0)',
-            [newUser.id, newUser.full_name, newUser.email, newUser.phone || null, newUser.password_hash]
+            'INSERT INTO users (id, full_name, email, password_hash, role, kyc_verified, status, member_since, audits_approved) VALUES (?, ?, ?, ?, ?, 1, "active", "2026", 0)',
+            [newUser.id, newUser.full_name, newUser.email, newUser.password_hash, newUser.role]
           );
         } catch (e) {
           // ignore
@@ -506,11 +469,11 @@ export async function forgotPassword(req: Request, res: Response) {
 
     // Store in memory/JSON store for the respective user email
     store.otps.forEach(o => {
-      if (o.email === emailKey) o.used = 1;
+      if (o.email === trimmedEmail) o.used = 1;
     });
     store.otps.push({
       id: store.otpIdCounter++,
-      email: emailKey,
+      email: trimmedEmail,
       otp_hash: otpHash,
       expires_at: expiresAt,
       attempts: 0,
@@ -519,88 +482,45 @@ export async function forgotPassword(req: Request, res: Response) {
     });
     store.resetTokens.push({
       id: store.tokenIdCounter++,
-      email: emailKey,
+      email: trimmedEmail,
       token_hash: otpHash,
       expires_at: expiresAt,
       used: 0,
       created_at: new Date().toISOString()
     });
 
+    store.saveToDisk();
+
     // Also store in MySQL if connected
     if (isMySQL() && getPool()) {
       try {
         const pool = getPool()!;
-        await pool.query('UPDATE password_reset_otps SET used = 1 WHERE email = ? AND used = 0', [emailKey]);
+        await pool.query('UPDATE password_reset_otps SET used = 1 WHERE email = ? AND used = 0', [trimmedEmail]);
         await pool.query(
           'INSERT INTO password_reset_otps (email, otp_hash, expires_at, attempts, used) VALUES (?, ?, ?, 0, 0)',
-          [emailKey, otpHash, expiresAt]
+          [trimmedEmail, otpHash, expiresAt]
         );
         await pool.query(
           'INSERT INTO password_reset_tokens (email, token_hash, expires_at, used) VALUES (?, ?, ?, 0)',
-          [emailKey, otpHash, expiresAt]
+          [trimmedEmail, otpHash, expiresAt]
         );
       } catch (dbErr: any) {
         console.warn('[MySQL OTP Store Notice]', dbErr.message);
       }
     }
 
-    // Dispatch OTP based on channel
-    if (isPhone) {
-      // 1. Dispatch SMS directly to user's mobile phone
-      const smsResult = await sendPasswordResetOtpSms(email, rawOtp);
-      await logAudit(null, 'OTP_SMS_REQUEST', `6-digit OTP SMS dispatched to ${phoneFormatted} via ${smsResult.sentVia}`, req);
+    // Await 6-digit OTP verification email delivery strictly to the user's respective login email
+    const emailResult = await sendPasswordResetOtpEmail(trimmedEmail, rawOtp);
+    await logAudit(null, 'OTP_REQUEST', `6-digit OTP dispatched to ${trimmedEmail} via ${emailResult.sentVia}`, req);
 
-      // If this phone account has a verified email, also send email as backup
-      if (!emailKey.endsWith('@mobile.in')) {
-        sendPasswordResetOtpEmail(emailKey, rawOtp).catch(() => {});
-      }
-
-      // Return dispatch status with carrier details for cloud environments where telecom SIM delivery requires API keys
-      return res.json({
-        success: true,
-        isPhone: true,
-        sentVia: smsResult.sentVia,
-        deliveredTo: phoneFormatted,
-        carrierStatus: smsResult.carrierStatus || 'DISPATCHED_TO_OPERATOR',
-        message: `A 6-digit verification code has been dispatched via SMS to ${phoneFormatted}.`,
-        email: emailKey,
-        dispatchDetails: {
-          channel: 'sms',
-          recipient: phoneFormatted,
-          message: `Fund Bridge: Your verification code is ${rawOtp}. Valid for 10 minutes.`,
-          otpCode: rawOtp,
-          whatsAppUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(`Fund Bridge: Your password reset verification code is ${rawOtp}. Valid for 10 minutes.`)}`
-        }
-      });
-    } else {
-      // 2. Dispatch OTP via Email
-      const emailResult = await sendPasswordResetOtpEmail(emailKey, rawOtp);
-      await logAudit(null, 'OTP_EMAIL_REQUEST', `6-digit OTP dispatched to ${emailKey} via ${emailResult.sentVia}`, req);
-
-      // If user has a registered phone number, also send SMS to their phone
-      const user = store.users.find(u => u.email.toLowerCase() === emailKey);
-      if (user?.phone) {
-        sendPasswordResetOtpSms(user.phone, rawOtp).catch(() => {});
-      }
-
-      // Return dispatch status with carrier details for cloud environments where SMTP ports are restricted
-      return res.json({
-        success: true,
-        isPhone: false,
-        isSmtpConfigured: true,
-        sentVia: emailResult.sentVia,
-        deliveredTo: emailKey,
-        message: `A 6-digit verification code has been dispatched to ${emailKey}.`,
-        email: emailKey,
-        dispatchDetails: {
-          channel: 'email',
-          recipient: emailKey,
-          message: `Fund Bridge: Your verification code is ${rawOtp}. Valid for 10 minutes.`,
-          otpCode: rawOtp,
-          whatsAppUrl: `https://api.whatsapp.com/send?text=${encodeURIComponent(`Fund Bridge: Your password reset verification code is ${rawOtp}. Valid for 10 minutes.`)}`
-        }
-      });
-    }
+    return res.json({
+      success: true,
+      isSmtpConfigured: true,
+      sentVia: emailResult.sentVia,
+      deliveredTo: emailResult.recipient,
+      message: `A 6-digit verification code has been dispatched to ${trimmedEmail}. Please check your Gmail Inbox, Spam, or Sent folder.`,
+      email: trimmedEmail
+    });
   } catch (err: any) {
     console.error('[Forgot Password Error]', err);
     return res.status(500).json({ success: false, message: 'Error processing password reset request.' });
@@ -617,7 +537,7 @@ export async function verifyOtp(req: Request, res: Response) {
       return res.status(400).json({ success: false, message: 'Email and 6-digit OTP code are required.' });
     }
 
-    const { emailKey: trimmedEmail } = resolveAccountIdentifier(email);
+    const trimmedEmail = email.trim().toLowerCase();
     const cleanOtp = otp.toString().trim();
 
     let otpRecord: DBOtp | null = null;
@@ -706,6 +626,7 @@ export async function verifyOtp(req: Request, res: Response) {
       used: 0,
       created_at: new Date().toISOString()
     });
+    store.saveToDisk();
 
     if (isMySQL() && getPool()) {
       await getPool()!.query(
@@ -742,7 +663,7 @@ export async function resetPassword(req: Request, res: Response) {
       });
     }
 
-    const { emailKey: trimmedEmail } = resolveAccountIdentifier(email);
+    const trimmedEmail = email.trim().toLowerCase();
 
     const pwdCheck = validatePasswordPolicy(newPassword);
     if (!pwdCheck.valid) {
@@ -861,6 +782,7 @@ export async function resetPassword(req: Request, res: Response) {
       };
       store.users.push(user);
     }
+    store.saveToDisk();
 
     // Issue JWT token so user is authenticated right away
     const jwtToken = jwt.sign(
