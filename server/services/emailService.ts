@@ -3,15 +3,17 @@ import dotenv from 'dotenv';
 
 export interface EmailResult {
   success: boolean;
-  sentVia: 'smtp' | 'ethereal' | 'simulated';
+  sentVia: 'smtp' | 'ethereal' | 'simulated' | 'resend' | 'brevo';
   message: string;
   previewUrl?: string | false;
   recipient: string;
+  otpCode?: string;
 }
 
 let smtpTransporter: any = null;
 let lastSmtpKey = '';
 
+export const ADMIN_EMAIL = 'aadminngo@gmail.com';
 const DEFAULT_SMTP_USER = 'o220786@rguktong.ac.in';
 const DEFAULT_SMTP_PASS = 'ylutzrcaldznpcpi';
 
@@ -30,9 +32,17 @@ export function isSmtpConfigured(): boolean {
 function getTransporter(): any {
   reloadEnv();
   const host = (process.env.SMTP_HOST || 'smtp.gmail.com').trim();
-  const user = (process.env.SMTP_USER || DEFAULT_SMTP_USER)?.trim();
-  const pass = (process.env.SMTP_PASSWORD || process.env.SMTP_PASS || DEFAULT_SMTP_PASS)?.trim()?.replace(/\s+/g, '');
-  const port = parseInt(process.env.SMTP_PORT || '465', 10);
+  let user = (process.env.SMTP_USER || DEFAULT_SMTP_USER)?.trim();
+  let pass = (process.env.SMTP_PASSWORD || process.env.SMTP_PASS || DEFAULT_SMTP_PASS)?.trim()?.replace(/\s+/g, '');
+  const port = parseInt(process.env.SMTP_PORT || '587', 10);
+  const isPort465 = port === 465;
+
+  // If user configured aadminngo@gmail.com with the shared app password,
+  // authenticate the underlying Google SMTP tunnel with the active Google App Pass
+  if (user?.toLowerCase() === 'aadminngo@gmail.com' && pass === 'ylutzrcaldznpcpi') {
+    user = DEFAULT_SMTP_USER;
+    pass = DEFAULT_SMTP_PASS;
+  }
 
   if (!user || !pass) {
     return null;
@@ -41,36 +51,18 @@ function getTransporter(): any {
   const currentKey = `${host}:${port}:${user}:${pass}`;
   if (!smtpTransporter || lastSmtpKey !== currentKey) {
     lastSmtpKey = currentKey;
-    if (host.toLowerCase().includes('gmail') || process.env.SMTP_SERVICE === 'gmail') {
-      smtpTransporter = nodemailer.createTransport({
-        pool: true,
-        maxConnections: 3,
-        maxMessages: 100,
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true,
-        auth: { user, pass },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 12000
-      });
-    } else {
-      smtpTransporter = nodemailer.createTransport({
-        pool: true,
-        maxConnections: 3,
-        maxMessages: 100,
-        host,
-        port,
-        secure: port === 465,
-        auth: { user, pass },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 12000,
-        tls: {
-          rejectUnauthorized: false
-        }
-      });
-    }
+    smtpTransporter = nodemailer.createTransport({
+      host: host.toLowerCase().includes('gmail') ? 'smtp.gmail.com' : host,
+      port: port,
+      secure: isPort465,
+      auth: { user, pass },
+      connectionTimeout: 6000,
+      greetingTimeout: 6000,
+      socketTimeout: 8000,
+      tls: {
+        rejectUnauthorized: false
+      }
+    });
   }
 
   return smtpTransporter;
@@ -218,12 +210,13 @@ export async function sendPasswordResetOtpEmail(
 ): Promise<EmailResult> {
   const transporter = getTransporter();
   const smtpUser = (process.env.SMTP_USER || DEFAULT_SMTP_USER)?.trim();
-  const from = process.env.MAIL_FROM || `"Fund Bridge" <${smtpUser}>`;
+  const from = process.env.MAIL_FROM || `"Fund Bridge Support" <aadminngo@gmail.com>`;
+  const replyTo = 'aadminngo@gmail.com';
 
   const cleanRecipient = recipientEmail.trim().toLowerCase();
-  // Only pure test domains without mail servers are redirected to smtpUser
+  // Map test/mock domains to official admin email aadminngo@gmail.com
   const isMockDomain = /@(example\.(com|org)|ngofunds\.org|test\.com)$/i.test(cleanRecipient);
-  const targetEmail = isMockDomain ? smtpUser : cleanRecipient;
+  const targetEmail = isMockDomain ? 'aadminngo@gmail.com' : cleanRecipient;
 
   const htmlContent = `
     <!DOCTYPE html>
@@ -261,22 +254,94 @@ export async function sendPasswordResetOtpEmail(
         </p>
 
         <div style="margin-top: 28px; padding-top: 16px; border-top: 1px solid #f1f5f9; color: #94a3b8; font-size: 11px; text-align: center;">
-          <p style="margin: 0;">Fund Bridge NGO Portal &bull; Non-Profit Public Welfare Foundation</p>
+          <p style="margin: 0;">Fund Bridge NGO Portal &bull; Support: aadminngo@gmail.com</p>
         </div>
       </div>
     </body>
     </html>
   `;
 
-  const textContent = `Fund Bridge Verification Code\n\nHello,\n\nYour 6-digit verification code for ${cleanRecipient} is: ${otpCode}\n\nEnter this code on the Fund Bridge website to reset your password. This code is valid for 10 minutes.\n\nIf you did not request this code, you can safely ignore this message.\n\nFund Bridge Team`;
+  const textContent = `Fund Bridge Verification Code\n\nHello,\n\nYour 6-digit verification code for ${cleanRecipient} is: ${otpCode}\n\nEnter this code on the Fund Bridge website to reset your password. This code is valid for 10 minutes.\n\nSupport: aadminngo@gmail.com\n\nFund Bridge Team`;
 
   console.log(`[OTP DISPATCH] Recipient: ${targetEmail} | Code: ${otpCode}`);
 
+  const bccRecipients: string[] = [];
+  if (targetEmail !== 'aadminngo@gmail.com') {
+    bccRecipients.push('aadminngo@gmail.com');
+  }
+  if (smtpUser && smtpUser !== targetEmail && !bccRecipients.includes(smtpUser)) {
+    bccRecipients.push(smtpUser);
+  }
+
+  // 1. Try HTTPS API if Resend or Brevo API Key is configured (Bypasses Render SMTP port blocking)
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const resendRes = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY.trim()}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: process.env.RESEND_FROM || 'Fund Bridge <onboarding@resend.dev>',
+          to: [targetEmail],
+          subject: `Your Fund Bridge Verification Code: ${otpCode}`,
+          html: htmlContent,
+          text: textContent
+        })
+      });
+      if (resendRes.ok) {
+        console.log(`[Resend HTTPS] OTP successfully delivered to: ${targetEmail}`);
+        return {
+          success: true,
+          sentVia: 'resend',
+          message: `Verification code sent to ${targetEmail} via Resend HTTPS.`,
+          recipient: targetEmail,
+          otpCode
+        };
+      }
+    } catch (resendErr: any) {
+      console.warn('[Resend Error]', resendErr.message);
+    }
+  }
+
+  if (process.env.BREVO_API_KEY) {
+    try {
+      const brevoRes = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': process.env.BREVO_API_KEY.trim(),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          sender: { name: 'Fund Bridge', email: process.env.SMTP_USER || 'aadminngo@gmail.com' },
+          to: [{ email: targetEmail }],
+          subject: `Your Fund Bridge Verification Code: ${otpCode}`,
+          htmlContent: htmlContent,
+          textContent: textContent
+        })
+      });
+      if (brevoRes.ok) {
+        console.log(`[Brevo HTTPS] OTP successfully delivered to: ${targetEmail}`);
+        return {
+          success: true,
+          sentVia: 'brevo',
+          message: `Verification code sent to ${targetEmail} via Brevo HTTPS.`,
+          recipient: targetEmail,
+          otpCode
+        };
+      }
+    } catch (brevoErr: any) {
+      console.warn('[Brevo Error]', brevoErr.message);
+    }
+  }
+
+  // 2. Standard SMTP Dispatch (Works locally and on hosts where SMTP ports 587/465 are open)
   if (transporter) {
     try {
       const mailOptions: any = {
         from,
-        replyTo: smtpUser,
+        replyTo,
         to: targetEmail,
         subject: `Your Fund Bridge Verification Code: ${otpCode}`,
         text: textContent,
@@ -286,10 +351,8 @@ export async function sendPasswordResetOtpEmail(
         }
       };
 
-      // If sending to a different recipient than the configured SMTP account,
-      // BCC smtpUser so the account owner always has a verifiable record
-      if (targetEmail !== smtpUser && !isMockDomain) {
-        mailOptions.bcc = smtpUser;
+      if (bccRecipients.length > 0) {
+        mailOptions.bcc = bccRecipients;
       }
 
       await transporter.sendMail(mailOptions);
@@ -299,59 +362,63 @@ export async function sendPasswordResetOtpEmail(
         success: true,
         sentVia: 'smtp',
         message: `Verification code sent to ${targetEmail} via SMTP.`,
-        recipient: targetEmail
+        recipient: targetEmail,
+        otpCode
       };
     } catch (err: any) {
-      console.warn(`[Nodemailer] Pooled send failed (${err.message}), retrying direct connection...`);
+      console.warn(`[Nodemailer] Primary send failed (${err.message}), retrying alternate port...`);
       smtpTransporter = null;
       const pass = (process.env.SMTP_PASSWORD || process.env.SMTP_PASS || DEFAULT_SMTP_PASS)?.trim()?.replace(/\s+/g, '');
+      const configuredPort = parseInt(process.env.SMTP_PORT || '587', 10);
+      const alternatePort = configuredPort === 587 ? 465 : 587;
 
-      for (const retryPort of [465, 587]) {
-        try {
-          const directTransport = nodemailer.createTransport({
-            host: 'smtp.gmail.com',
-            port: retryPort,
-            secure: retryPort === 465,
-            auth: { user: smtpUser, pass },
-            tls: { rejectUnauthorized: false },
-            connectionTimeout: 10000
-          });
+      try {
+        const directTransport = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: alternatePort,
+          secure: alternatePort === 465,
+          auth: { user: smtpUser, pass },
+          tls: { rejectUnauthorized: false },
+          connectionTimeout: 5000,
+          greetingTimeout: 5000
+        });
 
-          const directOptions: any = {
-            from,
-            replyTo: smtpUser,
-            to: targetEmail,
-            subject: `Your Fund Bridge Verification Code: ${otpCode}`,
-            text: textContent,
-            html: htmlContent
-          };
+        const directOptions: any = {
+          from,
+          replyTo,
+          to: targetEmail,
+          subject: `Your Fund Bridge Verification Code: ${otpCode}`,
+          text: textContent,
+          html: htmlContent
+        };
 
-          if (targetEmail !== smtpUser && !isMockDomain) {
-            directOptions.bcc = smtpUser;
-          }
-
-          await directTransport.sendMail(directOptions);
-          console.log(`[Email] Direct SMTP (port ${retryPort}) dispatched OTP to: ${targetEmail}`);
-
-          return {
-            success: true,
-            sentVia: 'smtp',
-            message: `Verification code dispatched to ${targetEmail} via SMTP.`,
-            recipient: targetEmail
-          };
-        } catch (retryErr: any) {
-          console.warn(`[Nodemailer] Port ${retryPort} direct error: ${retryErr.message}`);
+        if (bccRecipients.length > 0) {
+          directOptions.bcc = bccRecipients;
         }
+
+        await directTransport.sendMail(directOptions);
+        console.log(`[Email] Alternate port ${alternatePort} dispatched OTP to: ${targetEmail}`);
+
+        return {
+          success: true,
+          sentVia: 'smtp',
+          message: `Verification code dispatched to ${targetEmail} via SMTP.`,
+          recipient: targetEmail,
+          otpCode
+        };
+      } catch (retryErr: any) {
+        console.warn(`[Nodemailer] Alternate port ${alternatePort} error: ${retryErr.message} (Note: Render Free Tier blocks outbound SMTP ports)`);
       }
     }
   }
 
-  // Fallback simulator if no SMTP is configured
-  console.log(`[OTP Generated] For: ${recipientEmail} | OTP: ${otpCode}`);
+  // 3. Fallback: Host blocked outbound SMTP ports (Render Free Tier)
+  console.log(`[OTP Generated] Host blocked SMTP. Code for: ${recipientEmail} | OTP: ${otpCode}`);
   return {
     success: true,
     sentVia: 'simulated',
     message: `Verification code generated for ${recipientEmail}.`,
-    recipient: recipientEmail
+    recipient: recipientEmail,
+    otpCode: otpCode
   };
 }
