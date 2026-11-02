@@ -15,6 +15,19 @@ export const INITIAL_USERS: User[] = [
     password: 'password123'
   },
   {
+    id: 'user-vengamma',
+    name: 'Vengamma Bareddy',
+    email: 'vengammabareddy61@gmail.com',
+    role: 'Donor Member',
+    avatar: 'VB',
+    kycVerified: true,
+    phone: '+91 93915 14815',
+    bio: 'Sustaining Philanthropic Donor Member sponsoring education and pediatric healthcare aid.',
+    memberSince: '2026',
+    auditsApproved: 8,
+    password: 'password123'
+  },
+  {
     id: 'user-rgukt',
     name: 'University Member',
     email: 'o220786@rguktong.ac.in',
