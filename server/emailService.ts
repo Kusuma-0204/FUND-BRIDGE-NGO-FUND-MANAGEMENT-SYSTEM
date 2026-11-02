@@ -14,10 +14,10 @@ export async function sendPasswordResetEmail(
   resetLink: string
 ): Promise<SendEmailResult> {
   const host = process.env.SMTP_HOST || 'smtp.gmail.com';
-  const user = process.env.SMTP_USER || 'o220786@rguktong.ac.in';
-  const pass = process.env.SMTP_PASSWORD || process.env.SMTP_PASS || 'ylutzrcaldznpcpi';
-  const port = Number(process.env.SMTP_PORT || 465);
-  const from = process.env.MAIL_FROM || process.env.SMTP_FROM || (user ? `"Fund Bridge Support" <${user}>` : '"Fund Bridge Security" <noreply@ngofunds.org>');
+  const user = process.env.SMTP_USER || 'aadminngo@gmail.com';
+  const pass = process.env.SMTP_PASSWORD || process.env.SMTP_PASS || 'xwxzqzdcpiwmabdt';
+  const port = Number(process.env.SMTP_PORT || 587);
+  const from = process.env.MAIL_FROM || process.env.SMTP_FROM || (user ? `"Fund Bridge Support" <${user}>` : '"Fund Bridge Security" <noreply@fundbridge.org>');
 
   // 1. If real SMTP credentials are provided in .env, send live email
   if (host && user && pass) {
@@ -27,6 +27,7 @@ export async function sendPasswordResetEmail(
         port,
         secure: port === 465,
         auth: { user, pass },
+        tls: { rejectUnauthorized: false }
       });
 
       await transporter.sendMail({
