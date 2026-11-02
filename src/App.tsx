@@ -67,7 +67,16 @@ export default function App() {
   // Data State with LocalStorage Persistence
   const [users, setUsers] = useState<User[]>(() => {
     const saved = localStorage.getItem('fb_users');
-    let list: User[] = saved ? JSON.parse(saved) : INITIAL_USERS;
+    let list: User[] = saved ? JSON.parse(saved) : [];
+    
+    // Ensure all INITIAL_USERS are included so all accounts remain active
+    for (const initUser of INITIAL_USERS) {
+      if (!list.some(u => u.email.toLowerCase() === initUser.email.toLowerCase())) {
+        list.push(initUser);
+      }
+    }
+    if (list.length === 0) list = [...INITIAL_USERS];
+
     let foundAdmin = false;
     list = list.map(u => {
       const { name, email } = mapToSouthIndianName(u.name, u.email);
@@ -83,7 +92,11 @@ export default function App() {
       if (u.role === 'Administrator') {
         return { ...u, role: 'Donor Member' as const };
       }
-      return { ...u, name: u.role === 'Donor Member' && (u.name.includes('Aarav') || u.name.includes('Elena')) ? name : u.name, email: u.role === 'Donor Member' && (u.name.includes('Aarav') || u.name.includes('Elena')) ? email : u.email };
+      return { 
+        ...u, 
+        name: u.role === 'Donor Member' && (u.name.includes('Aarav') || u.name.includes('Elena')) ? name : u.name, 
+        email: u.role === 'Donor Member' && (u.name.includes('Aarav') || u.name.includes('Elena')) ? email : u.email 
+      };
     });
     if (!foundAdmin) {
       list.unshift(INITIAL_USERS[0]);
@@ -424,11 +437,8 @@ export default function App() {
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        const isMobile = !email.includes('@');
         showToast(
-          isMobile
-            ? `6-digit OTP sent via SMS to mobile ${data.deliveredTo || email}!`
-            : `6-digit OTP sent to ${data.deliveredTo || email}!`,
+          `6-digit OTP dispatched to ${email}! Please check your Gmail Inbox, Spam, or Sent folder.`,
           'success'
         );
         return data;
@@ -455,12 +465,8 @@ export default function App() {
 
   // Handler: Password Reset Completion (Updates password, authenticates, and directs to appropriate portal)
   const handlePasswordResetSuccess = (email: string, newPass: string) => {
-    // 1. Update user password in users list (match by email or phone)
-    const cleanDigits = email.replace(/[^0-9]/g, '');
-    let targetUser = users.find(u => 
-      u.email.toLowerCase() === email.toLowerCase() || 
-      (cleanDigits.length >= 7 && u.phone && u.phone.replace(/[^0-9]/g, '').slice(-10) === cleanDigits.slice(-10))
-    );
+    // 1. Update user password in users list
+    let targetUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
     let nextUsers: User[] = [];
     if (targetUser) {
       nextUsers = users.map(u => 
@@ -773,7 +779,7 @@ export default function App() {
                 {/* NGO Logo & Title */}
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-white border border-slate-200 p-0.5 flex items-center justify-center shadow-xs overflow-hidden">
-                    <img src="/assets/ngo-logo.svg" alt="Fund Bridge Logo" className="w-full h-full object-contain" />
+                    <img src="/assets/ngo-logo.svg?v=light" alt="Fund Bridge Logo" className="w-full h-full object-contain" />
                   </div>
                   <div>
                     <span className="font-extrabold text-base sm:text-xl tracking-wider text-slate-900 flex items-center gap-1.5">
@@ -1056,6 +1062,7 @@ export default function App() {
         defaultEmail={forgotPasswordPrefillEmail}
         onSendResetLink={handleSendResetLink}
         onOpenResetPassword={handleOpenResetPasswordScreen}
+        users={users}
       />
 
       {/* 3. Reset Password Modal (Opened when user clicks the reset link in their email) */}
