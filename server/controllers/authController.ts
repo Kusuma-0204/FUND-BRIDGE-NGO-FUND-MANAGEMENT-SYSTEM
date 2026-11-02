@@ -519,11 +519,8 @@ export async function forgotPassword(req: Request, res: Response) {
       isSmtpConfigured: true,
       sentVia: emailResult.sentVia,
       deliveredTo: emailResult.recipient,
-      message: emailResult.sentVia === 'smtp' || emailResult.sentVia === 'resend' || emailResult.sentVia === 'brevo'
-        ? `A 6-digit verification code has been dispatched to ${trimmedEmail}. Please check your Gmail Inbox, Spam, or Sent folder.`
-        : `Render Cloud Firewall blocked outbound SMTP ports (465/587). Your verification code is provided in the modal below.`,
-      email: trimmedEmail,
-      devOtp: rawOtp
+      message: `A 6-digit verification code has been dispatched to ${trimmedEmail}. Please check your email inbox and spam folder.`,
+      email: trimmedEmail
     });
   } catch (err: any) {
     console.error('[Forgot Password Error]', err);
