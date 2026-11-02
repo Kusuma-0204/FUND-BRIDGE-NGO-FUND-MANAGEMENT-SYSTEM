@@ -8,8 +8,10 @@ import {
   KeyRound,
   RefreshCw,
   ArrowLeft,
-  AlertCircle
+  AlertCircle,
+  UserCheck
 } from 'lucide-react';
+import { User } from '../types';
 
 export interface SendResetResult {
   success: boolean;
@@ -26,6 +28,7 @@ interface ForgotPasswordModalProps {
   defaultEmail?: string;
   onSendResetLink: (email: string) => Promise<SendResetResult>;
   onOpenResetPassword?: (email: string, token: string) => void;
+  users?: User[];
 }
 
 const maskEmail = (val: string) => {
@@ -38,33 +41,69 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   onClose,
   defaultEmail = '',
   onSendResetLink,
-  onOpenResetPassword
+  onOpenResetPassword,
+  users = []
 }) => {
   const [step, setStep] = useState<'email' | 'otp'>('email');
   const [email, setEmail] = useState(defaultEmail);
   const [isSendingOtp, setIsSendingOtp] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
 
-  // 6-digit OTP state
+  // 6-digit OTP state (never auto-filled; user manually inputs code received in their email)
   const [otpDigits, setOtpDigits] = useState<string[]>(['', '', '', '', '', '']);
   const [deliveredTo, setDeliveredTo] = useState<string>('');
-  const [backupOtp, setBackupOtp] = useState<string | null>(null);
   const [isVerifyingOtp, setIsVerifyingOtp] = useState(false);
   const [otpError, setOtpError] = useState<string | null>(null);
 
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
 
+  // Compile unique active accounts
+  const activeAccounts = React.useMemo(() => {
+    const list: { name: string; email: string; role: string; avatar: string }[] = [];
+    const seen = new Set<string>();
+
+    for (const u of users) {
+      const lower = (u.email || '').trim().toLowerCase();
+      if (lower && !seen.has(lower)) {
+        seen.add(lower);
+        list.push({
+          name: u.name || lower.split('@')[0],
+          email: lower,
+          role: u.role || 'Donor Member',
+          avatar: u.avatar || (u.name ? u.name.substring(0, 2).toUpperCase() : 'US')
+        });
+      }
+    }
+
+    // Default fallbacks if users list is empty
+    const defaults = [
+      { name: 'Dr. K. Radhakrishnan', email: 'aadminngo@gmail.com', role: 'Administrator', avatar: 'KR' },
+      { name: 'Vengamma Bareddy', email: 'vengammabareddy61@gmail.com', role: 'Donor Member', avatar: 'VB' },
+      { name: 'University Member', email: 'o220786@rguktong.ac.in', role: 'Donor Member', avatar: 'UM' },
+      { name: 'K. Venkatesh', email: 'venkatesh.k@gmail.com', role: 'Donor Member', avatar: 'KV' },
+      { name: 'Kavitha Lakshmi', email: 'kavitha.lakshmi@gmail.com', role: 'Volunteer Staff', avatar: 'KL' }
+    ];
+
+    for (const d of defaults) {
+      if (!seen.has(d.email)) {
+        seen.add(d.email);
+        list.push(d);
+      }
+    }
+
+    return list;
+  }, [users]);
+
   useEffect(() => {
     if (isOpen) {
-      setEmail(defaultEmail);
+      setEmail(defaultEmail || (activeAccounts.length > 0 ? activeAccounts[0].email : ''));
       setStep('email');
       setOtpDigits(['', '', '', '', '', '']);
       setDeliveredTo('');
-      setBackupOtp(null);
       setOtpError(null);
       setResendCooldown(0);
     }
-  }, [defaultEmail, isOpen]);
+  }, [defaultEmail, isOpen, activeAccounts]);
 
   // Resend countdown timer
   useEffect(() => {
@@ -77,10 +116,10 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Step 1: Send 6-Digit OTP to User's Gmail Inbox
+  // Step 1: Send 6-Digit OTP to User's Email Inbox
   const handleSendOtp = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const cleanEmail = email.trim();
+    const cleanEmail = email.trim().toLowerCase();
     if (!cleanEmail) {
       setOtpError('Please enter your registered email address.');
       return;
@@ -102,10 +141,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         setDeliveredTo(cleanEmail);
       }
 
-      if (result?.devOtp) {
-        setBackupOtp(result.devOtp);
-      }
-
+      // Reset OTP digits to blank so user types their received code
       setOtpDigits(['', '', '', '', '', '']);
       setStep('otp');
       setResendCooldown(30);
@@ -119,7 +155,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     }
   };
 
-  // Handle individual OTP digit changes
+  // Handle individual OTP digit changes (Manual input only)
   const handleOtpChange = (index: number, value: string) => {
     const cleaned = value.replace(/[^0-9]/g, '');
     if (!cleaned) {
@@ -129,7 +165,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       return;
     }
 
-    // Support pasting or typing multiple digits
+    // Support typing or pasting multiple digits
     if (cleaned.length > 1) {
       const chars = cleaned.slice(0, 6).split('');
       const next = [...otpDigits];
@@ -172,12 +208,12 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     inputRefs.current[focusIdx]?.focus();
   };
 
-  // Step 2: Verify 6-Digit OTP entered on the website
+  // Step 2: Verify 6-Digit OTP entered by the user
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     const enteredOtp = otpDigits.join('').trim();
     if (enteredOtp.length !== 6) {
-      setOtpError('Please enter the complete 6-digit OTP sent to your Gmail.');
+      setOtpError('Please enter the complete 6-digit OTP sent to your email.');
       return;
     }
 
@@ -197,12 +233,12 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setOtpError(data.message || 'Incorrect OTP code. Please check your Gmail inbox and try again.');
+        setOtpError(data.message || 'Incorrect OTP code. Please check your email inbox and try again.');
         setIsVerifyingOtp(false);
         return;
       }
 
-      // OTP Verified! Open Set New Password screen
+      // OTP Verified! Open Set New Password modal
       const verifiedToken = data.resetToken || enteredOtp;
       setIsVerifyingOtp(false);
       onClose();
@@ -240,17 +276,17 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           <h3 className="text-xl sm:text-2xl font-bold tracking-tight">
             {step === 'email' ? 'Forgot Password' : 'Verify 6-Digit OTP'}
           </h3>
-          <p className="text-teal-100 text-sm mt-1 leading-relaxed">
+          <p className="text-teal-100 text-xs sm:text-sm mt-1 leading-relaxed">
             {step === 'email'
-              ? 'Enter your login email address to receive a 6-digit OTP in your Gmail inbox.'
-              : `Enter the 6-digit OTP sent to ${maskEmail(email)}`}
+              ? 'All accounts are active. Enter your registered email address to receive your 6-digit OTP.'
+              : `Enter the 6-digit verification code sent to ${maskEmail(deliveredTo || email)}`}
           </p>
         </div>
 
         {/* Body */}
-        <div className="p-6 sm:p-7 space-y-5 bg-white">
+        <div className="p-6 sm:p-7 space-y-5 bg-white max-h-[80vh] overflow-y-auto">
           {step === 'email' ? (
-            /* STEP 1: ENTER EMAIL TO SEND OTP TO GMAIL */
+            /* STEP 1: ENTER OR SELECT EMAIL TO SEND OTP */
             <form onSubmit={handleSendOtp} className="space-y-4">
               {otpError && (
                 <div className="p-3.5 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-xs flex items-center gap-2">
@@ -261,7 +297,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
               <div>
                 <label htmlFor="forgot-email" className="block text-sm font-semibold text-slate-700 mb-1.5">
-                  Registered Login Email Address
+                  Registered Account Email Address
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -273,27 +309,69 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="e.g. yourname@gmail.com"
+                    placeholder="Enter registered email (e.g. yourname@gmail.com)"
                     className="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all text-sm font-medium"
                     autoFocus
                   />
                 </div>
-                <div className="flex flex-wrap items-center justify-between gap-1.5 mt-2 text-xs">
-                  <div className="flex items-center gap-1.5 text-slate-500">
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-600"></span>
-                    <span>
-                      6-digit OTP will be sent to: <strong className="text-teal-700 font-mono">{email ? email.trim() : 'aadminngo@gmail.com'}</strong>
-                    </span>
-                  </div>
-                  {email.trim().toLowerCase() !== 'aadminngo@gmail.com' && (
-                    <button
-                      type="button"
-                      onClick={() => setEmail('aadminngo@gmail.com')}
-                      className="text-[11px] text-amber-700 hover:text-amber-900 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2 py-0.5 rounded font-semibold transition-colors cursor-pointer"
-                    >
-                      Use aadminngo@gmail.com
-                    </button>
-                  )}
+              </div>
+
+              {/* All Active Accounts Quick Selection */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-1.5">
+                    <UserCheck className="w-3.5 h-3.5 text-teal-600" />
+                    All Active Accounts ({activeAccounts.length})
+                  </span>
+                  <span className="text-[11px] text-teal-700 font-semibold bg-teal-50 px-2 py-0.5 rounded-full border border-teal-200">
+                    All Active
+                  </span>
+                </div>
+                <div className="space-y-1.5 max-h-44 overflow-y-auto pr-1">
+                  {activeAccounts.map((acc) => {
+                    const isSelected = email.trim().toLowerCase() === acc.email.toLowerCase();
+                    return (
+                      <button
+                        key={acc.email}
+                        type="button"
+                        onClick={() => setEmail(acc.email)}
+                        className={`w-full p-2.5 rounded-xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                          isSelected
+                            ? 'bg-teal-50/80 border-teal-500 ring-1 ring-teal-500/30 shadow-xs'
+                            : 'bg-slate-50/60 hover:bg-slate-100/80 border-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs shrink-0 ${
+                            acc.role === 'Administrator'
+                              ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                              : 'bg-teal-100 text-teal-900 border border-teal-200'
+                          }`}>
+                            {acc.avatar}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-xs font-bold text-slate-900 truncate">
+                              {acc.name}
+                            </div>
+                            <div className="text-[11px] text-slate-500 truncate font-mono">
+                              {acc.email}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0 ml-2">
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                            acc.role === 'Administrator'
+                              ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                              : 'bg-teal-100 text-teal-800 border border-teal-200'
+                          }`}>
+                            {acc.role}
+                          </span>
+                          <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" title="Active"></span>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -313,7 +391,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                   {isSendingOtp ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      <span>Sending OTP to Gmail...</span>
+                      <span>Sending OTP to Email...</span>
                     </>
                   ) : (
                     <>
@@ -325,50 +403,24 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
               </div>
             </form>
           ) : (
-            /* STEP 2: ENTER 6-DIGIT OTP FROM GMAIL ON WEBSITE */
+            /* STEP 2: ENTER 6-DIGIT OTP FROM EMAIL ON WEBSITE (NO AUTOFILL CODE) */
             <form onSubmit={handleVerifyOtp} className="space-y-5">
-              <div className="p-4 bg-teal-50 border border-teal-200 rounded-xl space-y-2.5">
+              <div className="p-4 bg-teal-50 border border-teal-200 rounded-xl space-y-2">
                 <div className="flex items-start gap-2.5">
                   <CheckCircle2 className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
                   <div className="text-xs text-slate-700 leading-relaxed">
-                    <span className="font-bold text-teal-800 block text-sm">6-Digit Code Dispatched!</span>
-                    <span>Dispatched to: <strong className="text-slate-900 underline">{maskEmail(deliveredTo || email)}</strong></span>
+                    <span className="font-bold text-teal-900 block text-sm">6-Digit Code Dispatched!</span>
+                    <span>Dispatched to: <strong className="text-slate-950 font-mono underline">{maskEmail(deliveredTo || email)}</strong></span>
                   </div>
                 </div>
 
-                {backupOtp && (
-                  <div className="p-3 bg-amber-100/80 border-2 border-amber-400 rounded-xl space-y-1.5 shadow-sm text-left">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-amber-950 flex items-center gap-1.5">
-                        <AlertCircle className="w-4 h-4 text-amber-600 shrink-0" />
-                        Hosting Firewall Notice
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const chars = backupOtp.split('').slice(0, 6);
-                          setOtpDigits(chars);
-                          setOtpError(null);
-                        }}
-                        className="text-xs bg-amber-600 hover:bg-amber-700 text-white font-bold px-2.5 py-1 rounded-md transition-colors cursor-pointer shadow-sm flex items-center gap-1"
-                      >
-                        Auto-Fill Code ⚡
-                      </button>
-                    </div>
-                    <p className="text-[11px] text-amber-900 leading-relaxed">
-                      Render Free Tier blocks outbound SMTP ports (465/587). Your verification code is: <strong className="text-amber-950 font-mono text-sm tracking-widest bg-amber-200 px-2 py-0.5 rounded border border-amber-400 ml-1 font-bold">{backupOtp}</strong>
-                    </p>
-                  </div>
-                )}
-
                 <div className="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-[11px] text-amber-900 leading-relaxed space-y-1">
                   <span className="font-bold block text-amber-800">
-                    📬 Important Gmail Delivery Tips:
+                    📬 Please check your Email Inbox:
                   </span>
                   <p>
-                    • Check your <strong>Spam / Junk</strong> folder in the Gmail app.<br/>
-                    • If sent from/to your own account, Gmail frequently files it in the <strong>Sent</strong> folder instead of Inbox.<br/>
-                    • Or search for subject <strong>"Fund Bridge"</strong> in Gmail search.
+                    • Look for subject <strong>"Fund Bridge Verification Code"</strong> in your Inbox or <strong>Spam / Junk</strong> folder.<br/>
+                    • Enter the 6-digit code received in your email below to verify.
                   </p>
                 </div>
               </div>
@@ -381,7 +433,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 </div>
               )}
 
-              {/* 6-Digit OTP Input Boxes */}
+              {/* 6-Digit OTP Input Boxes (Manual Typing / Pasting only) */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 text-center mb-3">
                   Enter 6-Digit OTP Code
@@ -400,6 +452,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                       onChange={(e) => handleOtpChange(index, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
                       onPaste={handleOtpPaste}
+                      placeholder="•"
                       className="w-11 h-13 sm:w-12 sm:h-14 text-center text-xl font-extrabold bg-white border-2 border-slate-300 rounded-xl text-slate-900 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition-all font-mono shadow-xs"
                     />
                   ))}
@@ -420,7 +473,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                 ) : (
                   <>
                     <KeyRound className="w-4 h-4" />
-                    <span>Verify OTP</span>
+                    <span>Verify 6-Digit OTP</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -452,7 +505,7 @@ export const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
                       ? 'Sending...'
                       : resendCooldown > 0
                       ? `Resend in ${resendCooldown}s`
-                      : 'Resend OTP to Gmail'}
+                      : 'Resend OTP to Email'}
                   </span>
                 </button>
               </div>
