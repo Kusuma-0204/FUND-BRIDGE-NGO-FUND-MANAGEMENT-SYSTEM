@@ -59,6 +59,29 @@ function getTransporter(useBackup = false): { transporter: any; user: string } |
   return { transporter, user };
 }
 
+// Railway blocks outbound SMTP (587/465) on non-Pro plans, so prefer an HTTPS email API.
+async function sendViaResend(opts: { to: string; subject: string; html: string; text: string; replyTo?: string }): Promise<boolean> {
+  const key = process.env.RESEND_API_KEY?.trim();
+  if (!key) return false;
+  const from = process.env.RESEND_FROM?.trim() || 'Fund Bridge Support <onboarding@resend.dev>';
+  try {
+    const res = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from, to: [opts.to], subject: opts.subject, html: opts.html, text: opts.text, reply_to: opts.replyTo }),
+      signal: AbortSignal.timeout(10000)
+    });
+    if (!res.ok) {
+      console.warn(`[Resend] HTTP ${res.status}: ${await res.text()}`);
+      return false;
+    }
+    return true;
+  } catch (err: any) {
+    console.warn(`[Resend] failed: ${err.message}`);
+    return false;
+  }
+}
+
 export function warmUpSmtp(): void {
   const tObj = getTransporter();
   if (tObj?.transporter) {
@@ -123,6 +146,11 @@ export async function sendPasswordResetEmail(
   `;
 
   const textContent = `Fund Bridge Password Reset\n\nHello,\n\nWe received a request to reset the password for your account (${cleanRecipient}).\n\nReset Link: ${resetLink}\n${otpCode ? `Verification Code: ${otpCode}\n\n` : ''}This link expires in 15 minutes.\n\nFund Bridge Security Team`;
+
+  if (await sendViaResend({ to: cleanRecipient, subject: `Fund Bridge: Password Reset Link for ${cleanRecipient}`, html: htmlContent, text: textContent })) {
+    console.log(`[Email] Resend reset link sent to: ${cleanRecipient}`);
+    return { success: true, sentVia: 'resend', message: `Password reset email dispatched to ${cleanRecipient}.`, recipient: cleanRecipient };
+  }
 
   // Try Primary Transporter
   if (primaryObj?.transporter) {
@@ -230,6 +258,11 @@ export async function sendPasswordResetOtpEmail(
   const textContent = `Fund Bridge Verification Code\n\nHello,\n\nYour 6-digit verification code for ${cleanRecipient} is: ${otpCode}\n\nEnter this code on the Fund Bridge website to reset your password. This code is valid for 10 minutes.\n\nFund Bridge Team`;
 
   console.log(`[OTP DISPATCH] Recipient: ${cleanRecipient} | Code: ${otpCode}`);
+
+  if (await sendViaResend({ to: cleanRecipient, subject: `Your Fund Bridge Verification Code: ${otpCode}`, html: htmlContent, text: textContent, replyTo })) {
+    console.log(`[Email] Resend OTP dispatched to: ${cleanRecipient}`);
+    return { success: true, sentVia: 'resend', message: `Verification code dispatched to ${cleanRecipient}.`, recipient: cleanRecipient, otpCode };
+  }
 
   // 1. Try Primary SMTP Transporter
   const primaryObj = getTransporter(false);
