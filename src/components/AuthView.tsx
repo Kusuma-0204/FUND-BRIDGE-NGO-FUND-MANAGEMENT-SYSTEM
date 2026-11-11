@@ -29,7 +29,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
   // Login fields
   const [loginEmail, setLoginEmail] = useState(() => {
     if (typeof window !== 'undefined' && window.location.hash.toLowerCase().includes('admin')) {
-      return '';
+      return 'aadminngo@gmail.com';
     }
     const last = localStorage.getItem('fb_last_login_email');
     return last && last !== 'aadminngo@gmail.com' && last !== 'admin@ngofunds.org' ? last : '';
@@ -45,7 +45,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
       const hash = window.location.hash.toLowerCase();
       if (hash.includes('admin')) {
         setActivePortalTab('admin');
-        setLoginEmail('');
+        setLoginEmail('aadminngo@gmail.com');
         setLoginPassword('');
       } else if (hash.includes('register')) {
         setActivePortalTab('register');
@@ -75,9 +75,9 @@ export const AuthView: React.FC<AuthViewProps> = ({
 
   const handleForgotPasswordClick = () => {
     if (activePortalTab === 'admin') {
-      onOpenForgotPassword(loginEmail.trim() || 'aadminngo@gmail.com');
+      onOpenForgotPassword('aadminngo@gmail.com');
     } else {
-      onOpenForgotPassword(loginEmail.trim() || localStorage.getItem('fb_last_login_email') || '');
+      onOpenForgotPassword(loginEmail.trim());
     }
   };
 
@@ -92,7 +92,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
         window.location.hash = 'login';
       }
     } else if (tab === 'admin') {
-      setLoginEmail('');
+      setLoginEmail('aadminngo@gmail.com');
       setLoginPassword('');
       window.location.hash = 'admin';
     } else if (tab === 'register') {
@@ -107,7 +107,9 @@ export const AuthView: React.FC<AuthViewProps> = ({
     setAuthError(null);
 
     const emailInput = loginEmail.trim().toLowerCase();
-    const effectiveEmail = (emailInput === 'adminngo@gmail.com') ? 'aadminngo@gmail.com' : emailInput;
+    const effectiveEmail = (activePortalTab === 'admin')
+      ? 'aadminngo@gmail.com'
+      : ((emailInput === 'adminngo@gmail.com') ? 'aadminngo@gmail.com' : emailInput);
 
     if (!effectiveEmail) {
       setAuthError('Please enter your Email ID.');
@@ -119,12 +121,12 @@ export const AuthView: React.FC<AuthViewProps> = ({
       return;
     }
 
-    // If user is on Admin tab but entered a non-admin email (like their donor email),
-    // automatically switch them to the Donor Portal instead of blocking them with an error
-    let portalTarget = activePortalTab;
-    if (activePortalTab === 'admin' && effectiveEmail !== 'aadminngo@gmail.com') {
-      portalTarget = 'donor';
-      setActivePortalTab('donor');
+    // STRICT SECURITY: Admin Portal ONLY allows aadminngo@gmail.com
+    if (activePortalTab === 'admin') {
+      if (effectiveEmail !== 'aadminngo@gmail.com') {
+        setAuthError('Access Denied: Only authorized administrator (aadminngo@gmail.com) can log in here. Please use the Donor Portal.');
+        return;
+      }
     }
 
     try {
@@ -134,7 +136,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
         body: JSON.stringify({ 
           email: effectiveEmail, 
           password: loginPassword,
-          portal: portalTarget 
+          portal: activePortalTab 
         })
       });
       const data = await res.json();
@@ -284,7 +286,7 @@ export const AuthView: React.FC<AuthViewProps> = ({
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-white border border-slate-200 p-0.5 flex items-center justify-center flex-shrink-0 shadow-xs overflow-hidden">
                 <img
-                  src="/assets/ngo-logo.svg?v=light"
+                  src="/assets/ngo-logo.svg"
                   alt="Fund Bridge NGO Logo"
                   className="w-full h-full object-contain"
                 />
@@ -326,11 +328,11 @@ export const AuthView: React.FC<AuthViewProps> = ({
           </div>
 
           <div className="my-6 text-center flex flex-col items-center justify-center">
-            <div className="w-56 h-56 sm:w-64 sm:h-64 rounded-3xl bg-white border border-teal-100/90 shadow-sm p-2.5 flex items-center justify-center overflow-hidden hover:scale-105 transition-transform duration-300">
+            <div className="w-56 h-56 sm:w-64 sm:h-64 rounded-3xl bg-white border border-slate-200 shadow-md p-3 flex items-center justify-center overflow-hidden hover:scale-105 transition-transform duration-300">
               <img
-                src="/assets/ngo-logo.svg?v=light"
+                src="/assets/ngo-logo.svg"
                 alt="Fund Bridge NGO Logo"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain drop-shadow-sm"
               />
             </div>
             <span className="text-[11px] text-teal-700 font-bold tracking-wider uppercase mt-3">
@@ -512,38 +514,35 @@ export const AuthView: React.FC<AuthViewProps> = ({
                 </p>
               </div>
 
-              {/* Email ID Field */}
+              {/* Locked Official Administrator Email Field */}
               <div>
-                <label className="block font-semibold text-slate-700 mb-1.5">
-                  Email ID
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Mail className="w-4 h-4" />
-                  </div>
-                  <input
-                    type="email"
-                    required
-                    value={loginEmail}
-                    onChange={(e) => handleEmailChange(e.target.value)}
-                    placeholder="e.g. aadminngo@gmail.com"
-                    className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500 font-medium"
-                    autoFocus
-                  />
-                </div>
-                <div className="flex items-center justify-between mt-1.5 text-xs text-slate-500">
-                  <span className="flex items-center gap-1 text-slate-600">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                    <span>Official ID: <strong className="text-amber-800">aadminngo@gmail.com</strong></span>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block font-semibold text-slate-700">
+                    Authorized Administrator Email
+                  </label>
+                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300">
+                    <ShieldCheck className="w-3 h-3 text-amber-700" />
+                    Verified Official Account
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => handleEmailChange('aadminngo@gmail.com')}
-                    className="text-[11px] text-amber-700 hover:text-amber-900 font-bold bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2 py-0.5 rounded transition-colors cursor-pointer"
-                  >
-                    Autofill ID
-                  </button>
                 </div>
+                
+                {/* Fixed read-only visual display block - completely prevents browser autocomplete dropdown */}
+                <div className="w-full px-3.5 py-2.5 bg-amber-50/90 border border-amber-300 rounded-xl flex items-center justify-between select-none">
+                  <div className="flex items-center gap-2.5">
+                    <Mail className="w-4 h-4 text-amber-700 flex-shrink-0" />
+                    <span className="text-slate-900 font-mono font-bold text-sm tracking-wide">
+                      aadminngo@gmail.com
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-200/90 border border-amber-300/80 rounded-md text-[11px] font-bold text-amber-900 shadow-2xs">
+                    <Lock className="w-3 h-3 text-amber-800" />
+                    <span>Locked</span>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-slate-500 mt-1.5">
+                  🔒 Only <strong className="text-amber-800 font-mono">aadminngo@gmail.com</strong> is permitted to access the Admin Portal. Other accounts must use the Donor Portal.
+                </p>
               </div>
 
               {/* Password Field */}
