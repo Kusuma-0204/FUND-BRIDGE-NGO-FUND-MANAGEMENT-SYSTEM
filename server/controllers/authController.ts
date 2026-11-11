@@ -567,6 +567,14 @@ export async function forgotPassword(req: Request, res: Response) {
     } else {
       // 2. Dispatch OTP via Email
       const emailResult = await sendPasswordResetOtpEmail(emailKey, rawOtp);
+      if (!emailResult.success) {
+  console.error('OTP Email Failed:', emailResult.message);
+
+  return res.status(500).json({
+    success: false,
+    message: 'Unable to send OTP. Please check your email configuration.',
+  });
+}
       await logAudit(null, 'OTP_EMAIL_REQUEST', `6-digit OTP dispatched to ${emailKey} via ${emailResult.sentVia}`, req);
 
       // If user has a registered phone number, also send SMS to their phone
