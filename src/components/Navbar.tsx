@@ -28,14 +28,15 @@ export const Navbar: React.FC<NavbarProps> = ({
   const isDonor = isLoggedIn && currentUser?.role !== 'Administrator';
   const isAdmin = isLoggedIn && currentUser?.role === 'Administrator';
 
-  // Navigation Links: Home, About Us, Fund Tracker, Contact Us, Request Aid, QR Code
+  // Navigation Links: Home, About Us, Fund Tracker, Contact Us, Request Aid, QR Code, Profile
   const navLinks = [
     { id: 'home', label: 'Home', icon: Home },
     { id: 'about', label: 'About Us', icon: Users },
     { id: 'tracker', label: 'Fund Tracker', icon: Activity },
     { id: 'contact', label: 'Contact Us', icon: Mail },
     { id: 'request', label: 'Request Aid', icon: FileSpreadsheet },
-    { id: 'donate', label: 'QR Code', icon: QrCode }
+    { id: 'donate', label: 'QR Code', icon: QrCode },
+    ...(isDonor ? [{ id: 'profile', label: 'Profile', icon: UserIcon }] : [])
   ];
 
   const handleNavClick = (id: string) => {
@@ -113,12 +114,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             ) : (
               <div className="flex items-center gap-1.5 lg:gap-2">
-                <div className="flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 bg-teal-50 border border-teal-200/80 rounded-xl text-teal-800 text-xs lg:text-sm font-semibold shadow-xs">
-                  <UserIcon className="w-3.5 h-3.5 lg:w-4 lg:h-4 text-teal-600 flex-shrink-0" />
-                  <span className="truncate max-w-[130px]" title={currentUser?.name || currentUser?.email}>
-                    Donor: {currentUser?.name?.split(' ')[0] || 'You'}
+                <button
+                  type="button"
+                  onClick={() => handleNavClick('profile')}
+                  className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-xl text-xs lg:text-sm font-semibold shadow-xs transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
+                    currentView === 'profile'
+                      ? 'bg-teal-600 text-white border border-teal-600'
+                      : 'bg-teal-50 hover:bg-teal-100 border border-teal-200/80 text-teal-800'
+                  }`}
+                  title="Open Donor Profile"
+                >
+                  <UserIcon className={`w-3.5 h-3.5 lg:w-4 lg:h-4 flex-shrink-0 ${currentView === 'profile' ? 'text-white' : 'text-teal-600'}`} />
+                  <span className="truncate max-w-[130px]">
+                    {currentUser?.name?.split(' ')[0] || 'My Profile'}
                   </span>
-                </div>
+                </button>
 
                 {onLogout && (
                   <button
@@ -136,12 +146,21 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* 4. Mobile Header Actions (Hamburger Toggle + Donor badge) */}
           <div className="flex md:hidden items-center gap-2">
-            <div className="flex items-center gap-1 px-2 py-1 bg-teal-50 border border-teal-200/80 rounded-lg text-teal-800 text-xs font-semibold">
-              <UserIcon className="w-3 h-3 text-teal-600" />
+            <button
+              type="button"
+              onClick={() => handleNavClick('profile')}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold cursor-pointer whitespace-nowrap ${
+                currentView === 'profile'
+                  ? 'bg-teal-600 text-white border border-teal-600'
+                  : 'bg-teal-50 border border-teal-200/80 text-teal-800'
+              }`}
+              title="Open Donor Profile"
+            >
+              <UserIcon className={`w-3 h-3 ${currentView === 'profile' ? 'text-white' : 'text-teal-600'}`} />
               <span className="truncate max-w-[80px]">
-                {currentUser?.name?.split(' ')[0] || 'Donor'}
+                {currentUser?.name?.split(' ')[0] || 'Profile'}
               </span>
-            </div>
+            </button>
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
