@@ -114,22 +114,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               </div>
             ) : (
               <div className="flex items-center gap-1.5 lg:gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleNavClick('profile')}
-                  className={`flex items-center gap-1.5 px-2.5 lg:px-3 py-1.5 rounded-xl text-xs lg:text-sm font-semibold shadow-xs transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
-                    currentView === 'profile'
-                      ? 'bg-teal-600 text-white border border-teal-600'
-                      : 'bg-teal-50 hover:bg-teal-100 border border-teal-200/80 text-teal-800'
-                  }`}
-                  title="Open Donor Profile"
-                >
-                  <UserIcon className={`w-3.5 h-3.5 lg:w-4 lg:h-4 flex-shrink-0 ${currentView === 'profile' ? 'text-white' : 'text-teal-600'}`} />
-                  <span className="truncate max-w-[130px]">
-                    {currentUser?.name?.split(' ')[0] || 'My Profile'}
-                  </span>
-                </button>
-
                 {onLogout && (
                   <button
                     onClick={onLogout}
